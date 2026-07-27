@@ -1,0 +1,114 @@
+[
+  {
+    "name": "BAKED_ASOF",
+    "decl_prefix": "const BAKED_ASOF =",
+    "pre_value_ws": " ",
+    "lead_comment": "/* ===== CONFIG =====\n   ENGINE LAW + full v7-v16 changelog: CANONICAL on the Notion law page, section \"Dashboard-file engine law - CANONICAL\n   HOME\" (moved out of this file 7/22 PM so uploads fit the pipeline). Iron rules kept in-file:\n   (1) LAST_KNOWN + per-token baked values + BAKED_ASOF refresh together every rebake; prices from live trackers or a\n       stamped T1 carried basis only.\n   (2) HISTORY_CSV gets EXACTLY ONE appended line per verified run basis (empty fields = null), never overwritten;\n       BACKFILL_CSV is the static owned archive - never append, never regenerate; REJECT any incoming fee print that\n       equals a prior bake to the dollar (echo tell).\n   (3) IN12 + NETFLOW legs + NET_MODEL + DILNEG + EST_GROSS refresh together every run; every bar/row tooltip carries\n       its full calculation.\n   (4) C20 additions: read claude/state.json FIRST (canonical board/state; the build stamp — FOOTER, id=buildstamp — must match it);\n       every transcribed print passes claude/tools/validate_prints.py BEFORE baking (echo-fingerprint + archive-\n       fingerprint + rolling-sum continuity + share-jump; QUARANTINE => carry last verified, queue, cache-busted retry,\n       never narrate); all api.llama.fi fetches carry &cb=<runid>; AERO supply via Thu-to-Thu same-hour blockscout\n       deltas (epoch-flip reads proven non-capturing 7/23); SPARKS30 + BENCH refresh from the owned archive shards;\n       BH scores refresh from the Token DB each scored run.\n   (5) AUDIENCE (owner-approved 2026-07-24, law-page audience law): this is a GUEST-FACING build. Keep: the header\n       \"Updated <date>\" chip (stamp lives in the FOOTER), plain-language chart titles, rank-first table default,\n       net-dilutive wording (never \"dil-neg\"), the footer legend + disclaimer, SNAPSHOT (not STALE) presentation in\n       embeds, tap-to-show tooltips, no file paths / correction IDs / owner-directive phrasing in rendered text. */",
+    "gap": " "
+  },
+  {
+    "name": "LAST_KNOWN",
+    "decl_prefix": "const LAST_KNOWN =",
+    "pre_value_ws": " ",
+    "lead_comment": "/* basis: board-seat PRICES/MCs = fresh T1 2026-07-24 ~1:23 PM PT (DefiLlama historical, conf 0.99; monitors carry 7/23). FEES: cache-busted fresh 7/24, harness-PASS, for HYPE/AERO/UNI/JUP/PENDLE/VVV/LIT/PUMP; AAVE rev = T2 est (adapter waking, 24h/7d $0 tell); ETH burn carried. TVL fresh 7/24 for AERO/UNI/PENDLE/AAVE; HYPE TVL carried (three-way basis reconcile queued). */",
+    "gap": ""
+  },
+  {
+    "name": "TOKENS",
+    "decl_prefix": "const TOKENS =",
+    "pre_value_ws": " ",
+    "lead_comment": "",
+    "gap": ""
+  },
+  {
+    "name": "HISTORY_CSV",
+    "decl_prefix": "const HISTORY_CSV=",
+    "pre_value_ws": "",
+    "lead_comment": "/* ===== HISTORY / BACKFILL — compact CSV form (v16 restructure; law-page section \"Dashboard-file engine law\").\n   date|SYM:fees,rev,tvl,mcRev;SYM:… — empty field = null. HISTORY_CSV: engines APPEND EXACTLY ONE LINE per verified\n   run basis (echo prints rejected). BACKFILL_CSV: static owned archive — NEVER append or regenerate. Machine-transformed\n   from the v15 arrays, node-verified value-identical. 7/22 HISTORY line: fees/rev/TVL fresh ~04:30 UTC (AERO restated\n   ~22:45 UTC), MCs carried from the 7/22 ~12:20 PM PT T1 price basis. ===== */",
+    "gap": ""
+  },
+  {
+    "name": "BACKFILL_CSV",
+    "decl_prefix": "const BACKFILL_CSV=",
+    "pre_value_ws": "",
+    "lead_comment": "",
+    "gap": ""
+  },
+  {
+    "name": "UNLOCKS",
+    "decl_prefix": "const UNLOCKS =",
+    "pre_value_ws": " ",
+    "lead_comment": "/* ===== INCOMING UNLOCKS & EMISSIONS (owner directive 7/21) =====\n   ENGINE: refresh amounts + the price valuation each rebake; keep the 12-mo window rolling; tiers in tooltips.\n   AERO now charted as MEASURED (v13): T1 supply-delta average 4.46M/wk (blockscout totalSupply 6/8 stamp → 7/22); the\n   exact single-epoch mint refreshes every Thursday post-flip (00:00 UTC) from the same keyless endpoint — never bake\n   the stale Dec-24 Fed print (0.67%/wk ≈ 9.3M) as current. */",
+    "gap": ""
+  },
+  {
+    "name": "NETFLOW",
+    "decl_prefix": "const NETFLOW =",
+    "pre_value_ws": " ",
+    "lead_comment": "/* ===== SUPPLY IN vs VALUE OUT (owner directive 7/21) =====\n   ENGINE: refresh both legs each rebake — in = UNLOCKS realized-pace rows (+ AERO/RENDER emission ests, ETH issuance est);\n   out = holders rev ann (same numbers as the tiles). est flags stay until a leg is T1/T2-verified. */",
+    "gap": ""
+  },
+  {
+    "name": "IN12",
+    "decl_prefix": "const IN12 =",
+    "pre_value_ws": " ",
+    "lead_comment": "/* MC / NET holders revenue (owner directive 7/21): denominator = holders rev MINUS next-12-mo supply-in\n   (unlocks + emissions, realized-pace basis — same IN legs as the NETFLOW chart; refresh together each rebake).\n   Negative denominator = the token is net-dilutive today → \"dil-neg\", sorted after all real multiples. */",
+    "gap": ""
+  },
+  {
+    "name": "NET_MODEL",
+    "decl_prefix": "const NET_MODEL =",
+    "pre_value_ws": " ",
+    "lead_comment": "/* ===== NET-OF-DILUTION MULTIPLE CHART — THE PRIMARY DIAL (owner directive 7/22 PM) =====\n   MC / (holders rev − supply-in), same IN12 legs as the net-flow chart. NET_MODEL holds explicit per-token\n   models where the naive subtraction misleads (owner: \"create a model and note how you calculated\") —\n   ENGINE: refresh NET_MODEL inputs every run alongside IN12 (AERO inn = float-growth $/yr from the AERO\n   supply ledger on the Aerodrome row page); every bar's tooltip must show the full calculation. */",
+    "gap": ""
+  },
+  {
+    "name": "DILNEG",
+    "decl_prefix": "const DILNEG =",
+    "pre_value_ws": " ",
+    "lead_comment": "/* Red dil-neg rows — every tracked name whose supply-in exceeds capture appears ON the chart (owner directive 7/22).\n   ENGINE: refresh these legs with IN12 + NET_MODEL every rebake; est marks hold until each leg verifies. */",
+    "gap": ""
+  },
+  {
+    "name": "SPARKS30",
+    "decl_prefix": "const SPARKS30 =",
+    "pre_value_ws": " ",
+    "lead_comment": "",
+    "gap": " "
+  },
+  {
+    "name": "BENCH",
+    "decl_prefix": "const BENCH =",
+    "pre_value_ws": " ",
+    "lead_comment": "/* 30 daily PT closes 6/24→7/23, owned archive + shard — refresh from the price-archive appends each rebake */",
+    "gap": "; "
+  },
+  {
+    "name": "BENCH2",
+    "decl_prefix": "const BENCH2 =",
+    "pre_value_ws": " ",
+    "lead_comment": "/* seed-six EW (documented 7/10 seed: ETH HYPE AERO VVV RENDER PENDLE — composition restated 7/24, log entry) vs ETH vs BTC, base 100 @ 7/10 closes — recomputed from the owned price archive each rebake */",
+    "gap": ""
+  },
+  {
+    "name": "BH",
+    "decl_prefix": "const BH =",
+    "pre_value_ws": " ",
+    "lead_comment": "/* ENGINE (owner directive 7/23 — \"run this from today\"): BENCH2 = board-of-record equal weight (the CURRENT 8 seats:\n   HYPE AERO UNI JUP PENDLE VVV AAVE ETH) vs ETH vs BTC, all base 100 at the 2026-07-23 PT close (captured by the 7/24\n   morning run via the previous-day-close rule). Morning runs APPEND one point per day from the price shard and rebase\n   nothing. Composition changes create a new inception note in the tooltip, never a silent rebase. Once BENCH2 has >= 2\n   points the chart draws BENCH2 as primary; the seed-six series stays available as the from-7/10 context record. */",
+    "gap": ""
+  },
+  {
+    "name": "RANKS",
+    "decl_prefix": "const RANKS=",
+    "pre_value_ws": "",
+    "lead_comment": "",
+    "gap": " "
+  },
+  {
+    "name": "EST_GROSS",
+    "decl_prefix": "const EST_GROSS=",
+    "pre_value_ws": "",
+    "lead_comment": "",
+    "gap": ""
+  }
+]

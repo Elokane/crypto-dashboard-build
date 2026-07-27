@@ -1,0 +1,7 @@
+# never let a credential reach a public repo
+*.token
+*token*
+.secrets/
+.env
+prices_*.json
+build.bak/

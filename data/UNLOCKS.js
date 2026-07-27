@@ -1,0 +1,21 @@
+{ window:"Aug 2026 → Jul 2027", priced:"7/23 price basis", rows:[
+  { sym:"HYPE", what:"authorized ceiling", usd12:7.06e9, rate:"9.92M HYPE/mo", pct:"+46.8% of circ if fully claimed", col:"var(--s1)", hatch:true, offscale:true,
+    tip:"238M core-contributor whitepaper schedule, ~9.92M/mo through ~Nov-2027 (T2). Next event ~Aug 6. This is the authorization, not the observed pace." },
+  { sym:"HYPE", what:"realized claim pace", usd12:175.176e6, rate:"~250K HYPE/mo est", pct:"+1.2%/yr of circ", col:"var(--s1)",
+    tip:"Observed claims: 201,995 HYPE ($12.5M) Jun 7 · ~$15.5M July (trackers, on-chain verifiable). Historical claims ran 1.4–17.6% of ceiling — Tokenomist estimate→committed→completed standard." },
+  { sym:"AERO", what:"gauge emissions + rebases (measured)", usd12:101.491e6, rate:"≈4.46M AERO/wk T1 avg", pct:"+24.8%/yr of circ · 0.23%/wk of total (~¾ lands locked)", col:"var(--s2)",
+    tip:"MEASURED 7/22 (T1): totalSupply via keyless Base blockscout API 1,940.44M vs CoinPaprika 1,912.42M (6/8 stamp) = +28.02M AERO / 44 days ≈ 4.46M/wk ≈ $101M/yr at spot. Fed-voted weekly (±0.01%-of-supply steps, bounds 0.01–1%/wk; voters stepped it down from 0.67%/wk at Dec-24 activation to ~0.23%/wk now). Recipients: LP gauges + locker rebases; with the Foundation PGF buy-and-lock (~200M AERO cumulative, T2), circulating float grew only ~0.9–1.2M/wk — ~3/4 of the mint never hits the market. METHOD REVISED 7/23: four identical totalSupply reads through 19h post-flip prove the mint does NOT appear at the epoch flip — supply is now measured as Thursday-to-Thursday same-hour deltas (~20:00 UTC); the 44-day average stands as the T1 figure." },
+  { sym:"VVV", what:"staking emissions", usd12:35.4025e6, rate:"250K VVV/mo", pct:"+6.5%/yr of circ", col:"var(--s5)",
+    tip:"Cut to 3M/yr effective 7/1/26 (launch 14M/yr → monthly cuts 6→5→4→3M; T2/T3). All emissions to sVVV stakers; the buy-and-burn pushes the other way — stated goal is net deflation." },
+  { sym:"PENDLE", what:"incentive emissions", usd12:8.88438e6, rate:"~469K PENDLE/mo est", pct:"+3.3%/yr of circ", col:"var(--s3)",
+    tip:"Terminal regime ≈2%/yr of supply (T3 — the 1.1%/wk decay schedule ends Apr–Sep-2026 per conflicting secondary sources; pin-down queued). sPENDLE/vePENDLE-directed." },
+  { sym:"LIT", what:"team+investor vesting (est)", usd12:328.977e6, rate:"~12.5M LIT/mo est", pct:"+60%/yr of circ est", col:"var(--s6)", est:true,
+    tip:"Team 26% + investors 24% (500M LIT) vest into 2029 (Tokenomist) — straight-lined ≈ $333M/yr at spot. CADENCE UNDISCLOSED (mix of cliff and linear): could be zero for months then lumpy. The widest error bars here; monitor-status reason #1." },
+  { sym:"PUMP", what:"3-yr vesting (est)", usd12:198.647e6, rate:"~7.58B PUMP/mo est", pct:"+22.7%/yr of circ", col:"var(--s4)", est:true,
+    tip:"OWNER FLAG CONFIRMED (7/21): the 7/15 cliff (57.28B, $86.5M, 121 wallets) STARTED a 3-year linear vesting of the remaining ~272.7B team+investor PUMP ≈ 7.58B/mo ≈ $15.2M/mo est (T3 press; next tranches 'materially smaller' than the cliff). Continuous supply-in through mid-2029." },
+], zeros:[
+  "UNI — fully vested since 2024 (Tokenomist: 62.1% of 1B circulating; treasury spend is governance-gated, not scheduled); no active emissions.",
+  "JUP — team/investor vesting COMPLETE (Jan-27-26; Mercurial final tranche 2/25); 'Jupiter Goes Green' net-zero emissions passed; ~3.54B in reserves has NO schedule (governance-gated). Scheduled supply-in: zero.",
+  "ETH — no unlocks or vesting; net issuance ≈ +0.3–0.5%/yr post-burn (validator yield, not a vesting overhang).",
+  "RENDER — 'fully unlocked' (Tokenomist): no dated cliffs; residual ~19.5% dribbles via escrow/partner + BME dynamics through 2051 (~1%/yr net inflation — see tile).",
+]}

@@ -1,0 +1,17 @@
+{ asof: "2026-07-27 ~1:46 PM PT (all 16 instruments, cache-busted, conf 0.99)", bySym: {
+  HYPE:   { price:57.0219, d24:-3.1, d7:-8.35, mc:1.45e10, fdv:5.59e10, vol:272.71e6 },
+  AERO:   { price:0.451192, d24:9.2, d7:3.82, mc:4.214e8, fdv:8.614e8, vol:13.59e6 },
+  UNI:    { price:3.80759, d24:-1.61, d7:5.16, mc:2.357e9, fdv:3.423e9, vol:null },
+  JUP:    { price:0.187427, d24:-0.16, d7:-4.35, mc:6.221e8, fdv:1.315e9, vol:null },
+  PENDLE: { price:1.54382, d24:1.33, d7:-4.4, mc:2.656e8, fdv:4.345e8, vol:32.79e6 },
+  VVV:    { price:12.9521, d24:-5.56, d7:11.87, mc:5.958e8, fdv:1.028e9, vol:45.49e6 },
+  AAVE:   { price:99.4137, d24:2.24, d7:10.75, mc:1.516e9, fdv:1.594e9, vol:null },
+  ETH:    { price:1943.06, d24:1.67, d7:2.14, mc:2.345e11, fdv:2.344e11, vol:10.38e9 },
+  RENDER: { price:1.44726, d24:-1.43, d7:-4.3, mc:7.533e8, fdv:9.3e8, vol:15.15e6 },
+  HNT:    { price:0.189761, d24:-2.47, d7:-7.33, mc:3.366e7, fdv:4.232e7, vol:null },
+  LIT:    { price:2.19515, d24:3.15, d7:-0.41, mc:5.489e8, fdv:2.193e9, vol:null },
+  PUMP:   { price:0.00213955, d24:13.77, d7:5.67, mc:8.543e8, fdv:2.14e9, vol:null },
+  TAO:    { price:192.822, d24:-2.14, d7:-1.33, mc:1.856e9, fdv:4.031e9, vol:80.7e6 },
+  ONDO:   { price:0.401943, d24:0.86, d7:12.53, mc:1.965e9, fdv:4.019e9, vol:null },
+  ENA:    { price:0.0874117, d24:2.64, d7:5.33, mc:8.122e8, fdv:1.31e9, vol:null },
+} }

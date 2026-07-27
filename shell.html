@@ -1,0 +1,864 @@
+<!DOCTYPE html><script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Crypto Token Dashboard",
+  "schemaVersion": 1,
+  "description": "Crypto value-capture watchlist dashboard — board v14.1, build v19 (guest-ready), baked 2026-07-24. Live CoinGecko+DefiLlama with baked snapshot fallback.",
+  "mcpTools": [],
+  "mcpServerNames": []
+}
+</script>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crypto Value-Capture Watchlist</title>
+<style>
+:root {--surface-1: #1a1a19; --page: #0d0d0d;--text-1: #ffffff; --text-2: #c3c2b7; --muted: #898781;--grid: #2c2c2a; --baseline: #383835;--border: rgba(255,255,255,0.10);--good: #0ca30c; --bad: #d03b3b; --stale: #ec835a;--s1: #3987e5; --s2: #199e70; --s3: #c98500; --s4: #008300; --s5: #9085e9; --s6: #e66767;--bar: #3987e5; --bar-track: #184f95;--wash: rgba(57,135,229,0.10);}@media (prefers-color-scheme: light) {:root {--surface-1: #fcfcfb; --page: #f9f9f7;--text-1: #0b0b0b; --text-2: #52514e; --muted: #898781;--grid: #e1e0d9; --baseline: #c3c2b7;--border: rgba(11,11,11,0.10);--good: #006300; --bad: #d03b3b; --stale: #b45309;--s1: #2a78d6; --s2: #1baf7a; --s3: #eda100; --s4: #008300; --s5: #4a3aa7; --s6: #e34948;--bar: #2a78d6; --bar-track: #b7d3f6;--wash: rgba(42,120,214,0.10);}}* { box-sizing: border-box; margin: 0; padding: 0; }body {background: var(--page); color: var(--text-1);font-family: system-ui, -apple-system, "Segoe UI", sans-serif;font-size: 14px; line-height: 1.45; padding: 20px;}.wrap { max-width: 1080px; margin: 0 auto; }header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 16px; margin-bottom: 6px; }h1 { font-size: 20px; font-weight: 650; letter-spacing: -0.01em; }.badge {font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;border: 1px solid var(--border); color: var(--text-2);}.badge.live { color: var(--good); border-color: var(--good); }.badge.stale { color: var(--stale); border-color: var(--stale); }.sub { color: var(--muted); font-size: 12px; margin-bottom: 18px; }.sub b { color: var(--text-2); font-weight: 600; }.notice {border: 1px solid var(--stale); color: var(--text-2); border-radius: 8px;padding: 8px 12px; font-size: 12px; margin: -8px 0 18px;}.notice b { color: var(--stale); }.stalenote { color: var(--muted); font-size: 10px; font-weight: 600; margin-top: 3px; letter-spacing: 0.03em; }button.refresh {margin-left: auto; background: none; border: 1px solid var(--border); color: var(--text-2);border-radius: 6px; padding: 4px 12px; font-size: 12px; cursor: pointer; font-family: inherit;min-width: 116px; text-align: center; transition: color .15s, border-color .15s, opacity .15s;}button.refresh:hover { background: var(--wash); color: var(--text-1); }button.refresh.busy { opacity: 0.7; cursor: progress; }button.refresh.busy::before {content: ""; display: inline-block; width: 9px; height: 9px; margin-right: 6px;vertical-align: -1px; border: 1.5px solid currentColor; border-top-color: transparent;border-radius: 50%; animation: spin .7s linear infinite;}button.refresh.ok { color: var(--good); border-color: var(--good); }button.refresh.err { color: var(--stale); border-color: var(--stale); }@keyframes spin { to { transform: rotate(360deg); } }@media (prefers-reduced-motion: reduce) { button.refresh.busy::before { animation: none; } }.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); gap: 10px; margin-bottom: 22px; }.tile {background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px;padding: 12px 14px 10px;}.tile .sym { font-size: 12px; font-weight: 600; color: var(--text-2); display: flex; align-items: center; gap: 6px; }.tile .name { font-size: 11px; color: var(--muted); font-weight: 400; }.tile .price { font-size: 21px; font-weight: 600; margin: 4px 0 2px; }.tile .deltas { font-size: 12px; display: flex; gap: 10px; }.tile .spark { height: 30px; margin-top: 8px; position: relative; }.tile .spark .nospark { font-size: 10px; color: var(--muted); position: absolute; bottom: 0; }.up { color: var(--good); } .down { color: var(--bad); }.dim { color: var(--muted); }h2 { font-size: 14px; font-weight: 650; margin: 0 0 2px; }.hint { font-size: 12px; color: var(--muted); margin-bottom: 12px; }.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; margin-bottom: 22px; }.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }.hbar-row { display: grid; grid-template-columns: 64px 1fr 74px; align-items: center; gap: 10px; margin: 9px 0; }.hbar-row .lab { font-size: 12px; color: var(--text-2); font-weight: 600; text-align: right; }.hbar-track { position: relative; height: 16px; }.hbar {position: absolute; left: 0; top: 0; bottom: 0;background: var(--bar); border-radius: 0 4px 4px 0; min-width: 3px; cursor: default;}.hbar-row .val { font-size: 12px; color: var(--text-1); font-variant-numeric: tabular-nums; }.hbar.est { opacity: .85; outline: 1px dashed var(--muted); outline-offset: -1px; }.hbar.cap { background: repeating-linear-gradient(45deg, var(--bar) 0 5px, transparent 5px 9px); border: 1px dashed var(--bar); border-left: none; }.nomult { font-size: 11px; color: var(--bad); opacity: .9; position: absolute; top: 1px; white-space: nowrap; }.ubar-row { display: grid; grid-template-columns: 205px 1fr 170px; align-items: center; gap: 10px; margin: 12px 0; }.ubar-row .lab { font-size: 12px; color: var(--text-2); font-weight: 600; text-align: right; line-height: 1.25; }.ubar-track { position: relative; height: 18px; }.ubar { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 0 4px 4px 0; min-width: 2px; }.ubar.hatch { background: repeating-linear-gradient(45deg, var(--ubarcol) 0 5px, transparent 5px 9px); border: 1px dashed var(--ubarcol); border-left: none; }.ubar.est { opacity: .8; outline: 1px dashed var(--muted); outline-offset: -1px; }.nf-track { position: relative; height: 26px; }.nf-bar { position: absolute; left: 0; height: 10px; border-radius: 0 3px 3px 0; min-width: 2px; }.nf-in { top: 1px; background: var(--s3); }.nf-out { bottom: 1px; background: var(--s1); }.nf-bar.est { opacity: .8; outline: 1px dashed var(--muted); outline-offset: -1px; }.nf-none { position: absolute; left: 0; font-size: 10px; color: var(--muted); }.nf-none.top { top: -1px; } .nf-none.bot { bottom: -1px; }.ubar-row .val .net { font-weight: 600; color: var(--text-1); display: block; font-size: 11px; }.ubar-row .val { font-size: 12px; color: var(--text-1); font-variant-numeric: tabular-nums; line-height: 1.3; }.ubar-row .val .pct { color: var(--muted); font-size: 10.5px; display: block; }.axis-note { font-size: 11px; color: var(--muted); margin-top: 10px; border-top: 1px solid var(--grid); padding-top: 8px; }.tablewrap { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 6px 2px; overflow-x: auto; margin-bottom: 22px; }table { border-collapse: collapse; width: 100%; min-width: 1060px; }th, td { padding: 8px 12px; text-align: right; font-size: 12.5px; white-space: nowrap; }th:first-child, td:first-child { text-align: left; position: sticky; left: 0; background: var(--surface-1); }th {color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em;border-bottom: 1px solid var(--baseline); cursor: pointer; user-select: none;}th:hover { color: var(--text-2); }th .arr { font-size: 9px; }td { border-bottom: 1px solid var(--grid); color: var(--text-1); font-variant-numeric: tabular-nums; }tr:last-child td { border-bottom: none; }tr:hover td { background: var(--wash); }td.tok { font-weight: 600; }td .tokname { color: var(--muted); font-size: 11px; font-weight: 400; margin-left: 5px; }.chip { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-2); font-weight: 500; }.chip .dot { width: 8px; height: 8px; border-radius: 50%; border: 2px solid var(--surface-1); box-shadow: 0 0 0 1px var(--border); }.notes td { white-space: normal; text-align: left; font-variant-numeric: normal; vertical-align: top; }.notes table { min-width: 720px; }.notes td:first-child { font-weight: 600; }.notes .small { font-size: 12px; color: var(--text-2); }footer { color: var(--muted); font-size: 11.5px; line-height: 1.6; border-top: 1px solid var(--grid); padding-top: 12px; }footer b { color: var(--text-2); font-weight: 600; }#tip {position: fixed; pointer-events: none; z-index: 10; display: none;background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px;padding: 8px 11px; font-size: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.35); max-width: 260px;}#tip .v { font-weight: 650; font-size: 13px; }#tip .l { color: var(--text-2); }.refreshing .tiles, .refreshing .cards, .refreshing .tablewrap { opacity: 0.55; transition: opacity .2s; }.asofchip { display:inline-block; margin-left:8px; padding:1px 7px; border:1px solid var(--border); border-radius:999px; font-size:10px; color:var(--muted); white-space:nowrap; vertical-align:1px; }
+</style>
+</head>
+<body>
+<div class="wrap" id="root">
+  <header>
+    <h1>Crypto Value-Capture Watchlist</h1>
+    <span class="badge" id="badge">CONNECTING</span>
+    <!--__HTML:updatedChip__-->
+    <button class="refresh" id="refreshBtn" type="button">Refresh now</button>
+  </header>
+  <div class="sub">
+<!--__HTML:subBasis__-->
+  </div>
+  <div class="notice" id="notice" hidden></div>
+
+  <div class="tiles" id="tiles"></div>
+
+  <div class="cards">
+    <div class="card">
+      <h2>The model at a glance — Business vs Hype</h2>
+      <div class="hint"><!--__HTML:hint0__--></div>
+      <div id="bhScatter"></div>
+      <div class="axis-note"><!--__HTML:axisnote0__--></div>
+    </div>
+    <div class="card">
+      <h2>Accountability — watchlist vs just holding ETH or BTC</h2>
+      <div class="hint"><!--__HTML:hint1__--></div>
+      <div id="benchChart"></div>
+      <div class="axis-note" id="benchNote"></div>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h2>What you pay for $1 of net value flow — market cap ÷ (holders revenue − new supply)</h2>
+      <div class="hint"><!--__HTML:hint2__--></div>
+      <div id="pfNetBars"></div>
+      <div class="axis-note" id="pfNetNotes"></div>
+    </div>
+    <div class="card">
+      <h2>What you pay for $1 of holder revenue — market cap ÷ holders revenue (before dilution)</h2>
+      <div class="hint"><!--__HTML:hint3__--></div>
+      <div id="pfBars"></div>
+      <div class="axis-note"><!--__HTML:axisnote1__--></div>
+    </div>
+    <div class="card">
+      <h2>Annualized holders revenue</h2>
+      <div class="hint"><!--__HTML:hint4__--></div>
+      <div id="revBars"></div>
+      <div class="axis-note"><!--__HTML:axisnote2__--></div>
+    </div>
+  </div>
+
+  <h2>History — 2-year backfill + per-run marks</h2>
+  <div class="hint"><!--__HTML:hint5__--></div>
+  <div class="cards" style="grid-template-columns:1fr">
+    <div class="card"><h2>Fees annualized</h2><div class="hint"><!--__HTML:hint6__--></div><div id="histFees"></div></div>
+    <div class="card"><h2>Holders revenue annualized</h2><div class="hint"><!--__HTML:hint7__--></div><div id="histRev"></div></div>
+    <div class="card"><h2>MC / holders revenue</h2><div class="hint" id="histMcRevHint">Lower = more business per dollar · linear scale · pre-7/10 line = weekly price × TODAY'S circulating supply ÷ that week's holders-rev run-rate (EST — CoinGecko's historical-MCAP API is robots-blocked server-side; open the dashboard standalone and live mode hydrates TRUE historical MCAP from CoinGecko and redraws this chart) · ETH excluded (~10,400× burn multiple is off-scale — see its note) · UNI's first post-burn weeks omitted until the multiple settles below 200× (the Dec-25/Jan-26 ramp printed thousands-× values that wrecked the y-scale)</div><div id="histMcRev"></div></div>
+    <div class="card"><h2>TVL</h2><div class="hint"><!--__HTML:hint8__--></div><div id="histTvl"></div></div>
+  </div>
+
+  <h2>Incoming unlocks &amp; emissions — next 12 months</h2>
+  <div class="hint"><!--__HTML:hint9__--></div>
+  <div class="card" style="margin-bottom:22px">
+    <div id="unlockBars"></div>
+    <div class="axis-note" id="unlockNotes"></div>
+  </div>
+
+  <h2>Supply in vs value out — annualized</h2>
+  <div class="hint"><!--__HTML:hint10__--></div>
+  <div class="card" style="margin-bottom:22px">
+    <div id="netflowBars"></div>
+    <div class="axis-note" id="netflowNotes"></div>
+  </div>
+
+  <h2>All metrics</h2>
+  <div class="hint"><!--__HTML:hint11__--></div>
+  <div class="tablewrap"><table id="mtable"></table></div>
+
+  <h2>Value accrual &amp; dilution notes</h2>
+  <div class="hint"><!--__HTML:hint12__--></div>
+  <div class="tablewrap notes"><table id="ntable"></table></div>
+
+  <footer>
+    <b>Discipline:</b> separate hype/narrative from business fundamentals; a token qualifies only if its value appreciates in direct relationship to the business (fees, burns, buybacks, staking revenue). No memecoins. ETH in scope; BTC tracked separately.<br>
+    <b>Reading MC/FDV:</b> low ratio = large future dilution (HYPE ~0.26 and LIT ~0.25 — the deepest overhangs here); ~1.0 = fully diluted (ETH 1.00; AAVE ~0.95).<br>
+    <b>Price policy:</b> live trackers only — CoinGecko, then Binance, then Hyperliquid; when none is reachable the last verified prices are shown as a dated snapshot. Fee figures are DefiLlama's 30-day run-rate, annualized ×12.17 — every figure passes automated integrity checks before it is baked; anomalous feeds are quarantined and logged in the open.<br>
+    <b>Legend:</b> T1 = on-chain / independently verified · T2 = project-official · T3 = named analyst/press · est = estimate · net-dilutive = new supply currently exceeds the value paid to holders.<br>
+    <b>About:</b> a research journal, not investment advice or a solicitation; the author may hold positions in assets discussed; past performance is no guarantee of future results. <!--__HTML:buildstamp__-->
+  </footer>
+</div>
+<div id="tip"></div>
+
+<script>
+/* ===== CONFIG =====
+   ENGINE LAW + full v7-v16 changelog: CANONICAL on the Notion law page, section "Dashboard-file engine law - CANONICAL
+   HOME" (moved out of this file 7/22 PM so uploads fit the pipeline). Iron rules kept in-file:
+   (1) LAST_KNOWN + per-token baked values + BAKED_ASOF refresh together every rebake; prices from live trackers or a
+       stamped T1 carried basis only.
+   (2) HISTORY_CSV gets EXACTLY ONE appended line per verified run basis (empty fields = null), never overwritten;
+       BACKFILL_CSV is the static owned archive - never append, never regenerate; REJECT any incoming fee print that
+       equals a prior bake to the dollar (echo tell).
+   (3) IN12 + NETFLOW legs + NET_MODEL + DILNEG + EST_GROSS refresh together every run; every bar/row tooltip carries
+       its full calculation.
+   (4) C20 additions: read claude/state.json FIRST (canonical board/state; the build stamp — FOOTER, id=buildstamp — must match it);
+       every transcribed print passes claude/tools/validate_prints.py BEFORE baking (echo-fingerprint + archive-
+       fingerprint + rolling-sum continuity + share-jump; QUARANTINE => carry last verified, queue, cache-busted retry,
+       never narrate); all api.llama.fi fetches carry &cb=<runid>; AERO supply via Thu-to-Thu same-hour blockscout
+       deltas (epoch-flip reads proven non-capturing 7/23); SPARKS30 + BENCH refresh from the owned archive shards;
+       BH scores refresh from the Token DB each scored run.
+   (5) AUDIENCE (owner-approved 2026-07-24, law-page audience law): this is a GUEST-FACING build. Keep: the header
+       "Updated <date>" chip (stamp lives in the FOOTER), plain-language chart titles, rank-first table default,
+       net-dilutive wording (never "dil-neg"), the footer legend + disclaimer, SNAPSHOT (not STALE) presentation in
+       embeds, tap-to-show tooltips, no file paths / correction IDs / owner-directive phrasing in rendered text. */
+/*__CONST:BAKED_ASOF__*/
+/*__CONST:LAST_KNOWN__*/
+/*__CONST:TOKENS__*/
+const SLOTCOLORS = { 1:"var(--s1)", 2:"var(--s2)", 3:"var(--s3)", 4:"var(--s4)", 5:"var(--s5)", 6:"var(--s6)" };
+
+/* ===== HISTORY / BACKFILL — compact CSV form (v16 restructure; law-page section "Dashboard-file engine law").
+   date|SYM:fees,rev,tvl,mcRev;SYM:… — empty field = null. HISTORY_CSV: engines APPEND EXACTLY ONE LINE per verified
+   run basis (echo prints rejected). BACKFILL_CSV: static owned archive — NEVER append or regenerate. Machine-transformed
+   from the v15 arrays, node-verified value-identical. 7/22 HISTORY line: fees/rev/TVL fresh ~04:30 UTC (AERO restated
+   ~22:45 UTC), MCs carried from the 7/22 ~12:20 PM PT T1 price basis. ===== */
+/*__CONST:HISTORY_CSV__*/
+/*__CONST:BACKFILL_CSV__*/
+function parseHist(csv){ return csv.trim().split("\n").map(L=>{ const i=L.indexOf("|"); const o={d:L.slice(0,i),v:{}}; L.slice(i+1).split(";").forEach(seg=>{ if(!seg) return; const j=seg.indexOf(":"); const f=seg.slice(j+1).split(","); const e={}; [["fees",f[0]],["rev",f[1]],["tvl",f[2]],["mcRev",f[3]]].forEach(kx=>{ if(kx[1]) e[kx[0]]=Number(kx[1]); }); o.v[seg.slice(0,j)]=e; }); return o; }); }
+const SERIESCOLORS = { HYPE:"var(--s1)", AERO:"var(--s2)", PENDLE:"var(--s3)", UNI:"var(--s5)", PUMP:"var(--s6)", JUP:"var(--s4)", AAVE:"var(--muted)", LIT:"var(--text-2)", ETH:"var(--muted)", VVV:"var(--text-2)" };
+const GRAY_SERIES = { AAVE:1, LIT:1, ETH:1, VVV:1 }; /* fold-over entities: gray + dashed (fixed hues stay ≤6 per the palette; ETH/VVV = burn-flow cohort, gray in the rev chart, named in legend/tooltip) */
+const HISTORY = parseHist(HISTORY_CSV);
+const BACKFILL = parseHist(BACKFILL_CSV);
+/* merged render view: static backfill + live run points (same-date duplicates are harmless) */
+const HIST_ALL = BACKFILL.concat(HISTORY).slice().sort((a,b)=>a.d<b.d?-1:1);
+
+function histChart(elId, metric, fmtVal, useLog){
+  const el=document.getElementById(elId); if(!el) return;
+  el.replaceChildren();
+  const series={};
+  HIST_ALL.forEach(h=>{ for(const s in h.v){ const val=h.v[s][metric]; if(val!=null){ (series[s]=series[s]||[]).push({x:Date.parse(h.d), y:val, d:h.d}); } } });
+  const names=Object.keys(series);
+  if(!names.length){ const n=document.createElement("div"); n.className="hint"; n.textContent="No history yet."; el.append(n); return; }
+  Object.values(series).forEach(pts=>pts.sort((a,b)=>a.x-b.x));
+  names.sort((a,b)=>series[b][series[b].length-1].y - series[a][series[a].length-1].y);
+  const W=960,H=300,L=66,R=88,T=14,B=32;
+  /* x-domain from the points THIS metric has — MC/Rev stays run-points-wide while fees/rev/TVL span the backfill */
+  const xsAll=[]; names.forEach(s=>series[s].forEach(p=>xsAll.push(p.x)));
+  const x0=Math.min(...xsAll), x1=Math.max(...xsAll);
+  const ys=[]; names.forEach(s=>series[s].forEach(p=>ys.push(p.y)));
+  const tr=v=>useLog?Math.log10(v):v;
+  let y0=Math.min(...ys.map(tr)), y1=Math.max(...ys.map(tr));
+  if(y1===y0){ y0-=1; y1+=1; }
+  const yp=(y1-y0)*0.08; y0-=yp; y1+=yp;
+  if(!useLog && y0<0 && Math.min(...ys)>=0) y0=0; /* never show a negative axis on an all-positive linear ratio chart */
+  const X=t=>L+(t-x0)/((x1-x0)||1)*(W-L-R);
+  const Y=v=>H-B-(tr(v)-y0)/(y1-y0)*(H-T-B);
+  const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+  svg.setAttribute("viewBox","0 0 "+W+" "+H); svg.setAttribute("width","100%");
+  for(let k=0;k<5;k++){
+    const gy=T+(H-T-B)*k/4, lv=y1-(y1-y0)*k/4, real=useLog?Math.pow(10,lv):lv;
+    const ln=document.createElementNS(svg.namespaceURI,"line");
+    ln.setAttribute("x1",L); ln.setAttribute("x2",W-R); ln.setAttribute("y1",gy); ln.setAttribute("y2",gy);
+    ln.setAttribute("stroke","var(--grid)"); ln.setAttribute("stroke-width","1"); svg.append(ln);
+    const tx=document.createElementNS(svg.namespaceURI,"text");
+    tx.setAttribute("x",L-6); tx.setAttribute("y",gy+3.5); tx.setAttribute("text-anchor","end");
+    tx.setAttribute("font-size","11"); tx.setAttribute("fill","var(--muted)"); tx.textContent=fmtVal(real); svg.append(tx);
+  }
+  const dSet=[...new Set(xsAll)].sort((a,b)=>a-b);
+  if(dSet.length<=14){
+    dSet.forEach(t=>{ const d=new Date(t).toISOString().slice(0,10);
+      const tx=document.createElementNS(svg.namespaceURI,"text");
+      tx.setAttribute("x",X(t)); tx.setAttribute("y",H-8); tx.setAttribute("text-anchor","middle");
+      tx.setAttribute("font-size","11"); tx.setAttribute("fill","var(--muted)");
+      tx.textContent=d.slice(5).replace("-","/"); svg.append(tx); });
+  } else {
+    /* long span: month ticks thinned to ≤8 */
+    const MO=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const a=new Date(x0); let y=a.getUTCFullYear(), m=a.getUTCMonth()+1; if(m>11){m=0;y++;}
+    const marks=[]; while(Date.UTC(y,m,1)<x1){ marks.push({t:Date.UTC(y,m,1),y,m}); m++; if(m>11){m=0;y++;} }
+    const step=Math.max(1,Math.ceil(marks.length/8));
+    marks.filter((_,i)=>i%step===0).forEach(mk=>{
+      const tx=document.createElementNS(svg.namespaceURI,"text");
+      tx.setAttribute("x",X(mk.t)); tx.setAttribute("y",H-8); tx.setAttribute("text-anchor","middle");
+      tx.setAttribute("font-size","11"); tx.setAttribute("fill","var(--muted)");
+      tx.textContent=MO[mk.m]+" "+String(mk.y).slice(2); svg.append(tx); });
+  }
+  const toLabel=new Set(names.slice(0,4));
+  const endLabels=[];
+  names.forEach(s=>{
+    const pts=series[s], col=SERIESCOLORS[s]||"var(--muted)";
+    if(pts.length>1){
+      /* split the line at gaps >45 days — never draw a bridge across missing data (e.g. UNI fees 6/30/25 → 7/10/26) */
+      const GAP=45*86400e3; let seg=[];
+      const flush=()=>{ if(seg.length>1){ const p=document.createElementNS(svg.namespaceURI,"path");
+        p.setAttribute("d","M"+seg.map(q=>X(q.x).toFixed(1)+","+Y(q.y).toFixed(1)).join(" L"));
+        p.setAttribute("fill","none"); p.setAttribute("stroke",col); p.setAttribute("stroke-width","2");
+        if(GRAY_SERIES[s]) p.setAttribute("stroke-dasharray","5 3");
+        p.setAttribute("stroke-linejoin","round"); p.setAttribute("stroke-linecap","round"); svg.append(p); } seg=[]; };
+      pts.forEach((q,i)=>{ if(i>0 && q.x-pts[i-1].x>GAP) flush(); seg.push(q); }); flush();
+    }
+    const dense=pts.length>40; /* backfilled series: the line carries the shape, visible dots only at the live end */
+    pts.forEach((q,qi)=>{
+      if(!dense || qi===pts.length-1){
+        const c=document.createElementNS(svg.namespaceURI,"circle");
+        c.setAttribute("cx",X(q.x)); c.setAttribute("cy",Y(q.y)); c.setAttribute("r",dense?"3.5":(pts.length<=3?"6":"4.5")); /* sparse newcomers get big dots so every legend entry is visibly on the chart */
+        c.setAttribute("fill",col); c.setAttribute("stroke","var(--surface-1)"); c.setAttribute("stroke-width","2"); svg.append(c);
+      }
+      const hit=document.createElementNS(svg.namespaceURI,"circle");
+      hit.setAttribute("cx",X(q.x)); hit.setAttribute("cy",Y(q.y)); hit.setAttribute("r","13"); hit.setAttribute("fill","transparent");
+      bindTip(hit,e=>showTip(e,[[s+" · "+q.d.slice(5).replace("-","/"),fmtVal(q.y)]])); svg.append(hit);
+    });
+    if(toLabel.has(s)){ const last=pts[pts.length-1]; endLabels.push({s, x:X(last.x), y:Y(last.y)}); }
+  });
+  endLabels.sort((a,b)=>a.y-b.y);
+  let prevY=-99;
+  endLabels.forEach(lb=>{
+    const ly=Math.max(lb.y, prevY+14); prevY=ly;
+    const tx=document.createElementNS(svg.namespaceURI,"text");
+    tx.setAttribute("x",(W-R)+9); tx.setAttribute("y",ly+4);
+    tx.setAttribute("font-size","11.5"); tx.setAttribute("font-weight","600"); tx.setAttribute("fill","var(--text-2)");
+    tx.textContent=lb.s; svg.append(tx);
+  });
+  el.append(svg);
+  const lg=document.createElement("div"); lg.style.cssText="display:flex;flex-wrap:wrap;gap:8px 12px;margin-top:6px";
+  names.forEach(s=>{
+    const chip=document.createElement("span"); chip.className="chip";
+    const dot=document.createElement("span"); dot.className="dot"; dot.style.background=SERIESCOLORS[s]||"var(--muted)";
+    chip.append(dot,document.createTextNode(s)); lg.append(chip);
+  });
+  el.append(lg);
+}
+function renderHistory(){
+  histChart("histFees","fees",v=>fm.usd(v),true);
+  histChart("histRev","rev",v=>fm.usd(v),true);
+  histChart("histMcRev","mcRev",v=>fm.x(v),false);
+  histChart("histTvl","tvl",v=>fm.usd(v),true);
+}
+
+/* ===== INCOMING UNLOCKS & EMISSIONS (owner directive 7/21) =====
+   ENGINE: refresh amounts + the price valuation each rebake; keep the 12-mo window rolling; tiers in tooltips.
+   AERO now charted as MEASURED (v13): T1 supply-delta average 4.46M/wk (blockscout totalSupply 6/8 stamp → 7/22); the
+   exact single-epoch mint refreshes every Thursday post-flip (00:00 UTC) from the same keyless endpoint — never bake
+   the stale Dec-24 Fed print (0.67%/wk ≈ 9.3M) as current. */
+/*__CONST:UNLOCKS__*/
+/* ===== SUPPLY IN vs VALUE OUT (owner directive 7/21) =====
+   ENGINE: refresh both legs each rebake — in = UNLOCKS realized-pace rows (+ AERO/RENDER emission ests, ETH issuance est);
+   out = holders rev ann (same numbers as the tiles). est flags stay until a leg is T1/T2-verified. */
+/*__CONST:NETFLOW__*/
+function renderNetflow(){
+  const el=document.getElementById("netflowBars"); if(!el) return; el.replaceChildren();
+  /* each row scales to its own larger leg — the message is the WITHIN-ROW in-vs-out ratio; absolute $ live in the labels
+     (a shared scale left 5 of 7 rows sub-1% wide under ETH's $1.8B issuance — unreadable) */
+  NETFLOW.rows.forEach(r=>{
+    const rowMax=Math.max(r.in12||0,r.out12||0)||1;
+    const row=document.createElement("div"); row.className="ubar-row";
+    const lab=document.createElement("div"); lab.className="lab"; lab.textContent=r.sym;
+    const track=document.createElement("div"); track.className="nf-track";
+    if(r.in12>0){ const b=document.createElement("div"); b.className="nf-bar nf-in"+(r.inEst?" est":""); b.style.width=Math.max(2,r.in12/rowMax*100)+"%"; track.append(b); }
+    else if(r.inNone){ const n=document.createElement("div"); n.className="nf-none top"; n.textContent="in: "+r.inNone; track.append(n); }
+    if(r.out12>0){ const b=document.createElement("div"); b.className="nf-bar nf-out"; b.style.width=Math.max(2,r.out12/rowMax*100)+"%"; track.append(b); }
+    else if(r.outNone){ const n=document.createElement("div"); n.className="nf-none bot"; n.textContent="out: "+r.outNone; track.append(n); }
+    const val=document.createElement("div"); val.className="val";
+    const nets=document.createElement("span"); nets.className="net"; nets.textContent=r.net; val.append(nets);
+    const p=document.createElement("span"); p.className="pct";
+    p.textContent="in "+(r.in12>0?fm.usd(r.in12)+(r.inEst?" est":""):"—")+" · out "+(r.out12>0?fm.usd(r.out12):"—"); val.append(p);
+    bindTip(track,e=>showTip(e,[[r.sym+" · supply in vs value out", r.net],["",r.tip]]));
+    row.append(lab,track,val); el.append(row);
+  });
+  const nt=document.getElementById("netflowNotes");
+  if(nt){ nt.textContent="Each row is scaled to its own larger leg — read the in-vs-out ratio within a row; absolute dollars are in the right-hand labels (a shared scale would leave most rows invisible under ETH's $1.8B issuance). est = derived estimate, dashed outline — ETH from ~940K ETH/yr validator issuance; HYPE in-leg from realized claim pace; RENDER from ~7M RENDER/yr BME est. AERO's in-leg is MEASURED (T1 44-day supply-delta average, solid bar; the exact epoch mint refreshes weekly post-flip). Out-legs are the same holders-rev numbers as the tiles (T1 where printed)."; }
+}
+function renderUnlocks(){
+  const el=document.getElementById("unlockBars"); if(!el) return; el.replaceChildren();
+  const scaleMax=Math.max(...UNLOCKS.rows.filter(r=>!r.offscale).map(r=>r.usd12));
+  UNLOCKS.rows.forEach(r=>{
+    const row=document.createElement("div"); row.className="ubar-row";
+    const lab=document.createElement("div"); lab.className="lab"; lab.textContent=r.sym+" — "+r.what;
+    const track=document.createElement("div"); track.className="ubar-track";
+    const bar=document.createElement("div"); bar.className="ubar"+(r.hatch?" hatch":"")+(r.est?" est":"");
+    bar.style.setProperty("--ubarcol", r.col);
+    if(!r.hatch) bar.style.background=r.col;
+    bar.style.width=(r.offscale?100:Math.max(1.2,r.usd12/scaleMax*100))+"%";
+    track.append(bar);
+    const val=document.createElement("div"); val.className="val";
+    val.append(document.createTextNode(fm.usd(r.usd12)+" / 12 mo"+(r.offscale?" · OFF-SCALE":"")));
+    const p=document.createElement("span"); p.className="pct"; p.textContent=r.rate+" · "+r.pct; val.append(p);
+    bindTip(track,e=>showTip(e,[[r.sym+" · "+r.what, fm.usd(r.usd12)+"/12mo"],["",r.tip]]));
+    row.append(lab,track,val); el.append(row);
+  });
+  const nt=document.getElementById("unlockNotes");
+  if(nt){ nt.replaceChildren();
+    UNLOCKS.zeros.forEach(z=>{ const d=document.createElement("div"); d.textContent="• "+z; nt.append(d); });
+    const d=document.createElement("div"); d.style.marginTop="6px";
+    d.textContent="Bar scale is set by the realized-pace rows; HYPE's authorized ceiling ($7.21B/12mo) is drawn full-width and HATCHED because it is ~40× the chart scale — the gap between the hatched and solid HYPE bars is the story: authorization vs observed restraint. Window "+UNLOCKS.window+" · "+UNLOCKS.priced+".";
+    nt.append(d);
+  }
+}
+
+/* runtime state */
+let state = TOKENS.map(t => ({ ...t, price:null, d24:null, d7:null, mc:null, fdv:null, vol:null, spark:null, ...t.baked }));
+let mode = "none";            /* live | stale | none */
+let sourceLabel = "";         /* which tracker supplied prices */
+let lastGood = { asof: LAST_KNOWN.asof, bySym: {...LAST_KNOWN.bySym} };
+let asofLabel = "connecting…";
+
+const fm = {
+  usd(v, dp) { if (v==null) return "—";
+    if (v>=1e9) return "$"+(v/1e9).toFixed(v>=1e10?0:2)+"B";
+    if (v>=1e6) return "$"+(v/1e6).toFixed(v>=1e8?0:1)+"M";
+    if (v>=1e3) return "$"+(v/1e3).toFixed(1)+"K";
+    return "$"+v.toFixed(dp!=null?dp:(v<2?4:2)); },
+  price(v){ if (v==null) return "—";
+    if (v>=1000) return "$"+v.toLocaleString("en-US",{maximumFractionDigits:0});
+    if (v>=1) return "$"+v.toFixed(2);
+    if (v>=0.01) return "$"+v.toFixed(4);
+    return "$"+v.toFixed(6); },
+  pct(v){ return v==null?"—":(v>0?"+":"")+v.toFixed(1)+"%"; },
+  x(v){ return v==null?"—":v.toFixed(v<10?1:0)+"×"; },
+  ratio(v){ return v==null?"—":v.toFixed(2); }
+};
+const cls = v => v==null?"dim":(v>=0?"up":"down");
+function mcRev(t){ return (t.mc && t.rev) ? t.mc/t.rev : null; }
+/* MC / NET holders revenue (owner directive 7/21): denominator = holders rev MINUS next-12-mo supply-in
+   (unlocks + emissions, realized-pace basis — same IN legs as the NETFLOW chart; refresh together each rebake).
+   Negative denominator = the token is net-dilutive today → "dil-neg", sorted after all real multiples. */
+/*__CONST:IN12__*/
+function mcNet(t){
+  if(!t.mc || !t.rev || IN12[t.sym]==null) return null;   /* no invented in-legs: blank where the schedule is unknown (e.g. LIT undisclosed vesting) */
+  const net=t.rev-IN12[t.sym];
+  return net>0 ? t.mc/net : -1;                            /* -1 = dilution-negative sentinel */
+}
+/* ===== NET-OF-DILUTION MULTIPLE CHART — THE PRIMARY DIAL (owner directive 7/22 PM) =====
+   MC / (holders rev − supply-in), same IN12 legs as the net-flow chart. NET_MODEL holds explicit per-token
+   models where the naive subtraction misleads (owner: "create a model and note how you calculated") —
+   ENGINE: refresh NET_MODEL inputs every run alongside IN12 (AERO inn = float-growth $/yr from the AERO
+   supply ledger on the Aerodrome row page); every bar's tooltip must show the full calculation. */
+/*__CONST:NET_MODEL__*/
+/* Red dil-neg rows — every tracked name whose supply-in exceeds capture appears ON the chart (owner directive 7/22).
+   ENGINE: refresh these legs with IN12 + NET_MODEL every rebake; est marks hold until each leg verifies. */
+/*__CONST:DILNEG__*/
+function renderGrossBars(){
+  const el=document.getElementById("pfBars"); if(!el) return; el.replaceChildren();
+  /*__CONST:EST_GROSS__*/
+  const rows=[];
+  state.forEach(t=>{
+    const m=mcRev(t); if(!m) return;
+    if(t.sym==="ETH"){ rows.push({sym:"ETH", v:m, cap:true, tip:"MC "+fm.usd(t.mc)+" ÷ burn "+fm.usd(t.rev)+" = "+fm.x(m)+" — OFF-SCALE, drawn hatched at the chart cap: the burn is negligible vs MC (the issuance steelman is quantified on the tile; Glamsterdam's gas-limit raise is the re-rate catalyst)"}); return; }
+    rows.push({sym:t.sym, v:m, est:!!EST_GROSS[t.sym], tip:"MC "+fm.usd(t.mc)+" ÷ holders rev "+fm.usd(t.rev)+" = "+fm.x(m)+(EST_GROSS[t.sym]?" · "+EST_GROSS[t.sym]:"")});
+  });
+  if(!rows.length){ const nn=document.createElement("div"); nn.className="hint"; nn.textContent="Loads with price data."; el.append(nn); return; }
+  const max=Math.max(...rows.filter(r=>!r.cap).map(r=>r.v));
+  rows.sort((a,b)=>a.v-b.v).forEach(r=>{
+    const row=document.createElement("div"); row.className="hbar-row";
+    const lab=document.createElement("div"); lab.className="lab"; lab.textContent=r.sym;
+    const track=document.createElement("div"); track.className="hbar-track";
+    const bar=document.createElement("div"); bar.className="hbar"+(r.est?" est":"")+(r.cap?" cap":"");
+    bar.style.width=(r.cap?100:Math.max(2,(r.v/max)*100))+"%";
+    bindTip(bar,e=>showTip(e,[["MC / holders revenue",fm.x(r.v)],["",r.tip]]));
+    track.append(bar);
+    const val=document.createElement("div"); val.className="val"; val.textContent=fm.x(r.v)+(r.cap?" OFF-SCALE":(r.est?" est":""));
+    row.append(lab,track,val); el.append(row);
+  });
+}
+function renderNetBars(){
+  const el=document.getElementById("pfNetBars"); if(!el) return; el.replaceChildren();
+  const rows=[];
+  state.forEach(t=>{
+    const m=NET_MODEL[t.sym];
+    if(m && t.mc && t.rev!=null){
+      const net=t.rev-m.inn;
+      if(net>0) rows.push({sym:t.sym, v:t.mc/net, est:true, tip:m.calc});
+      return;
+    }
+    if(t.xMult) return; /* ETH honorary (issuance = payment for security — category error on this dial) + VVV covered in the note */
+    const n=mcNet(t);
+    if(n==null || n<0) return; /* dil-neg + unmeasured named in the note — the absence IS the finding */
+    const isEst=(t.sym==="AAVE"||t.sym==="JUP"||t.sym==="LIT"||t.sym==="PUMP");
+    rows.push({sym:t.sym, v:n, est:isEst,
+      tip:"MC "+fm.usd(t.mc)+" ÷ (holders rev "+fm.usd(t.rev)+" − supply-in "+(IN12[t.sym]>0?fm.usd(IN12[t.sym]):"$0 (none scheduled)")+") = "+fm.x(n)});
+  });
+  if(!rows.length){ const nn=document.createElement("div"); nn.className="hint"; nn.textContent="Loads with price data."; el.append(nn); return renderNetNote(); }
+  const max=Math.max(...rows.map(r=>r.v));
+  rows.sort((a,b)=>a.v-b.v).forEach(r=>{
+    const row=document.createElement("div"); row.className="hbar-row";
+    const lab=document.createElement("div"); lab.className="lab"; lab.textContent=r.sym;
+    const track=document.createElement("div"); track.className="hbar-track";
+    const bar=document.createElement("div"); bar.className="hbar"+(r.est?" est":"");
+    bar.style.width=Math.max(2,(r.v/max)*100)+"%";
+    bindTip(bar,e=>showTip(e,[["MC / net captured flow",fm.x(r.v)],["",r.tip]]));
+    track.append(bar);
+    const val=document.createElement("div"); val.className="val"; val.textContent=fm.x(r.v)+(r.est?" est":"");
+    row.append(lab,track,val); el.append(row);
+  });
+  DILNEG.forEach(dn=>{
+    const row=document.createElement("div"); row.className="hbar-row";
+    const lab=document.createElement("div"); lab.className="lab"; lab.textContent=dn.sym;
+    const track=document.createElement("div"); track.className="hbar-track";
+    const n=document.createElement("span"); n.className="nomult"; n.textContent=dn.txt;
+    track.append(n);
+    bindTip(track,e=>showTip(e,[[dn.sym+" — net-dilutive today","no multiple"],["",dn.tip]]));
+    const val=document.createElement("div"); val.className="val"; val.textContent="no ×";
+    row.append(lab,track,val); el.append(row);
+  });
+  renderNetNote();
+}
+function renderNetNote(){
+  const nt=document.getElementById("pfNetNotes"); if(!nt) return;
+  nt.textContent="Red rows above = net-dilutive today: supply-in exceeds captured value, so NO net multiple exists — the absence IS the finding; est marks hold until each leg verifies. AERO's bar is the MODELED float-adjusted basis — hover it for the full calculation; the strict ownership basis is −$45–50M/yr (see the net-flow chart). Not shown: RENDER + HNT (no revenue print — re-entry event ~Aug 8), TAO (no root-level capture mechanism — nothing to net), ETH honorary (issuance is payment for security — category error on this dial; quantified on its tile and the net-flow chart). Est bases dashed on bars: AERO (model), AAVE (T2 buyback pace), JUP (provider-implied supply). ENGINE: DILNEG rows + EST_GROSS notes refresh alongside IN12 + NET_MODEL every rebake.";
+}
+
+/*__CONST:SPARKS30__*/
+/*__CONST:BENCH__*/
+/*__CONST:BENCH2__*/
+/* ENGINE (owner directive 7/23 — "run this from today"): BENCH2 = board-of-record equal weight (the CURRENT 8 seats:
+   HYPE AERO UNI JUP PENDLE VVV AAVE ETH) vs ETH vs BTC, all base 100 at the 2026-07-23 PT close (captured by the 7/24
+   morning run via the previous-day-close rule). Morning runs APPEND one point per day from the price shard and rebase
+   nothing. Composition changes create a new inception note in the tooltip, never a silent rebase. Once BENCH2 has >= 2
+   points the chart draws BENCH2 as primary; the seed-six series stays available as the from-7/10 context record. */
+/*__CONST:BH__*/
+
+function renderBH(){
+  const el=document.getElementById("bhScatter"); if(!el) return; el.replaceChildren();
+  const W=460,H=320,L=40,R=14,T=12,B=34;
+  const X=v=>L+(v/100)*(W-L-R), Y=v=>H-B-(v/100)*(H-T-B);
+  const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+  svg.setAttribute("viewBox","0 0 "+W+" "+H); svg.setAttribute("width","100%");
+  [[0,"0"],[50,"50"],[100,"100"]].forEach(g=>{
+    const gl=document.createElementNS(svg.namespaceURI,"line");
+    gl.setAttribute("x1",X(g[0])); gl.setAttribute("x2",X(g[0])); gl.setAttribute("y1",T); gl.setAttribute("y2",H-B);
+    gl.setAttribute("stroke",g[0]===50?"var(--baseline)":"var(--grid)"); svg.append(gl);
+    const gh=document.createElementNS(svg.namespaceURI,"line");
+    gh.setAttribute("x1",L); gh.setAttribute("x2",W-R); gh.setAttribute("y1",Y(g[0])); gh.setAttribute("y2",Y(g[0]));
+    gh.setAttribute("stroke",g[0]===50?"var(--baseline)":"var(--grid)"); svg.append(gh);
+    const tx=document.createElementNS(svg.namespaceURI,"text"); tx.setAttribute("x",X(g[0])); tx.setAttribute("y",H-16);
+    tx.setAttribute("text-anchor","middle"); tx.setAttribute("font-size","10"); tx.setAttribute("fill","var(--muted)"); tx.textContent=g[1]; svg.append(tx);
+    const ty=document.createElementNS(svg.namespaceURI,"text"); ty.setAttribute("x",L-6); ty.setAttribute("y",Y(g[0])+3);
+    ty.setAttribute("text-anchor","end"); ty.setAttribute("font-size","10"); ty.setAttribute("fill","var(--muted)"); ty.textContent=g[1]; svg.append(ty);
+  });
+  const xl=document.createElementNS(svg.namespaceURI,"text"); xl.setAttribute("x",(L+W-R)/2); xl.setAttribute("y",H-2);
+  xl.setAttribute("text-anchor","middle"); xl.setAttribute("font-size","11"); xl.setAttribute("fill","var(--text-2)"); xl.textContent="Business score → (more confirmed)"; svg.append(xl);
+  const yl=document.createElementNS(svg.namespaceURI,"text"); yl.setAttribute("x",12); yl.setAttribute("y",(T+H-B)/2);
+  yl.setAttribute("font-size","11"); yl.setAttribute("fill","var(--text-2)"); yl.setAttribute("transform","rotate(-90 12 "+((T+H-B)/2)+")"); yl.setAttribute("text-anchor","middle"); yl.textContent="Hype score → (more priced in)"; svg.append(yl);
+  const hg=document.createElementNS(svg.namespaceURI,"text"); hg.setAttribute("x",W-R-4); hg.setAttribute("y",H-B-8);
+  hg.setAttribute("text-anchor","end"); hg.setAttribute("font-size","10"); hg.setAttribute("fill","var(--muted)"); hg.textContent="hunting ground ↘"; svg.append(hg);
+  const dz=document.createElementNS(svg.namespaceURI,"text"); dz.setAttribute("x",L+6); dz.setAttribute("y",T+14);
+  dz.setAttribute("font-size","10"); dz.setAttribute("fill","var(--muted)"); dz.textContent="↖ danger zone"; svg.append(dz);
+  for(const sym in BH){ const s=BH[sym]; const t=state.find(x=>x.sym===sym);
+    const mc=t&&t.mc?t.mc:2e8; const r=s.small?4:Math.min(16,5+Math.sqrt(mc/1e9)*3.2);
+    const col=s.small?"var(--muted)":(s.net>0?"var(--good)":(s.net<0?"var(--bad)":"var(--muted)"));
+    const c=document.createElementNS(svg.namespaceURI,"circle");
+    c.setAttribute("cx",X(s.b)); c.setAttribute("cy",Y(s.h)); c.setAttribute("r",r);
+    if(s.hollow){ c.setAttribute("fill","none"); c.setAttribute("stroke",col); c.setAttribute("stroke-width","2"); c.setAttribute("stroke-dasharray","4 3"); }
+    else { c.setAttribute("fill",col); c.setAttribute("fill-opacity",s.small?"0.6":"0.82"); c.setAttribute("stroke","var(--surface-1)"); c.setAttribute("stroke-width","1.5"); }
+    bindTip(c,e=>showTip(e,[[sym+" · B "+s.b+" / H "+s.h,(s.mos==="honorary"?"honorary (indicative)":"Margin of safety: "+s.mos)],["",s.net>0?"positive net value flow":(s.net<0?"net-dilutive today":"net unmeasured / wash")]])); svg.append(c);
+    const lb=document.createElementNS(svg.namespaceURI,"text");
+    lb.setAttribute("x",X(s.b)+r+3); lb.setAttribute("y",Y(s.h)+3.5);
+    lb.setAttribute("font-size",s.small?"9.5":"11"); lb.setAttribute("font-weight",s.small?"400":"600"); lb.setAttribute("fill",s.small?"var(--muted)":"var(--text-2)");
+    lb.textContent=sym; svg.append(lb);
+  }
+  el.append(svg);
+}
+function renderBench(){
+  const el=document.getElementById("benchChart"); if(!el) return; el.replaceChildren();
+  const W=460,H=300,L=40,R=58,T=12,B=30;
+  const useB2 = BENCH2.dates.length>=2;
+  const SRC = useB2 ? {dates:BENCH2.dates, rows:[["board EW",BENCH2.board,"var(--s1)"],["ETH",BENCH2.eth,"var(--s5)"],["BTC",BENCH2.btc,"var(--s3)"]]} : {dates:BENCH.dates, rows:[["seed-six EW",BENCH.board,"var(--s1)"],["ETH",BENCH.eth,"var(--s5)"],["BTC",BENCH.btc,"var(--s3)"]]};
+  const series=SRC.rows;
+  const all=series.flatMap(s=>s[1]); let y0=Math.min(...all), y1=Math.max(...all);
+  const pad=(y1-y0)*0.1||1; y0-=pad; y1+=pad;
+  const n=SRC.dates.length;
+  const X=i=>L+(i/(n-1))*(W-L-R), Y=v=>H-B-((v-y0)/(y1-y0))*(H-T-B);
+  const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+  svg.setAttribute("viewBox","0 0 "+W+" "+H); svg.setAttribute("width","100%");
+  for(let k=0;k<4;k++){ const gv=y0+(y1-y0)*k/3;
+    const ln=document.createElementNS(svg.namespaceURI,"line");
+    ln.setAttribute("x1",L); ln.setAttribute("x2",W-R); ln.setAttribute("y1",Y(gv)); ln.setAttribute("y2",Y(gv));
+    ln.setAttribute("stroke",Math.abs(gv-100)<((y1-y0)/6)?"var(--baseline)":"var(--grid)"); svg.append(ln);
+    const tx=document.createElementNS(svg.namespaceURI,"text"); tx.setAttribute("x",L-5); tx.setAttribute("y",Y(gv)+3);
+    tx.setAttribute("text-anchor","end"); tx.setAttribute("font-size","10"); tx.setAttribute("fill","var(--muted)"); tx.textContent=gv.toFixed(0); svg.append(tx);
+  }
+  [0,Math.floor((n-1)/2),n-1].forEach(i=>{ const tx=document.createElementNS(svg.namespaceURI,"text");
+    tx.setAttribute("x",X(i)); tx.setAttribute("y",H-8); tx.setAttribute("text-anchor","middle"); tx.setAttribute("font-size","10");
+    tx.setAttribute("fill","var(--muted)"); tx.textContent=SRC.dates[i].slice(5).replace("-","/"); svg.append(tx); });
+  const ends=[];
+  series.forEach(([nm,vals,col])=>{
+    const p=document.createElementNS(svg.namespaceURI,"path");
+    p.setAttribute("d","M"+vals.map((v,i)=>X(i).toFixed(1)+","+Y(v).toFixed(1)).join(" L"));
+    p.setAttribute("fill","none"); p.setAttribute("stroke",col); p.setAttribute("stroke-width",nm==="seed-six EW"?"2.5":"1.8");
+    p.setAttribute("stroke-linejoin","round"); svg.append(p);
+    vals.forEach((v,i)=>{ const hit=document.createElementNS(svg.namespaceURI,"circle");
+      hit.setAttribute("cx",X(i)); hit.setAttribute("cy",Y(v)); hit.setAttribute("r","10"); hit.setAttribute("fill","transparent");
+      bindTip(hit,e=>showTip(e,[[nm+" · "+SRC.dates[i].slice(5).replace("-","/"),v.toFixed(1)]])); svg.append(hit); });
+    ends.push({nm,col,y:Y(vals[vals.length-1]),v:vals[vals.length-1]});
+  });
+  ends.sort((a,b)=>a.y-b.y); let py=-99;
+  ends.forEach(e2=>{ const ly=Math.max(e2.y,py+13); py=ly;
+    const tx=document.createElementNS(svg.namespaceURI,"text"); tx.setAttribute("x",W-R+6); tx.setAttribute("y",ly+3.5);
+    tx.setAttribute("font-size","10.5"); tx.setAttribute("font-weight","600"); tx.setAttribute("fill",e2.col); tx.textContent=e2.nm+" "+e2.v.toFixed(0); svg.append(tx); });
+  el.append(svg);
+  const nt=document.getElementById("benchNote");
+  if(nt) nt.textContent = (useB2 ? "PRIMARY — board-of-record EW (8 seats) vs ETH vs BTC since the 7/23 close: "+(BENCH2.board[BENCH2.board.length-1]-100).toFixed(1)+"% · ETH "+(BENCH2.eth[BENCH2.eth.length-1]-100).toFixed(1)+"% · BTC "+(BENCH2.btc[BENCH2.btc.length-1]-100).toFixed(1)+"%. " : "PRIMARY accountability starts at the Jul 23 close: board-of-record EW — HYPE · AERO · UNI · JUP · PENDLE · VVV · AAVE · ETH — vs ETH vs BTC; the chart switches to it automatically at the second close (this weekend). ")+"Context, seed six since 7/10 (through the 7/23 close): −3.5% vs ETH +5.8% / BTC +1.8% — the watchlist trails both benchmarks so far; leaving that visible is the point. Re-reported by every scored run; validated at the monthly retro.";
+}
+
+const tip = document.getElementById("tip");
+function showTip(evt, rows){
+  tip.replaceChildren(...rows.map(([l,v])=>{
+    const d=document.createElement("div");
+    const s1=document.createElement("span"); s1.className="v"; s1.textContent=v;
+    const s2=document.createElement("span"); s2.className="l"; s2.textContent=" "+l;
+    d.append(s1,s2); return d;
+  }));
+  tip.style.display="block";
+  const x=Math.min(evt.clientX+14, innerWidth-280), y=Math.min(evt.clientY+14, innerHeight-90);
+  tip.style.left=x+"px"; tip.style.top=y+"px";
+}
+function hideTip(){ tip.style.display="none"; }
+function bindTip(el,fn){ el.addEventListener("pointermove",fn); el.addEventListener("pointerdown",function(e){ fn(e); e.stopPropagation(); }); el.addEventListener("pointerleave",hideTip); }
+document.addEventListener("pointerdown",hideTip);
+window.addEventListener("scroll",hideTip,{passive:true});
+
+function renderTiles(){
+  const el=document.getElementById("tiles"); el.replaceChildren();
+  state.filter(t=>t.tile!==false).forEach(t=>{
+    const tile=document.createElement("div"); tile.className="tile";
+    const sym=document.createElement("div"); sym.className="sym";
+    const dot=document.createElement("span");
+    dot.style.cssText="width:8px;height:8px;border-radius:50%;background:"+SLOTCOLORS[t.accrual.slot];
+    sym.append(dot, document.createTextNode(t.sym));
+    const nm=document.createElement("span"); nm.className="name"; nm.textContent=t.name; sym.append(nm);
+    const pr=document.createElement("div"); pr.className="price"; pr.textContent=fm.price(t.price);
+    const de=document.createElement("div"); de.className="deltas";
+    const a=document.createElement("span"); a.className=cls(t.d24); a.textContent=fm.pct(t.d24)+" 24h";
+    const b=document.createElement("span"); b.className=cls(t.d7); b.textContent=fm.pct(t.d7)+" 7d";
+    de.append(a,b);
+    tile.append(sym,pr,de);
+    if (mode==="stale" && t.price!=null){
+      const st=document.createElement("div"); st.className="stalenote";
+      st.textContent="as of "+(lastGood.asof||BAKED_ASOF);
+      tile.append(st);
+    }
+    const sp=document.createElement("div"); sp.className="spark";
+    if (t.spark && t.spark.length>10) sp.append(sparkSVG(t.spark));
+    else if (SPARKS30[t.sym]) sp.append(sparkSVG(SPARKS30[t.sym])); /* baked 30d from the owned archive — embed-safe */
+    else { const n=document.createElement("span"); n.className="nospark"; n.textContent=mode==="live"?"7d spark loading…":"no daily archive yet — spark loads live"; sp.append(n); }
+    tile.append(sp); el.append(tile);
+  });
+}
+function sparkSVG(arr){
+  const W=140,H=30,min=Math.min(...arr),max=Math.max(...arr),rng=(max-min)||1;
+  const pts=arr.map((v,i)=>[(i/(arr.length-1))*W, H-2-((v-min)/rng)*(H-6)]);
+  const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+  svg.setAttribute("viewBox","0 0 "+W+" "+H); svg.setAttribute("width","100%"); svg.setAttribute("height",H);
+  const p=document.createElementNS(svg.namespaceURI,"path");
+  p.setAttribute("d","M"+pts.map(q=>q[0].toFixed(1)+","+q[1].toFixed(1)).join(" L"));
+  p.setAttribute("fill","none"); p.setAttribute("stroke","var(--muted)"); p.setAttribute("stroke-width","1.5");
+  p.setAttribute("stroke-linejoin","round"); p.setAttribute("stroke-linecap","round");
+  const last=pts[pts.length-1];
+  const c=document.createElementNS(svg.namespaceURI,"circle");
+  c.setAttribute("cx",last[0]); c.setAttribute("cy",last[1]); c.setAttribute("r","3");
+  c.setAttribute("fill","var(--bar)"); c.setAttribute("stroke","var(--surface-1)"); c.setAttribute("stroke-width","2");
+  svg.append(p,c); return svg;
+}
+function renderBars(elId, rows, fmt, tipLabel){
+  const el=document.getElementById(elId); el.replaceChildren();
+  if (!rows.length){ const n=document.createElement("div"); n.className="hint"; n.textContent="Loads with live price data."; el.append(n); return; }
+  const max=Math.max(...rows.map(r=>r.v));
+  rows.sort((a,b)=>a.v-b.v).forEach(r=>{
+    const row=document.createElement("div"); row.className="hbar-row";
+    const lab=document.createElement("div"); lab.className="lab"; lab.textContent=r.sym;
+    const track=document.createElement("div"); track.className="hbar-track";
+    const bar=document.createElement("div"); bar.className="hbar";
+    bar.style.width=Math.max(2,(r.v/max)*100)+"%";
+    bindTip(bar,e=>showTip(e,[[tipLabel,fmt(r.v)],["",r.name]]));
+    track.append(bar);
+    const val=document.createElement("div"); val.className="val"; val.textContent=fmt(r.v);
+    row.append(lab,track,val); el.append(row);
+  });
+}
+/*__CONST:RANKS__*/
+const COLS=[
+  {k:"sym", label:"Token"},
+  {k:"_rank", label:"Rank", f:t=>RANKS[t.sym]?("#"+RANKS[t.sym]):"—", v:t=>RANKS[t.sym]??null},
+  {k:"price", label:"Price", f:t=>fm.price(t.price)},
+  {k:"d24", label:"24h", f:t=>fm.pct(t.d24), c:t=>cls(t.d24)},
+  {k:"d7", label:"7d", f:t=>fm.pct(t.d7), c:t=>cls(t.d7)},
+  {k:"mc", label:"Mkt cap", f:t=>fm.usd(t.mc)},
+  {k:"_mcfdv", label:"MC/FDV", f:t=>(t.mc&&t.fdv)?fm.ratio(t.mc/t.fdv):"—", v:t=>(t.mc&&t.fdv)?t.mc/t.fdv:null},
+  {k:"feesAnn", label:"Fees ann.", f:t=>fm.usd(t.feesAnn)},
+  {k:"rev", label:"Holders rev ann.", f:t=>fm.usd(t.rev)},
+  {k:"_pf", label:"MC/Rev", f:t=>fm.x(mcRev(t)), v:t=>mcRev(t)},
+  {k:"_fdvrev", label:"FDV/Rev", f:t=>(t.fdv&&t.rev)?fm.x(t.fdv/t.rev):"—", v:t=>(t.fdv&&t.rev)?t.fdv/t.rev:null},
+  {k:"_pfnet", label:"MC/Rev net", f:t=>{const n=mcNet(t); return n==null?"—":(n<0?"net-dilutive":fm.x(n));}, v:t=>{const n=mcNet(t); return n==null?null:(n<0?8.8e8:n);}},
+  {k:"tvl", label:"TVL", f:t=>fm.usd(t.tvl)},
+  {k:"vol30d", label:"Trade vol 30d", f:t=>fm.usd(t.vol30d)},
+];
+let sortK="_rank", sortDir=1; /* default: board rank — the discipline's face forward (owner-approved D33); one click on "MC/Rev net" restores cheapest-first */
+function renderTable(){
+  const tbl=document.getElementById("mtable"); tbl.replaceChildren();
+  const thead=document.createElement("thead"); const hr=document.createElement("tr");
+  COLS.forEach(col=>{
+    const th=document.createElement("th"); th.textContent=col.label;
+    if (sortK===col.k){ const s=document.createElement("span"); s.className="arr"; s.textContent=sortDir<0?" ▼":" ▲"; th.append(s); }
+    th.addEventListener("click",()=>{ sortDir=(sortK===col.k)?-sortDir:1; sortK=col.k; renderTable(); });
+    hr.append(th);
+  });
+  thead.append(hr); tbl.append(thead);
+  const rows=[...state];
+  if (sortK){
+    const col=COLS.find(c=>c.k===sortK);
+    rows.sort((a,b)=>{
+      if (sortK==="sym") return a.sym.localeCompare(b.sym)*sortDir;
+      const va=col.v?col.v(a):a[sortK], vb=col.v?col.v(b):b[sortK];
+      return ((va==null)-(vb==null)) || (va-vb)*sortDir;
+    });
+  }
+  const tb=document.createElement("tbody");
+  rows.forEach(t=>{
+    const tr=document.createElement("tr");
+    COLS.forEach(col=>{
+      const td=document.createElement("td");
+      if (col.k==="sym"){ td.className="tok"; td.textContent=t.sym;
+        const s=document.createElement("span"); s.className="tokname"; s.textContent=t.name; td.append(s); }
+      else { td.textContent=col.f(t); if (col.c) td.className=col.c(t); }
+      tr.append(td);
+    });
+    tb.append(tr);
+  });
+  tbl.append(tb);
+}
+function renderNotes(){
+  const tbl=document.getElementById("ntable"); tbl.replaceChildren();
+  const thead=document.createElement("thead"); const hr=document.createElement("tr");
+  ["Token","Accrual mechanism","Supply & unlock overhang"].forEach(h=>{
+    const th=document.createElement("th"); th.textContent=h; th.style.textAlign="left"; hr.append(th);
+  });
+  thead.append(hr); tbl.append(thead);
+  const tb=document.createElement("tbody");
+  state.forEach(t=>{
+    const tr=document.createElement("tr");
+    const td1=document.createElement("td"); td1.textContent=t.sym;
+    const td2=document.createElement("td");
+    const chip=document.createElement("span"); chip.className="chip";
+    const dot=document.createElement("span"); dot.className="dot"; dot.style.background=SLOTCOLORS[t.accrual.slot];
+    chip.append(dot,document.createTextNode(t.accrual.label));
+    const note=document.createElement("div"); note.className="small"; note.textContent=t.accrual.note;
+    td2.append(chip,note);
+    const td3=document.createElement("td"); td3.className="small"; td3.textContent=t.unlock;
+    tr.append(td1,td2,td3); tb.append(tr);
+  });
+  tbl.append(tb);
+}
+function renderAll(){
+  renderTiles();
+  renderNetBars();
+  renderGrossBars();
+  renderBars("revBars", state.filter(t=>t.rev).map(t=>({sym:t.sym,name:t.name+" — annualized revenue to holders",v:t.rev})), fm.usd, "Holders rev");
+  renderTable(); renderNotes(); renderHistory(); renderUnlocks(); renderNetflow(); renderBH(); renderBench();
+  document.getElementById("asof").textContent=asofLabel;
+  const badge=document.getElementById("badge");
+  const notice=document.getElementById("notice");
+  if (mode==="live"){
+    badge.textContent="LIVE"; badge.className="badge live"; notice.hidden=true;
+  } else if (mode==="stale"){
+    badge.textContent="SNAPSHOT · "+String(lastGood.asof||BAKED_ASOF).slice(0,10); badge.className="badge";
+    notice.hidden=false; notice.replaceChildren(); notice.style.borderColor="var(--border)";
+    const b=document.createElement("b"); b.textContent="SNAPSHOT — ";
+    notice.append(b, document.createTextNode("this embedded view shows the last verified data (as of "+(lastGood.asof||BAKED_ASOF)+"), refreshed by every scored run. Live self-refresh is available in the standalone file."));
+  } else {
+    badge.textContent="OFFLINE"; badge.className="badge";
+    notice.hidden=false; notice.replaceChildren();
+    const b=document.createElement("b"); b.textContent="NO PRICE DATA — ";
+    notice.append(b, document.createTextNode("no live tracker reachable and no verified snapshot baked yet (the scheduled engine fills one at its next run). Fees & TVL are the DefiLlama snapshot of "+BAKED_ASOF+"."));
+  }
+}
+
+/* ===== LIVE FETCH — CoinGecko first, then Binance, then Hyperliquid (live trackers only) ===== */
+const CG_URL="https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids="
+  + TOKENS.flatMap(t=>[t.cg,t.cgAlt]).filter(Boolean).join(",")
+  + "&sparkline=true&price_change_percentage=24h,7d";
+async function j(url, opts){ const r=await fetch(url,{signal:AbortSignal.timeout(12000), ...(opts||{})}); if(!r.ok) throw new Error(r.status); return r.json(); }
+
+function saveGood(){
+  lastGood={ asof:new Date().toISOString().slice(0,16).replace("T"," "), bySym:{} };
+  state.forEach(t=>{ if(t.price!=null) lastGood.bySym[t.sym]={price:t.price,d24:t.d24,d7:t.d7,mc:t.mc,fdv:t.fdv,vol:t.vol}; });
+}
+function applyLastGood(){
+  let any=false;
+  state.forEach(t=>{
+    const k=lastGood.bySym[t.sym]; if(!k) return;
+    any=true; Object.assign(t,{price:k.price,d24:k.d24,d7:k.d7,mc:k.mc,fdv:k.fdv,vol:k.vol});
+  });
+  return any;
+}
+
+async function tryCoinGecko(){
+  const data=await j(CG_URL);
+  if(!Array.isArray(data)||!data.length) throw new Error("empty");
+  state.forEach(t=>{
+    const m=data.find(r=>r.id===t.cg)||data.find(r=>r.id===t.cgAlt)||data.find(r=>r.symbol&&r.symbol.toUpperCase()===t.sym);
+    if(!m) return;
+    t.price=m.current_price; t.mc=m.market_cap||t.mc; t.fdv=m.fully_diluted_valuation??t.fdv;
+    t.vol=m.total_volume; if(m.circulating_supply) t.circ=m.circulating_supply;
+    t.d24=m.price_change_percentage_24h_in_currency ?? m.price_change_percentage_24h ?? null;
+    t.d7=m.price_change_percentage_7d_in_currency ?? null;
+    if (m.sparkline_in_7d && m.sparkline_in_7d.price) t.spark=m.sparkline_in_7d.price;
+  });
+  sourceLabel="CoinGecko";
+}
+async function tryBinance(){
+  const results=await Promise.allSettled(TOKENS.map(t=>t.bin?j("https://api.binance.com/api/v3/ticker/24hr?symbol="+t.bin):Promise.reject(new Error("no pair"))));
+  let any=false;
+  results.forEach((r,i)=>{
+    if(r.status!=="fulfilled"||!r.value||!r.value.lastPrice) return;
+    const t=state[i]; any=true;
+    t.price=parseFloat(r.value.lastPrice);
+    t.d24=parseFloat(r.value.priceChangePercent);
+    t.vol=parseFloat(r.value.quoteVolume)||null;
+    t.mc=t.circ?t.price*t.circ:null; /* approximated: price × last-known circulating */
+  });
+  if(!any) throw new Error("binance empty");
+  sourceLabel="Binance (fallback — MC ≈ price × circulating)";
+}
+async function tryHyperliquid(){
+  const mids=await j("https://api.hyperliquid.xyz/info",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"allMids"})});
+  let any=false;
+  state.forEach(t=>{
+    if(!t.hl) return;
+    const v=mids && (mids[t.hl] ?? mids["@"+t.hl]);
+    if(v==null) return;
+    any=true; t.price=parseFloat(v); t.mc=t.circ?t.price*t.circ:null;
+  });
+  if(!any) throw new Error("hl empty");
+  sourceLabel="Hyperliquid mids (fallback — price only)";
+}
+
+let refreshing=false, flashTimer=null;
+function setBtn(txt, stateClass){
+  const btn=document.getElementById("refreshBtn");
+  btn.textContent=txt;
+  btn.classList.remove("busy","ok","err");
+  if (stateClass) btn.classList.add(stateClass);
+}
+async function refresh(){
+  if (refreshing) return;                 /* ignore clicks while a run is in flight */
+  refreshing=true;
+  if (flashTimer){ clearTimeout(flashTimer); flashTimer=null; }
+  const root=document.getElementById("root");
+  root.classList.add("refreshing");
+  setBtn("Refreshing", "busy");
+  try {
+    /* fees + TVL (DefiLlama) — independent of price source */
+    const feeCalls=Promise.allSettled([
+      ...TOKENS.filter(t=>t.llama).map(t=>j("https://api.llama.fi/summary/fees/"+t.llama).then(d=>({slug:t.llama,kind:"fees",d})).catch(()=>null)),
+      ...TOKENS.filter(t=>t.llama).map(t=>j("https://api.llama.fi/summary/fees/"+t.llama+"?dataType=dailyHoldersRevenue").then(d=>({slug:t.llama,kind:"rev",d})).catch(()=>null)),
+      ...TOKENS.filter(t=>t.tvlSlug).map(t=>j("https://api.llama.fi/tvl/"+t.tvlSlug).then(d=>({slug:t.tvlSlug,kind:"tvl",d})).catch(()=>null)),
+      ...TOKENS.filter(t=>t.volSlugs&&t.volSlugs.length).flatMap(t=>t.volSlugs.map(p=>j("https://api.llama.fi/summary/"+p).then(d=>({sym:t.sym,kind:"vol30d",d})).catch(()=>null))),
+    ]);
+    /* price chain: CoinGecko → Binance → Hyperliquid */
+    let priced=false;
+    for (const fn of [tryCoinGecko, tryBinance, tryHyperliquid]){
+      try { await fn(); priced=true; break; } catch(e){ /* next tracker */ }
+    }
+    const volAcc={};
+    (await feeCalls).forEach(r=>{
+      if (r.status!=="fulfilled"||!r.value) return;
+      if (r.value.kind==="vol30d"){ if(r.value.d && r.value.d.total30d!=null) volAcc[r.value.sym]=(volAcc[r.value.sym]||0)+r.value.d.total30d; return; }
+      const {slug,kind,d}=r.value;
+      const t=state.find(x=>x.llama===slug||x.tvlSlug===slug); if(!t) return;
+      if (kind==="fees" && d && d.total30d!=null) t.feesAnn=d.total30d*12.17;
+      if (kind==="rev" && d && d.total30d!=null) t.rev=d.total30d*12.17;
+      if (kind==="tvl" && typeof d==="number") t.tvl=d;
+    });
+    Object.keys(volAcc).forEach(sym=>{ const t=state.find(x=>x.sym===sym); if(t) t.vol30d=volAcc[sym]; });
+    /* HYPE perp volume — straight from Hyperliquid's own API (POST works in-browser; DefiLlama derivatives is pro-gated).
+       Sums dayNtlVlm across all perp markets ×30 = monthly est, ADDED to the spot leg. */
+    try {
+      const mac=await j("https://api.hyperliquid.xyz/info",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"metaAndAssetCtxs"})});
+      if(Array.isArray(mac)&&Array.isArray(mac[1])){
+        const day=mac[1].reduce((a,c)=>a+(parseFloat(c&&c.dayNtlVlm)||0),0);
+        if(day>0){ const t=state.find(x=>x.sym==="HYPE"); if(t) t.vol30d=(t.vol30d||0)+day*30; }
+      }
+    } catch(e){ /* pane-blocked or API down — spot-only figure stands */ }
+    /* LIT volume — straight from Lighter's own public API (T1). daily_usd_volume ×30 = monthly est. */
+    try {
+      const ls=await j("https://mainnet.zklighter.elliot.ai/api/v1/exchangeStats");
+      const dv=ls && (parseFloat(ls.daily_usd_volume ?? ls.dailyUsdVolume) || 0);
+      if(dv>0){ const t=state.find(x=>x.sym==="LIT"); if(t) t.vol30d=dv*30; }
+    } catch(e){ /* pane-blocked — baked estimate stands */ }
+    /* TRUE historical MCAP hydration (owner directive 7/21): CoinGecko market_chart is reachable IN-BROWSER
+       (server-side it is robots-blocked, so the baked backfill uses price × today's circ as an est).
+       Replaces the est mcRev in BACKFILL with real weekly MCAP ÷ that week's rev, then redraws the chart. */
+    (async()=>{
+      try{
+        const targets=[["HYPE","hyperliquid"],["AERO","aerodrome-finance"],["PENDLE","pendle"],["UNI","uniswap"]];
+        let hydrated=0;
+        for(const [sym,cg] of targets){
+          try{
+            const mc=await j("https://api.coingecko.com/api/v3/coins/"+cg+"/market_chart?vs_currency=usd&days=730&interval=daily");
+            if(!mc||!Array.isArray(mc.market_caps)||!mc.market_caps.length) continue;
+            const byDay={}; mc.market_caps.forEach(p=>{ byDay[new Date(p[0]).toISOString().slice(0,10)]=p[1]; });
+            BACKFILL.forEach(h=>{ const e=h.v[sym]; if(e&&e.rev){
+              let cap=byDay[h.d];
+              if(cap==null){ const t0=Date.parse(h.d);
+                for(let k=1;k<=3&&cap==null;k++){ cap=byDay[new Date(t0-k*86400e3).toISOString().slice(0,10)] ?? byDay[new Date(t0+k*86400e3).toISOString().slice(0,10)]; } }
+              if(cap>0){ const m=cap/e.rev; e.mcRev = m>200 ? null : m; } } });  /* same >200x ramp clamp as the baked est (owner directive) */
+            hydrated++;
+          }catch(e){ /* per-token failure tolerated */ }
+        }
+        if(hydrated){
+          histChart("histMcRev","mcRev",v=>fm.x(v),false);
+          const hh=document.getElementById("histMcRevHint");
+          if(hh) hh.textContent="Lower = more business per dollar · linear scale · backfill HYDRATED with TRUE historical MCAP (CoinGecko market_chart, "+hydrated+"/4 tokens) ÷ that week's holders-rev run-rate · ETH excluded (off-scale)";
+        }
+      }catch(e){ /* pane-blocked — est backfill stands */ }
+    })();
+    if (priced){
+      mode="live"; saveGood();
+      asofLabel="live · "+sourceLabel+" · "+new Date().toLocaleString([], {month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"});
+    } else if (applyLastGood()){
+      mode="stale";
+      asofLabel="snapshot of "+(lastGood.asof||BAKED_ASOF)+" — embedded views don't allow live fetches";
+    } else {
+      mode="none";
+      asofLabel="offline — no price data (fees/TVL snapshot "+BAKED_ASOF+")";
+    }
+  } catch(e){
+    /* unexpected error — degrade to snapshot instead of leaving the UI mid-refresh */
+    if (applyLastGood()){ mode="stale"; asofLabel="snapshot of "+(lastGood.asof||BAKED_ASOF)+" — embedded views don't allow live fetches"; }
+    else { mode="none"; asofLabel="offline — refresh error"; }
+  } finally {
+    root.classList.remove("refreshing");
+    refreshing=false;
+  }
+  renderAll();
+  /* explicit outcome on the button so a click is never silent */
+  const now=new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+  if (mode==="live")       setBtn("Updated "+now, "ok");
+  else if (mode==="stale") setBtn("Snapshot "+BAKED_ASOF, null);
+  else                     setBtn("Offline — no data", "err");
+  flashTimer=setTimeout(()=>setBtn("Refresh now", null), 4500);
+}
+document.getElementById("refreshBtn").addEventListener("click",refresh);
+renderAll();
+refresh();
+setInterval(refresh, 3*60*60*1000);
+</script>
+</body>
+</html>

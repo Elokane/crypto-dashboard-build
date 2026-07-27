@@ -1,0 +1,1126 @@
+<!DOCTYPE html><script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Crypto Token Dashboard",
+  "schemaVersion": 1,
+  "description": "Crypto value-capture watchlist dashboard — board v14.1, build v19 (guest-ready), baked 2026-07-24. Live CoinGecko+DefiLlama with baked snapshot fallback.",
+  "mcpTools": [],
+  "mcpServerNames": []
+}
+</script>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crypto Value-Capture Watchlist</title>
+<style>
+:root {--surface-1: #1a1a19; --page: #0d0d0d;--text-1: #ffffff; --text-2: #c3c2b7; --muted: #898781;--grid: #2c2c2a; --baseline: #383835;--border: rgba(255,255,255,0.10);--good: #0ca30c; --bad: #d03b3b; --stale: #ec835a;--s1: #3987e5; --s2: #199e70; --s3: #c98500; --s4: #008300; --s5: #9085e9; --s6: #e66767;--bar: #3987e5; --bar-track: #184f95;--wash: rgba(57,135,229,0.10);}@media (prefers-color-scheme: light) {:root {--surface-1: #fcfcfb; --page: #f9f9f7;--text-1: #0b0b0b; --text-2: #52514e; --muted: #898781;--grid: #e1e0d9; --baseline: #c3c2b7;--border: rgba(11,11,11,0.10);--good: #006300; --bad: #d03b3b; --stale: #b45309;--s1: #2a78d6; --s2: #1baf7a; --s3: #eda100; --s4: #008300; --s5: #4a3aa7; --s6: #e34948;--bar: #2a78d6; --bar-track: #b7d3f6;--wash: rgba(42,120,214,0.10);}}* { box-sizing: border-box; margin: 0; padding: 0; }body {background: var(--page); color: var(--text-1);font-family: system-ui, -apple-system, "Segoe UI", sans-serif;font-size: 14px; line-height: 1.45; padding: 20px;}.wrap { max-width: 1080px; margin: 0 auto; }header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 16px; margin-bottom: 6px; }h1 { font-size: 20px; font-weight: 650; letter-spacing: -0.01em; }.badge {font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;border: 1px solid var(--border); color: var(--text-2);}.badge.live { color: var(--good); border-color: var(--good); }.badge.stale { color: var(--stale); border-color: var(--stale); }.sub { color: var(--muted); font-size: 12px; margin-bottom: 18px; }.sub b { color: var(--text-2); font-weight: 600; }.notice {border: 1px solid var(--stale); color: var(--text-2); border-radius: 8px;padding: 8px 12px; font-size: 12px; margin: -8px 0 18px;}.notice b { color: var(--stale); }.stalenote { color: var(--muted); font-size: 10px; font-weight: 600; margin-top: 3px; letter-spacing: 0.03em; }button.refresh {margin-left: auto; background: none; border: 1px solid var(--border); color: var(--text-2);border-radius: 6px; padding: 4px 12px; font-size: 12px; cursor: pointer; font-family: inherit;min-width: 116px; text-align: center; transition: color .15s, border-color .15s, opacity .15s;}button.refresh:hover { background: var(--wash); color: var(--text-1); }button.refresh.busy { opacity: 0.7; cursor: progress; }button.refresh.busy::before {content: ""; display: inline-block; width: 9px; height: 9px; margin-right: 6px;vertical-align: -1px; border: 1.5px solid currentColor; border-top-color: transparent;border-radius: 50%; animation: spin .7s linear infinite;}button.refresh.ok { color: var(--good); border-color: var(--good); }button.refresh.err { color: var(--stale); border-color: var(--stale); }@keyframes spin { to { transform: rotate(360deg); } }@media (prefers-reduced-motion: reduce) { button.refresh.busy::before { animation: none; } }.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); gap: 10px; margin-bottom: 22px; }.tile {background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px;padding: 12px 14px 10px;}.tile .sym { font-size: 12px; font-weight: 600; color: var(--text-2); display: flex; align-items: center; gap: 6px; }.tile .name { font-size: 11px; color: var(--muted); font-weight: 400; }.tile .price { font-size: 21px; font-weight: 600; margin: 4px 0 2px; }.tile .deltas { font-size: 12px; display: flex; gap: 10px; }.tile .spark { height: 30px; margin-top: 8px; position: relative; }.tile .spark .nospark { font-size: 10px; color: var(--muted); position: absolute; bottom: 0; }.up { color: var(--good); } .down { color: var(--bad); }.dim { color: var(--muted); }h2 { font-size: 14px; font-weight: 650; margin: 0 0 2px; }.hint { font-size: 12px; color: var(--muted); margin-bottom: 12px; }.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; margin-bottom: 22px; }.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }.hbar-row { display: grid; grid-template-columns: 64px 1fr 74px; align-items: center; gap: 10px; margin: 9px 0; }.hbar-row .lab { font-size: 12px; color: var(--text-2); font-weight: 600; text-align: right; }.hbar-track { position: relative; height: 16px; }.hbar {position: absolute; left: 0; top: 0; bottom: 0;background: var(--bar); border-radius: 0 4px 4px 0; min-width: 3px; cursor: default;}.hbar-row .val { font-size: 12px; color: var(--text-1); font-variant-numeric: tabular-nums; }.hbar.est { opacity: .85; outline: 1px dashed var(--muted); outline-offset: -1px; }.hbar.cap { background: repeating-linear-gradient(45deg, var(--bar) 0 5px, transparent 5px 9px); border: 1px dashed var(--bar); border-left: none; }.nomult { font-size: 11px; color: var(--bad); opacity: .9; position: absolute; top: 1px; white-space: nowrap; }.ubar-row { display: grid; grid-template-columns: 205px 1fr 170px; align-items: center; gap: 10px; margin: 12px 0; }.ubar-row .lab { font-size: 12px; color: var(--text-2); font-weight: 600; text-align: right; line-height: 1.25; }.ubar-track { position: relative; height: 18px; }.ubar { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 0 4px 4px 0; min-width: 2px; }.ubar.hatch { background: repeating-linear-gradient(45deg, var(--ubarcol) 0 5px, transparent 5px 9px); border: 1px dashed var(--ubarcol); border-left: none; }.ubar.est { opacity: .8; outline: 1px dashed var(--muted); outline-offset: -1px; }.nf-track { position: relative; height: 26px; }.nf-bar { position: absolute; left: 0; height: 10px; border-radius: 0 3px 3px 0; min-width: 2px; }.nf-in { top: 1px; background: var(--s3); }.nf-out { bottom: 1px; background: var(--s1); }.nf-bar.est { opacity: .8; outline: 1px dashed var(--muted); outline-offset: -1px; }.nf-none { position: absolute; left: 0; font-size: 10px; color: var(--muted); }.nf-none.top { top: -1px; } .nf-none.bot { bottom: -1px; }.ubar-row .val .net { font-weight: 600; color: var(--text-1); display: block; font-size: 11px; }.ubar-row .val { font-size: 12px; color: var(--text-1); font-variant-numeric: tabular-nums; line-height: 1.3; }.ubar-row .val .pct { color: var(--muted); font-size: 10.5px; display: block; }.axis-note { font-size: 11px; color: var(--muted); margin-top: 10px; border-top: 1px solid var(--grid); padding-top: 8px; }.tablewrap { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 6px 2px; overflow-x: auto; margin-bottom: 22px; }table { border-collapse: collapse; width: 100%; min-width: 1060px; }th, td { padding: 8px 12px; text-align: right; font-size: 12.5px; white-space: nowrap; }th:first-child, td:first-child { text-align: left; position: sticky; left: 0; background: var(--surface-1); }th {color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em;border-bottom: 1px solid var(--baseline); cursor: pointer; user-select: none;}th:hover { color: var(--text-2); }th .arr { font-size: 9px; }td { border-bottom: 1px solid var(--grid); color: var(--text-1); font-variant-numeric: tabular-nums; }tr:last-child td { border-bottom: none; }tr:hover td { background: var(--wash); }td.tok { font-weight: 600; }td .tokname { color: var(--muted); font-size: 11px; font-weight: 400; margin-left: 5px; }.chip { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-2); font-weight: 500; }.chip .dot { width: 8px; height: 8px; border-radius: 50%; border: 2px solid var(--surface-1); box-shadow: 0 0 0 1px var(--border); }.notes td { white-space: normal; text-align: left; font-variant-numeric: normal; vertical-align: top; }.notes table { min-width: 720px; }.notes td:first-child { font-weight: 600; }.notes .small { font-size: 12px; color: var(--text-2); }footer { color: var(--muted); font-size: 11.5px; line-height: 1.6; border-top: 1px solid var(--grid); padding-top: 12px; }footer b { color: var(--text-2); font-weight: 600; }#tip {position: fixed; pointer-events: none; z-index: 10; display: none;background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px;padding: 8px 11px; font-size: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.35); max-width: 260px;}#tip .v { font-weight: 650; font-size: 13px; }#tip .l { color: var(--text-2); }.refreshing .tiles, .refreshing .cards, .refreshing .tablewrap { opacity: 0.55; transition: opacity .2s; }.asofchip { display:inline-block; margin-left:8px; padding:1px 7px; border:1px solid var(--border); border-radius:999px; font-size:10px; color:var(--muted); white-space:nowrap; vertical-align:1px; }
+</style>
+</head>
+<body>
+<div class="wrap" id="root">
+  <header>
+    <h1>Crypto Value-Capture Watchlist</h1>
+    <span class="badge" id="badge">CONNECTING</span>
+    <span class="badge">Updated Jul 27, 2026</span>
+    <button class="refresh" id="refreshBtn" type="button">Refresh now</button>
+  </header>
+  <div class="sub">
+    Tokens whose value accrues from real business usage — fee capture, burns, buybacks — never memecoins. ETH in scope (gas burns ETH); BTC tracked separately.
+    12 tiles: board ranks #1–7 · #8 ETH honorary · plus vetted / candidate / tracked names — monitors TAO · ENA · ONDO in the table &amp; alerts only. Data basis Jul 24: fresh fee prints for HYPE · AERO · UNI · JUP · PENDLE · VVV (+ LIT · PUMP); AAVE carries a project-official estimate; others carry the verified Jul 22 prints. Sparklines: 7-day live, or 30-day baked from our own price archive.
+    Prices: <b>CoinGecko API</b> first, fallbacks <b>Binance → Hyperliquid</b> (live trackers only) · Fees/TVL: <b>DefiLlama</b> · <span id="asof">connecting…</span> · auto-refreshes every 3&nbsp;h while open.
+  </div>
+  <div class="notice" id="notice" hidden></div>
+
+  <div class="tiles" id="tiles"></div>
+
+  <div class="cards">
+    <div class="card">
+      <h2>The model at a glance — Business vs Hype</h2>
+      <div class="hint">Each dot = current Business (x) and Hype (y) scores · size ∝ market cap · green = positive net value flow, red = net-dilutive, gray = unmeasured/wash. The hunting ground is bottom-right: high B, low H. <span class="asofchip">scores board v14.1 · 7/24</span></div>
+      <div id="bhScatter"></div>
+      <div class="axis-note">ETH drawn hollow — honorary, in scope by mandate and deliberately not ringer-scored (its B/H are indicative). Small gray dots = vetted/monitor context (RENDER, TAO, ONDO). Unscored names (PUMP · LIT · ENA · HNT) are not plotted.</div>
+    </div>
+    <div class="card">
+      <h2>Accountability — watchlist vs just holding ETH or BTC</h2>
+      <div class="hint">PRIMARY: board-of-record equal weight — the current 8 seats — vs ETH and vs BTC, base 100 at the 2026-07-23 PT close; the chart switches to it as soon as two closes exist (first deltas print with the 7/24 morning run). Until then it shows the context series: the seed six (the actual 7/10 watchlist) since 7/10. Reading it: the board line above ETH/BTC = the picks are earning their keep; below = you'd have done better just holding ETH or BTC. Past performance is no guarantee of future results. <span class="asofchip">owned archive · closes through 7/23 · board-EW inception 7/23</span></div>
+      <div id="benchChart"></div>
+      <div class="axis-note" id="benchNote"></div>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h2>What you pay for $1 of net value flow — market cap ÷ (holders revenue − new supply)</h2>
+      <div class="hint">THE PRIMARY DIAL: market cap over annualized holders revenue MINUS annualized supply-in (unlocks + emissions at realized pace — the same in-legs as the net-flow chart). Lower = more net business per dollar. Dashed bars = modeled or estimated basis; hover any bar for the exact calculation. FULL COVERAGE: every tracked name appears — bars where a positive net multiple exists, red rows where supply-in exceeds capture (net-dilutive), the rest named in the note. <span class="asofchip">rev fresh 7/24 (AAVE est · ETH carried) · in-legs priced 7/23</span></div>
+      <div id="pfNetBars"></div>
+      <div class="axis-note" id="pfNetNotes"></div>
+    </div>
+    <div class="card">
+      <h2>What you pay for $1 of holder revenue — market cap ÷ holders revenue (before dilution)</h2>
+      <div class="hint">The secondary read: market cap over annualized revenue reaching token holders, before supply-in. Lower = more business per dollar. Dashed = estimated basis; ETH drawn hatched at the chart cap (off-scale). Full coverage: every tracked name with a defensible captured-value print is charted.</div>
+      <div id="pfBars"></div>
+      <div class="axis-note">FULL COVERAGE: every tracked name with a defensible captured-value print is charted — dashed = estimated basis: AAVE (T2 buyback pace — the adapter prints $0 on every horizon since 6/24) · VVV (T1 adapter burn $5.00M/yr; Venice's own published statistics imply ~$3.62M/yr on the July pace — ~45% BELOW the adapter, i.e. ~160× rather than ~118×, and the reconciliation is open) · JUP / LIT / PUMP (provider-implied supplies). ETH is drawn hatched at the chart cap — ~10,400× is real but off-scale (the burn is negligible vs MC; Glamsterdam's gas-limit raise is the re-rate catalyst). Not charted: RENDER + HNT (no revenue print — Foundation report ~Aug 8 / no adapter), TAO (no root-level capture mechanism), ONDO ($0 reaches holders today — fee-switch watch), ENA (only a T3-modeled ~$26M/yr buyback ≈ ~33× — notes-only until the leg verifies, and deeply net-dilutive regardless; see the NET box).</div>
+    </div>
+    <div class="card">
+      <h2>Annualized holders revenue</h2>
+      <div class="hint">Dollars per year flowing to token holders via buybacks, burns, or fee share (30-day run-rate). <span class="asofchip">rev fresh 7/24 (AAVE est · ETH carried)</span></div>
+      <div id="revBars"></div>
+      <div class="axis-note">HYPE: ~99% of fees buy HYPE via the Assistance Fund. AERO: fees to veAERO (holders share ~66%). PENDLE: ~all revenue to vePENDLE. UNI: TokenJar→Firepit burns. PUMP: 50%-of-net-revenue burn. JUP: Litterbox 50%-of-revenue buys. LIT: fee-revenue TWAP buybacks.</div>
+    </div>
+  </div>
+
+  <h2>History — 2-year backfill + per-run marks</h2>
+  <div class="hint">Lines before 7/10 = the owned archive (weekly closes, backfilled 7/21); dots from 7/10 on = per-run verified T1 marks — echoed/stale prints are rejected by the validation harness. Gaps are honest, not missing data: hover any point for the value; known series gaps (UNI fee-adapter split 6/30/25, HYPE TVL basis reconcile, late joiners with marks-only) are documented in the engine law on the Methodology page. <span class="asofchip">marks through 7/24 · archive closes through 7/23</span></div>
+  <div class="cards" style="grid-template-columns:1fr">
+    <div class="card"><h2>Fees annualized</h2><div class="hint">All-protocol fees, 30-day run-rate ×12.17 · log scale</div><div id="histFees"></div></div>
+    <div class="card"><h2>Holders revenue annualized</h2><div class="hint">Dollars/yr reaching holders via buybacks, burns, or fee share — 30-day run-rate ×12.17 · log scale · "is value capture growing?" · ETH + VVV burn-flows in gray (different mechanism cohort)</div><div id="histRev"></div></div>
+    <div class="card"><h2>MC / holders revenue</h2><div class="hint" id="histMcRevHint">Lower = more business per dollar · linear scale · pre-7/10 line = weekly price × TODAY'S circulating supply ÷ that week's holders-rev run-rate (EST — CoinGecko's historical-MCAP API is robots-blocked server-side; open the dashboard standalone and live mode hydrates TRUE historical MCAP from CoinGecko and redraws this chart) · ETH excluded (~10,400× burn multiple is off-scale — see its note) · UNI's first post-burn weeks omitted until the multiple settles below 200× (the Dec-25/Jan-26 ramp printed thousands-× values that wrecked the y-scale)</div><div id="histMcRev"></div></div>
+    <div class="card"><h2>TVL</h2><div class="hint">DefiLlama protocol TVL · log scale</div><div id="histTvl"></div></div>
+  </div>
+
+  <h2>Incoming unlocks &amp; emissions — next 12 months</h2>
+  <div class="hint">Scheduled new supply per board + tracked token, Aug 2026 → Jul 2027, valued at the Jul 23 price basis — consulted Tokenomist (the unlock tracker), DefiLlama unlocks, and project-primary schedules. Bars are 12-month totals; labels carry the monthly rate and the % it adds to circulating supply. <span class="asofchip">priced 7/23 · schedules per tooltip tiers</span></div>
+  <div class="card" style="margin-bottom:22px">
+    <div id="unlockBars"></div>
+    <div class="axis-note" id="unlockNotes"></div>
+  </div>
+
+  <h2>Supply in vs value out — annualized</h2>
+  <div class="hint">Per board + tracked token: <span class="chip"><span class="dot" style="background:var(--s3)"></span>supply IN</span> (unlocks + emissions over the next 12 months, realized-pace basis) vs <span class="chip"><span class="dot" style="background:var(--s1)"></span>value OUT</span> to holders (buybacks / burns / fee share, 30-day run-rate ×12.17). Net tells you whether the token is currently a value sink or a dilution machine. HYPE uses realized unlock pace — its authorized ceiling ($7.21B/12mo) is excluded here; see the unlocks chart. <span class="asofchip">out-legs fresh 7/24 · in-legs priced 7/23</span></div>
+  <div class="card" style="margin-bottom:22px">
+    <div id="netflowBars"></div>
+    <div class="axis-note" id="netflowNotes"></div>
+  </div>
+
+  <h2>All metrics</h2>
+  <div class="hint">Sorted by board rank. Click <b>MC/Rev net</b> for cheapest-net-cash-flow-first (the primary dial; net-dilutive and blanks sort last), or any header to re-sort. Fees ann. and Holders rev ann. are ANNUALIZED (30-day run-rate × 12.17). MC for ENA/LIT/JUP/PUMP uses CoinPaprika-implied supply (June-dated stamps — estimates). Trade vol 30d = monthly TRADE VOLUME on the exchange tokens' own markets (blank for non-exchanges): LIT from Lighter's own API (daily ×30); HYPE baked = spot orderbook only (June perp volume ≈ $267B, T3) though live mode adds the perp leg from Hyperliquid's own API; JUP = aggregator leg only. MC/Rev net = MC ÷ (holders rev − next-12-mo supply-in: unlocks + emissions at realized pace, the NETFLOW in-legs) — the multiple AFTER dilution; "net-dilutive" = supply-in currently exceeds holders revenue (sorted after all real multiples); blank where the in-leg is unknown (e.g. LIT's undisclosed vesting). NEW (owner 7/22 late): MC/FDV = dilution headroom (low = deep overhang — HYPE 0.26 · LIT 0.25; ~1.0 = fully diluted — ETH 1.00 · AAVE 0.95); FDV/Rev = the fully-diluted multiple, the overhang-adjusted lens (JUP: 22× on MC → ~47× on FDV).</div>
+  <div class="tablewrap"><table id="mtable"></table></div>
+
+  <h2>Value accrual &amp; dilution notes</h2>
+  <div class="hint">Curated by Claude at each ranking run — mechanisms and unlock overhangs the APIs don't carry. Verify dates before acting.</div>
+  <div class="tablewrap notes"><table id="ntable"></table></div>
+
+  <footer>
+    <b>Discipline:</b> separate hype/narrative from business fundamentals; a token qualifies only if its value appreciates in direct relationship to the business (fees, burns, buybacks, staking revenue). No memecoins. ETH in scope; BTC tracked separately.<br>
+    <b>Reading MC/FDV:</b> low ratio = large future dilution (HYPE ~0.26 and LIT ~0.25 — the deepest overhangs here); ~1.0 = fully diluted (ETH 1.00; AAVE ~0.95).<br>
+    <b>Price policy:</b> live trackers only — CoinGecko, then Binance, then Hyperliquid; when none is reachable the last verified prices are shown as a dated snapshot. Fee figures are DefiLlama's 30-day run-rate, annualized ×12.17 — every figure passes automated integrity checks before it is baked; anomalous feeds are quarantined and logged in the open.<br>
+    <b>Legend:</b> T1 = on-chain / independently verified · T2 = project-official · T3 = named analyst/press · est = estimate · net-dilutive = new supply currently exceeds the value paid to holders.<br>
+    <b>About:</b> a research journal, not investment advice or a solicitation; the author may hold positions in assets discussed; past performance is no guarantee of future results. <span class="badge" id="buildstamp">build v19.1 · board v14.1 · baked 2026-07-27</span>
+  </footer>
+</div>
+<div id="tip"></div>
+
+<script>
+/* ===== CONFIG =====
+   ENGINE LAW + full v7-v16 changelog: CANONICAL on the Notion law page, section "Dashboard-file engine law - CANONICAL
+   HOME" (moved out of this file 7/22 PM so uploads fit the pipeline). Iron rules kept in-file:
+   (1) LAST_KNOWN + per-token baked values + BAKED_ASOF refresh together every rebake; prices from live trackers or a
+       stamped T1 carried basis only.
+   (2) HISTORY_CSV gets EXACTLY ONE appended line per verified run basis (empty fields = null), never overwritten;
+       BACKFILL_CSV is the static owned archive - never append, never regenerate; REJECT any incoming fee print that
+       equals a prior bake to the dollar (echo tell).
+   (3) IN12 + NETFLOW legs + NET_MODEL + DILNEG + EST_GROSS refresh together every run; every bar/row tooltip carries
+       its full calculation.
+   (4) C20 additions: read claude/state.json FIRST (canonical board/state; the build stamp — FOOTER, id=buildstamp — must match it);
+       every transcribed print passes claude/tools/validate_prints.py BEFORE baking (echo-fingerprint + archive-
+       fingerprint + rolling-sum continuity + share-jump; QUARANTINE => carry last verified, queue, cache-busted retry,
+       never narrate); all api.llama.fi fetches carry &cb=<runid>; AERO supply via Thu-to-Thu same-hour blockscout
+       deltas (epoch-flip reads proven non-capturing 7/23); SPARKS30 + BENCH refresh from the owned archive shards;
+       BH scores refresh from the Token DB each scored run.
+   (5) AUDIENCE (owner-approved 2026-07-24, law-page audience law): this is a GUEST-FACING build. Keep: the header
+       "Updated <date>" chip (stamp lives in the FOOTER), plain-language chart titles, rank-first table default,
+       net-dilutive wording (never "dil-neg"), the footer legend + disclaimer, SNAPSHOT (not STALE) presentation in
+       embeds, tap-to-show tooltips, no file paths / correction IDs / owner-directive phrasing in rendered text. */
+const BAKED_ASOF = "2026-07-27"; /* basis: board-seat PRICES/MCs = fresh T1 2026-07-27 ~1:46 PM PT (DefiLlama historical, cache-busted, conf 0.99 on all 16 instruments; 24h!=7d freshness tell passed on every name). FEES: cache-busted fresh 7/27, harness 32/32 PASS, for HYPE/AERO/UNI/JUP/PENDLE/VVV/LIT/PUMP; AAVE rev = the $7.02M T2 buyback estimate CARRIED — the DefiLlama holders-rev adapter now prints ZERO on 24h, 7d AND 30d, last non-zero day 2026-06-24, so the estimate is the sole basis for its multiple (open decision item); ETH burn carried (ultrasound.money still unreachable). TVL fresh 7/27 for HYPE/AERO/UNI/JUP/PENDLE/AAVE/LIT. */
+const LAST_KNOWN = { asof: "2026-07-27 ~1:46 PM PT (all 16 instruments, cache-busted, conf 0.99)", bySym: {
+  HYPE:   { price:57.0219, d24:-3.1, d7:-8.35, mc:1.45e10, fdv:5.59e10, vol:272.71e6 },
+  AERO:   { price:0.451192, d24:9.2, d7:3.82, mc:4.214e8, fdv:8.614e8, vol:13.59e6 },
+  UNI:    { price:3.80759, d24:-1.61, d7:5.16, mc:2.357e9, fdv:3.423e9, vol:null },
+  JUP:    { price:0.187427, d24:-0.16, d7:-4.35, mc:6.221e8, fdv:1.315e9, vol:null },
+  PENDLE: { price:1.54382, d24:1.33, d7:-4.4, mc:2.656e8, fdv:4.345e8, vol:32.79e6 },
+  VVV:    { price:12.9521, d24:-5.56, d7:11.87, mc:5.958e8, fdv:1.028e9, vol:45.49e6 },
+  AAVE:   { price:99.4137, d24:2.24, d7:10.75, mc:1.516e9, fdv:1.594e9, vol:null },
+  ETH:    { price:1943.06, d24:1.67, d7:2.14, mc:2.345e11, fdv:2.344e11, vol:10.38e9 },
+  RENDER: { price:1.44726, d24:-1.43, d7:-4.3, mc:7.533e8, fdv:9.3e8, vol:15.15e6 },
+  HNT:    { price:0.189761, d24:-2.47, d7:-7.33, mc:3.366e7, fdv:4.232e7, vol:null },
+  LIT:    { price:2.19515, d24:3.15, d7:-0.41, mc:5.489e8, fdv:2.193e9, vol:null },
+  PUMP:   { price:0.00213955, d24:13.77, d7:5.67, mc:8.543e8, fdv:2.14e9, vol:null },
+  TAO:    { price:192.822, d24:-2.14, d7:-1.33, mc:1.856e9, fdv:4.031e9, vol:80.7e6 },
+  ONDO:   { price:0.401943, d24:0.86, d7:12.53, mc:1.965e9, fdv:4.019e9, vol:null },
+  ENA:    { price:0.0874117, d24:2.64, d7:5.33, mc:8.122e8, fdv:1.31e9, vol:null },
+} };
+const TOKENS = [
+  { sym:"HYPE", name:"Hyperliquid · #1", cg:"hyperliquid", bin:"HYPEUSDT", hl:"HYPE", llama:"hyperliquid", tvlSlug:"hyperliquid", volSlugs:["dexs/hyperliquid"], circ:254.55e6,
+    accrual:{label:"Buyback", slot:1, note:"~99% of perp + spot fees go to the Assistance Fund, which market-buys HYPE — the list's biggest value-capture engine. Fresh cache-busted print 7/24 (integrity-check PASS): holders rev $487.4M ann — a third consecutive soft print ($506.8M→$496.7M→$487.4M), inside the noise band — on $688.7M fees, VCP ~71%. MC/Rev ~30.4×. History: the $645M prints of 7/21 AM and 7/23 were a stale feed echoing 7/10 data — caught, corrected, and fingerprinted (see the log)."},
+    unlock:"MC/FDV ~0.26 (~254M of 962M circulating) — the list's biggest dilution overhang: core-contributor vesting runs monthly into 2027–28. Buybacks push against it. Corrected 7/21 (see the log): the 'Jul 6 unlock 9.92M HYPE ~$650M landed/absorbed' line was the whitepaper CEILING misread as an actual — trackers show realized claims of 201,995 HYPE ($12.5M) Jun 7 and ~$15.5M in July, i.e. historically 1.4–17.6% of the authorized ~9.92M/mo (Tokenomist estimate→committed→completed standard; claiming far under authorization is a restraint signal, but the ceiling stays the risk number: +46.8% of circ over 12mo if fully claimed). Next event ~Aug 6 — see the unlocks chart. HIP-4 outcome markets launched + ~$1B cumulative revenue reported (T3). VOLUME CONTEXT: June perp volume ≈ $267B (+34% m/m, T3 MEXC) — the $3.06B in the Vol 30d column is the SPOT orderbook only (perp endpoints pro-gated); live mode adds the perp leg from Hyperliquid's own API. 7/21: −7.2% 7d, −2.4% 24h; TVL $6.34B.",
+    baked:{ feesAnn:6.24329e08, rev:4.39076e08, tvl:6.36454e09, vol30d:3064.08e6 } },
+  { sym:"AERO", name:"Aerodrome · #2", cg:"aerodrome-finance", bin:"AEROUSDT", hl:"AERO", llama:"aerodrome", tvlSlug:"aerodrome", volSlugs:["dexs/aerodrome"], circ:936.92e6,
+    accrual:{label:"Fee share", slot:2, note:"Fees to veAERO (vote-locked AERO) voters (official claim: 100% of exchange revenue; voters have earned >$480M cumulative, T2 7/21 post). RESOLVED 7/23 (see the log): the 7/22 'restatement' ($51.4M rev / $105.5M fees / share ~49%) was a stale feed resurfacing 7/10 data — exact fingerprint match + an impossible one-day rolling-sum step; quarantined. Fresh cache-busted T1 (7/24): holders rev $55.5M ann / fees $83.2M — share 66.7%, the rising series intact (61.5→63.4→65.0→65.4→66.1→66.7). Cheapest real cash flow on the board: MC/Rev ~7.0×."},
+    unlock:"MC/FDV ~0.49 — EMISSIONS NOW MEASURED, not estimated (T1, 7/22): totalSupply via keyless Base blockscout API = 1,940.44M AERO vs CoinPaprika 1,912.42M stamped 6/8 → +28.02M in 44 days ≈ 4.46M AERO/wk avg ≈ 0.23% of total supply/wk (Aero Fed-voted weekly ±0.01%-of-supply steps, bounds 0.01–1%/wk — voters have stepped it DOWN from 0.67%/wk at the Dec-24 activation). ≈$101M/yr gross mint at spot vs $51–56M/yr fee share → net-of-dilution ≈ −$45–50M/yr (~−11% of MC/yr): the emissions-outrunning-fees kill-trigger is CONFIRMED on the ownership basis (earlier provisional bands retired) — AERO #2 stands on measurement. THE FLOAT BASIS reads differently: circulating supply grew only ~0.9–1.2M/wk over the same window (provider stamps, est) — roughly 3/4 of new mint lands LOCKED (locker rebases + recipients locking + the Foundation PGF/Momentum-Fund rules-based buy-AND-LOCK: 336K AERO bought 7/22, ~200M ≈10% of supply cumulative, T2 official) — so realized market sell-pressure is far below gross dilution; both legs render on the net-flow chart. EXACT single-epoch mint: first T1 print at tonight's Thu 00:00 UTC epoch flip — follow-up scheduled in the interactive session, then weekly per the law. Dromos 'Aero' merger (1:1 for AERO/veAERO, July window): post-merger emissions policy UNDISCLOSED — re-underwrite at launch stands. Bear: merger execution / sell-the-news, audits unfinished; Base-swap-flow factor shared with UNI. Standing steelman fact (7/21, T1): current fee run-rate is ~52–64% of the trailing-12m total — the cheap multiple partly reflects a shrunken fee base (UNI, for contrast, runs at ~117% of trailing — growing).",
+    baked:{ feesAnn:7.44281e07, rev:5.09906e07, tvl:3.05885e08, vol30d:12194.82e6 } },
+  { sym:"UNI", name:"Uniswap · #3", cg:"uniswap", bin:"UNIUSDT", hl:"UNI", llama:"uniswap", tvlSlug:"uniswap", volSlugs:["dexs/uniswap"], circ:619.6e6,
+    accrual:{label:"Burn", slot:4, note:"UNIfication (Dec-2025, 99.9% yes): protocol fees route through immutable TokenJar→Firepit contracts that burn UNI — 17–25% of fees on switched v2/v3 pools, staged across Ethereum + six L2s + Polygon/BSC/Celo. Cumulative fee-driven burn ~$22.7M (corrected in the log: the '$596M/100M UNI' figure was the one-time retroactive treasury burn, not fee flow)."},
+    unlock:"MC/FDV ~0.69; fully vested since 2024 with no active emissions (Tokenomist — the governance-mintable 2%/yr inflation has never been minted). LIVE DATED CATALYST: governance vote OPEN 7/19 → closes 7/26 — Prop 99 (Robinhood Chain v2/v3 fees) + Prop 100 (v4 fees on 7 chains), both routing into the burn; if passed ≈ +$61–91M/yr ≈ 2–3× the burn run-rate, with ~2-day timelock then automatic execution. Tally as of 7/20: ~2.94M UNI For / 0 Against — but only ~7% of the 40M quorum; turnout, not sentiment, is the risk (temp check was 93% yes; quorum fail = 6–10 week resubmission clock). 7/22 EARLY RUN: fees ann CROSSED $1B ($1,009.9M, 117% of trailing year — the fastest-growing fee base on the board) while holders rev held $45.4M — the capture-ratio gap widened again. Treasury ~272M UNI + 20M/yr growth budget ≈ current burn pace (net supply ~flat until v4 flips). Bear: fee switch taxes LPs → liquidity-migration risk; Base is Uniswap's #1 fee chain AND Aerodrome's home turf — UNI + AERO share one Base-swap-flow factor bucket. NOTE: MC/Rev ~52.8× is TRAILING ACTUALS ONLY (rev refreshed 7/24: $44.9M; the fee base refreshed +8.2% to $1,092M into the vote) — the conditional +$61–91M/yr from the live vote is NOT in the multiple; pro-forma if passed ≈ $106–136M holders rev ≈ ~17–22× at today's MC (bakes in only when it actually prints).",
+    baked:{ feesAnn:1.13474e09, rev:3.96192e07, tvl:3.05966e09, vol30d:46395.25e6 } },
+  { sym:"JUP", name:"Jupiter · #4", cg:"jupiter-exchange-solana", bin:"JUPUSDT", hl:"JUP", llama:"jupiter", tvlSlug:"jupiter", volSlugs:["aggregators/jupiter"], circ:3.3203e9,
+    accrual:{label:"Buyback", slot:1, note:"RANK #4 (7/23 scored swap with PENDLE; seated #5 in the v14 re-rank 7/22 — rank authority: ALL #1–7 engine-computed, only ETH honorary #8 owner-held): zero scheduled supply-in + net +$28M/yr + ~22× capture carried the pairing vs PENDLE's ≈wash net and 33× — the standing caveat is the est-circ MC basis (a T1 circ print or a third consistent weekly stamp firms the seat; the #3–#5 re-contest after the 7/26 UNI vote is pre-committed). B 55 / H 35 / MoS Thin. Litterbox automated 50%-of-revenue JUP buybacks (>$70M in 2025) + ~3B burned lifetime + Feb-2026 net-zero-emissions vote; live 50→70% proposal. SUPPLY-IN RESOLVED (7/22, T3 trackers): team/investor vesting COMPLETE (Jan-27-26; Mercurial final 2/25) and net-zero emissions passed — ZERO scheduled supply-in; ~3.54B reserves governance-gated. One of only three positive-net tokens on the page (MC/Rev net = MC/Rev ≈ 23×). FIRST holders-rev print (7/21, T1, slug jupiter): ~$28.3M ann → MC/Rev ~21.6× on the est-circ basis — potentially the cheapest HYPE-grade mechanism on the board if circ verifies."},
+    unlock:"CIRC CROSS-CHECK RESOLVED-CORROBORATED (7/21): CoinPaprika-implied circ 3.32B (6/8 stamp) vs the carried 3.1B est — within 7%; MC now uses 3.32B → $655M, MC/Rev ~23.2× (est), FDV $1.38B (7.0B total supply — consistent with ~3B burned from the 10B max). Token near all-time lows, −6.1% 7d. Bear: aggregator/perp revenue is Solana-cycle-dependent; buyback % is governance-mutable. Fees ann baked 7/21: $181.8M (holders share ~15.6%). Perp-leg volume unavailable: Jupiter's perps API is trading-only/WIP (no stats endpoint) and DefiLlama derivatives is pro-gated — Vol 30d is the aggregator leg only.",
+    baked:{ feesAnn:1.57611e08, rev:2.57511e07, tvl:1.57965e09, vol30d:21215.13e6 } },
+  { sym:"PENDLE", name:"Pendle · #5", cg:"pendle", bin:"PENDLEUSDT", hl:"PENDLE", llama:"pendle", tvlSlug:"pendle", volSlugs:["dexs/pendle"], circ:171.09e6,
+    accrual:{label:"Buyback", slot:1, note:"MECHANISM REFRESH (7/21, T2 Pendle docs + official posts): vePENDLE was RETIRED Dec-2025/Jan-2026 for liquid sPENDLE (staked PENDLE) — 80% of protocol revenue now buys back PENDLE and distributes it to sPENDLE stakers (10% treasury / 10% ops). The T1 numbers already reflect it: holders rev $658k = exactly 80.0% of $822k 30d revenue. Fee sources: 5% of all YT yield + scaled PT swap fees (20% of swap fees to LPs)."},
+    unlock:"MC/FDV ~0.61 — incentive emissions in/near the terminal ≈2%/yr regime (the 1.1%/wk decay schedule ends Apr–Sep-2026, conflicting T3 — pin-down queued; ≈469K PENDLE/mo est = +3.3%/yr of circ); team vesting complete. 7/22 EARLY RUN: FIFTH print FLAT (+0.2% — the four-print decline ARRESTED at $8.02M ann) while TVL holds the ATH zone $1.16B — usage growing, fee capture per TVL-dollar thinned but stabilizing. MC/Rev ~33.2×, above HYPE's ~30.4×. RANK #4→#5 (7/23): swapped with JUP on fundamentals (JUP: zero supply-in, positive net, cheaper capture); the #3–#5 re-contest (UNI · JUP · PENDLE) stays PRE-COMMITTED for the first scored run after the UNI vote closes 7/26.",
+    baked:{ feesAnn:9.34157e06, rev:7.38438e06, tvl:1.20656e09, vol30d:415.21e6 } },
+  { sym:"VVV", name:"Venice AI · #6", cg:"venice-token", bin:"VVVUSDT", hl:"VVV", llama:"venice", tvlSlug:null, circ:45.93e6, xMult:true,
+    accrual:{label:"Buyback", slot:1, note:"Revenue-funded programmatic buy-and-burn: $2/$5/$10 flat per Pro/Pro+/Max sub + (live since 7/17, T2 official) 5% of EVERY API credit purchase — the first disclosed %-of-revenue leg; DIEM target 38k→40k locks more sVVV; pace reportedly 3.2× since credit-burns launched (T3). SIZING T1 (7/24 cache-busted): tracked burn $4.78M ann, STILL GROWING ($4.55M→$4.63M→$4.71M→$4.78M — the ramp series is intact; MC/burn ~119×) — though the trailing-7-day pace runs −37% below the 30-day average: first sustained cooling, on watch. A '$2.89M floor' print FAILED the continuity check (a 30d sum cannot drop 37% in a day) and was retracted (see the log). CAVEAT: the adapter likely misses the NEW credit-burn contract (base:0xacfe…21bf, live 7/17 per official channels) — venicestats.com/api/burns runs $20–38k/day vs the adapter's ~$9–12k/day, so $4.55M is a conservative FLOOR; multi-day sampling continues. DefiLlama's 'fees' for VVV = the on-chain burn only — real business revenue (~$70M ARR, official) is off-chain."},
+    unlock:"MC/FDV ~0.58 — staking emissions cut a 4th time to 3M VVV/yr eff. 7/1/26 (launch 14M/yr → monthly cuts 6→5→4→3M; ~250K/mo = +6.5%/yr of circ, all to sVVV stakers; stated goal: net deflation once burns exceed emissions — see unlocks chart). Business verified: $65M Series A at $1B valuation (Dragonfly + Coinbase Ventures), ~$70M ARR, 3M+ users, profitable. 7/21: +13.2% 7d — board leader; press wave on the burn mechanism + public burn dashboard. SIZING RESOLVED IN THE OTHER DIRECTION (7/27): venicestats.com became reachable and its own /api/metrics reports July at 23,178 VVV / $267,696 → ~$3.62M/yr, ~45% BELOW the T1 adapter's $5.00M/yr — not the ~$14M upside previously carried, which is now withdrawn. METHOD NOTE: /api/burns IGNORES its page parameter (pages 1/2/3/50/80 return the identical newest 50 rows), so any multi-page 'aggregation' is N× the same minutes — this is the mechanism behind the ~770× artifact of 7/21, now diagnosed; /api/metrics is the usable endpoint. Both sources agree on DIRECTION: the adapter's own trailing 7d annualizes $3.25M, 35.1% under its 30d average for a fourth reading, so the cooling is corroborated and no longer plausibly sampling noise — same order as PENDLE's $8.0M holders rev. 7/22 NOTE: tonight's venicestats sample extraction returned an implausible pace (~770× the adapter — wrong field summed, most likely) and was REJECTED, not baked; re-sample next run. Grok cross-check: its 30d $373k matches our T1 exactly; its '33.8M VVV (~42%) cumulative burned' claim CONFLICTS with CoinPaprika total supply 100.2M — likely counts the 2025 unclaimed-airdrop burn as supply reduction; T3-unverified, queued. Treasury holds ~37% of remaining supply. RANK 5→6 (v14 7/22 PM): displaced by JUP — cheaper measured capture (22× T1 vs 121× floor), positive net (+$28M vs −$33M/yr), quieter (H35 vs H50); the re-contest trigger is unchanged (tracked burns closing on the emissions run-rate) with the daily ramp watch per law.",
+    baked:{ feesAnn:null, rev:5.00245e06, tvl:null } },
+  { sym:"AAVE", name:"Aave · #7", cg:"aave", bin:"AAVEUSDT", hl:"AAVE", llama:"aave", tvlSlug:"aave", circ:15.2e6,
+    accrual:{label:"Buyback", slot:1, note:"SEATED #7 (v14 scored re-rank 7/22 PM; seeded B 60 / H 45 / MoS Thin — the caveat is capture-basis): a measured $353M/yr T1 fee base + a live protocol-level buyback engine (T2-sized) + the cleanest supply on the page (MC/FDV 0.95; net ≈ +$7M/yr) displace RENDER's unmeasured burn story; the April discretion episode and ~212×-on-capture keep it at #7, not higher — adapter wiring or buyback scale-up re-rates. Aavenomics 3.0 live 6/27/26 — immutable engine routes 100% of protocol+GHO revenue to buybacks (~292 AAVE/day at activation, ≈$10M/yr pace), 16M hard cap. DefiLlama's aave holders-rev adapter prints $0 (re-confirmed 7/22 evening — the methodology carries no holders-revenue leg for Aave despite live Aavenomics buybacks). That IS why AAVE showed no captured-value numbers: rev now baked $7.02M/yr EST from the T2 buyback pace so the row prints — ~208× on captured value. 7/27 — THE MEASURE WENT FULLY DARK: the adapter now prints ZERO on 24h, 7d AND 30d. The last non-zero day is 2026-06-24 and 43 of the last 45 days are zero (two independent cache-busted pulls plus the full daily series). Read properly the series reframes the problem: AAVE capture is EVENT-SPARSE — 8 non-zero days in six months, $42.9M all-time — so a 30-day rolling sum is structurally the wrong instrument, and the zeros may mean 'no distribution executed' as much as 'adapter broken'. Either way the $7.02M/yr T2 estimate is now the SOLE basis for the ~214× multiple that ranks this seat last. NO demotion was made: a measurement failure is not evidence a business changed, and the underlying business GREW this week ($342M fees, $14.7B TVL, both up). The seat rests on an estimate and this line says so."},
+    unlock:"MC/FDV ~0.95 — nearly fully diluted, the cleanest supply profile of the candidates. Flags: revenue −25% from peak; buyback budget cut $50M→$30M; Kelp-exploit bad-debt overhang + April buyback-suspension episode (discretion risk). +6.4% 24h / −3.4% 7d. Fees ann + TVL baked 7/21 (dailyFees $353M; TVL $14.58B).",
+    baked:{ feesAnn:3.41915e08, rev:7.02e6, tvl:1.47388e10 } },
+  { sym:"ETH", name:"Ethereum · #8 honorary", cg:"ethereum", bin:"ETHUSDT", hl:"ETH", llama:null, tvlSlug:null, circ:120.66e6, xMult:true,
+    accrual:{label:"Burn", slot:4, note:"HONORARY #8 (owner mandate 7/22): in scope by mandate, deliberately NOT scored through the ringer; the issuance-vs-burn steelman stays tracked, the mandate axis stays stated. EIP-1559 burns the base fee of every transaction. NOW MEASURED (7/21, T1 ultrasound.money API): 30d burn $1.84M → ~$22.4M ann burn-flow — NEGLIGIBLE vs $232B MC (~10,400× burn multiple, excluded from the MC/Rev charts as off-scale). The bear steelman 'burn < issuance in low-activity regimes' is currently TRUE; the accrual case is structural optionality, not current cash flow."},
+    unlock:"No unlocks, no vesting. 7/21: $1,924, +2.4% 7d — risk-on returned (BTC ETFs logged a 2nd consecutive week of net inflows, first since May). Glamsterdam upgrade confirmed Q3 2026 (T2, EF blog) with a 200M gas-limit floor planned (up from ~60M) — the fee-base driver that could make the burn material again; cumulative burn since EIP-1559: 4.64M ETH / $13.1B.",
+    baked:{ feesAnn:null, rev:22.39e6, tvl:null } },
+  { sym:"RENDER", name:"Render · vetted — re-entry ~Aug 8", cg:"render-token", cgAlt:"render", bin:"RENDERUSDT", hl:"RENDER", llama:null, tvlSlug:null, circ:518.77e6,
+    accrual:{label:"Burn", slot:4, note:"DROPPED TO VETTED (v14 7/22 PM): displaced by AAVE at #7 — the only board name with NO revenue print (Foundation reports monthly, next ~Aug 8) while net supply inflates ~1%/yr; B48/H55 = hype ahead of business. RE-ENTRY: any T1 burn/revenue print triggers the seat contest (HNT rides the same event). BME (burn-and-mint equilibrium): render jobs burn RENDER — and 'Dispersed' (Render's GPU-compute marketplace, Dec-2025) burns 95% of compute payments; Salad subnet burns 35–60% of its revenue (RNP-023)."},
+    unlock:"~81% of max supply circulating (MC/FDV ~0.81); no VC cliffs — Tokenomist: 'fully unlocked', no dated events; residual ~19.5% dribbles via escrow/partner allocations + BME dynamics through 2051. Honest math: emissions ~7.0M RENDER/yr vs ~1M cumulative burns (Dec-2025) — net supply still inflates ~1%/yr. KPI: monthly burns vs ~580k/mo emissions (Foundation report ~Aug 8). HNT (candidate) rides the same re-entry event — a fellow clean-mechanism / still-net-inflationary DePIN pending its own first T1 print.",
+    baked:{ feesAnn:null, rev:null, tvl:null } },
+  { sym:"HNT", name:"Helium · candidate", cg:"helium", hl:null, llama:null, tvlSlug:null, circ:177.4e6,
+    accrual:{label:"Burn", slot:4, note:"CANDIDATE (vetted 7/19 — PASSES the discipline): Data Credits, the network's SOLE payment method, are produced only by burning HNT; HIP-138/141 'Return to HNT' removed subtoken dilution. #1 Solana DePIN by revenue; AT&T/T-Mobile/Telefónica carrier-offload; SEC suit dismissed. Contest queue: any HNT or RENDER T1 revenue/burn print triggers the vetted-DePIN seat contest."},
+    unlock:"Two asterisks keep it borderline: (a) net-emissions cap recycles burns back to miners up to ~1,644 HNT/day — burns only deflate above it; (b) the Q4-2025 buy-and-burn (100% of Mobile subscriber revenue) was SUSPENDED Jan-2-2026 — back to organic DC burn, historically net-inflationary. RENDER-analog. PRICE CONFLICT RESOLVED (7/21 ~2:40 PM PT — owner-confirmed live print $0.206 / ~$37M MC): the ~$0.21 cluster was correct; Kraken's $0.7127 was a stale last-trade on a thin pair (deprioritize Kraken for thin pairs); the 7/19 T3 $1.27 stays withdrawn. HNT is a ~$37M MC / ~$46M FDV MICRO-CAP (177.4M circ / 223M max, MC/FDV ~0.80) — startlingly small for the #1 Solana DePIN with carrier-offload deals: the market prices near-zero token value capture, consistent with the two asterisks above. Contest context: RENDER (now vetted, ~$791M MC) is the 21× larger fellow contestant; micro-cap liquidity/volatility risk applies. DefiLlama fees slug 'helium' unavailable (400) — no fee bake.",
+    baked:{ feesAnn:null, rev:null, tvl:null } },
+  { sym:"LIT", name:"Lighter · monitor", cg:"lighter", hl:null, llama:"lighter", tvlSlug:"lighter", circ:250e6,
+    accrual:{label:"Buyback", slot:1, note:"MONITOR (added 7/19): Lighter docs (T2) confirm LIT is bought back by the protocol from trading-fee revenue via daily 24h TWAPs. DefiLlama slug VERIFIED 7/21 — holders rev printing ~$24.5M ann (30d ×12.17), T1-corroborating the ~$26M/yr claim. VOLUME UNLOCKED (7/21, T1 — Lighter's own API, exchangeStats): daily USD volume $1.226B across 225 markets / 1.26M daily trades → ~$36.8B/mo (×30 of the 7/21 daily print — single-day extrapolation) — near-UNI-scale volume. FEES LEG BAKED (7/21 PM, T1): DefiLlama lighter dailyFees 30d $2.78M → $33.8M ann (maker/taker + transfer/withdrawal fees; total1y $64.7M = totalAllTime — adapter <1yr old) — holders-rev share ≈73% of fees; implied blended fee ≈0.0075% of volume. $17.9M cumulative buybacks since TGE still T3 pending on-chain verification."},
+    unlock:"MC FILLED (7/21, est): CoinPaprika-implied circ 250.0M (6/10 stamp) → MC ~$584M, MC/Rev ~23.8× (est) — and 250M/1B total = MC/FDV 0.25 EXACTLY, corroborating the standing overhang flag. Kept monitor-only: ~50% team/investor allocation (HYPE-grade overhang, undisclosed cadence — NOW QUANTIFIED 7/22: 500M vesting into 2029 ≈ $340M/yr straight-lined est, +60%/yr of circ, vs $24.8M/yr buybacks → deeply net-dilutive; Tokenomist shows team 26% / investor 24% / ecosystem 25% / airdrop 25%); staking APR partly company-subsidized; burn claim community-grade. −9.3% 7d / +6.6% 24h. TVL baked 7/21: $523M (zkLighter).",
+    baked:{ feesAnn:2.91782e07, rev:2.24507e07, tvl:5.2567e08, vol30d:36792.6e6 } },
+  { sym:"PUMP", name:"Pump.fun · tracked", cg:"pump-fun", bin:"PUMPUSDT", hl:"PUMP", llama:"pump.fun", tvlSlug:null, circ:400.05e9,
+    accrual:{label:"Burn", slot:4, note:"TRACKED — discipline tension explicit, owner call only: irreversible smart-contract 50%-of-net-revenue burn on $1B+ lifetime revenue ($370M burned 4/29) — mechanically elite; holders rev printing ~$164M ann (slug pump.fun VERIFIED, +1.8% 30d/30d). But the business IS the memecoin launchpad (98.6% rug rate per Solidus; $500M suit) — the no-memecoins discipline points at the revenue source itself."},
+    unlock:"CIRC CORRECTED 7/22: 400.05B post-cliff (Tokenomist, paprika-consistent: June 354B + the 7/15 tranche) → MC ~$802M → MC/Rev ~5.0× est — still the cheapest gross multiple on the board. OWNER TWEET-FLAG CONFIRMED: the 7/15 cliff (57.28B / $86.5M / 121 wallets) STARTED a 3-YEAR LINEAR VESTING of the remaining ~272.7B team+investor tokens ≈ 7.58B/mo ≈ $182M/yr est — continuous supply-in through mid-2029, ≈ +22.7%/yr of circ. Net of the $159.6M/yr burn: marginally NET-DILUTIVE while the spigot runs (see MC/Rev net + net-flow chart) — the 'cheapest board multiple' now carries an asterisk. FDV ~$2.0B (1T max). Fees ann $290.0M.",
+    baked:{ feesAnn:3.12434e08, rev:1.74047e08, tvl:null } },
+  { sym:"TAO", tile:false, name:"Bittensor · monitor", cg:"bittensor", bin:"TAOUSDT", hl:"TAO", llama:null, tvlSlug:null, circ:9.6e6,
+    accrual:{label:"Staking utility", slot:3, note:"MONITOR-ONLY (fails strict fee-capture): no root-level burn/buyback/fee-share — TAO is the reserve asset of the subnet (dTAO) economy; root staking ~10% APY = redistributed dilution. Fee→token linkage lives at the subnet-alpha layer, not TAO."},
+    unlock:"Fair launch, no VC unlocks; ~3,600 TAO/day emissions (~$260M/yr at current price) vs $3–15M/yr verified subnet revenue — the failing math. Halving done Dec-2025 (next ~2029). Watch: Grayscale/Bitwise ETF decisions H2-2026; 'Root Reborn' governance (could add real root accrual → re-vet). DATs: xTAO (XTAO.U), TAOX.",
+    baked:{ feesAnn:null, rev:null, tvl:null } },
+  { sym:"ONDO", tile:false, name:"Ondo · monitor", cg:"ondo-finance", bin:"ONDOUSDT", hl:"ONDO", llama:null, tvlSlug:null, circ:4.879e9,
+    accrual:{label:"None yet", slot:5, note:"MONITOR-ONLY (vetted 7/17; fails strict fee-capture TODAY, strongest re-vet candidate): pure governance token — protocol revenue (USDY/OUSG, Ondo Global Markets) flows to Ondo corporate entities, not ONDO; DAO fee-switch expected later 2026 but still a proposal. DefiLlama prints holders revenue $0 vs ~$78M ann protocol fees. Business is real: DTCC production tokenized-securities trades 7/15 (~40 firms incl. BlackRock/JPMorgan; full launch Oct-2026); first DTC-entitlement-backed tokenized stocks (CRCLon/SPYon)."},
+    unlock:"~6.5B ONDO unlocking through Jan-2029 (MC/FDV ~0.49); ~184.5M monthly tranche landed 7/18 and was NOT quietly absorbed (−8.3% on the day) — yet +27.4% 7d / +12.9% 24h on the DTCC pop. Next cliff Jan-18-2027. Founder-CEO died May-2026 (Ian De Bode now CEO). Re-vet trigger: fee-switch passes or any programmatic buyback/burn/staking-revenue goes live.",
+    baked:{ feesAnn:null, rev:null, tvl:null } },
+  { sym:"ENA", tile:false, name:"Ethena · monitor", cg:"ethena", bin:"ENAUSDT", hl:"ENA", llama:null, tvlSlug:null, circ:9.2937e9,
+    accrual:{label:"Buyback", slot:1, note:"MONITOR-ONLY: fee switch live/activating but modeled ~$26M/yr buyback vs >$300M/yr of ENA emissions (~2.55B tokens/yr ≈ $205–220M at current price) — failing math, TAO-pattern but milder. DefiLlama has no holders-rev adapter for ethena (endpoint 400s), so the ~$26M/yr stays T3."},
+    unlock:"MC FILLED (7/21, est): CoinPaprika-implied circ 9.29B (6/9 stamp) → MC ~$799M, FDV ~$1.29B (15B total supply). +2.2% 7d. Grayscale-entry + Solana-launch catalyst chatter is T3 only. The failing math stands: ~$205–220M/yr of emissions vs the modeled ~$26M/yr buyback.",
+    baked:{ feesAnn:null, rev:null, tvl:null } },
+];
+const SLOTCOLORS = { 1:"var(--s1)", 2:"var(--s2)", 3:"var(--s3)", 4:"var(--s4)", 5:"var(--s5)", 6:"var(--s6)" };
+
+/* ===== HISTORY / BACKFILL — compact CSV form (v16 restructure; law-page section "Dashboard-file engine law").
+   date|SYM:fees,rev,tvl,mcRev;SYM:… — empty field = null. HISTORY_CSV: engines APPEND EXACTLY ONE LINE per verified
+   run basis (echo prints rejected). BACKFILL_CSV: static owned archive — NEVER append or regenerate. Machine-transformed
+   from the v15 arrays, node-verified value-identical. 7/22 HISTORY line: fees/rev/TVL fresh ~04:30 UTC (AERO restated
+   ~22:45 UTC), MCs carried from the 7/22 ~12:20 PM PT T1 price basis. ===== */
+const HISTORY_CSV=`
+2026-07-10|HYPE:869.4e6,645.2e6,5992e6,26.6;AERO:105.5e6,51.4e6,294.4e6,9.4;PENDLE:13.26e6,11.45e6,1133.9e6,22.6
+2026-07-14|HYPE:,535.5e6,,31.1
+2026-07-17|HYPE:726.16e6,517.72e6,6317.4e6,29.7;AERO:88.4e6,56.04e6,320.16e6,8.22;PENDLE:10.8e6,8.5e6,1097.5e6,31.4
+2026-07-19|HYPE:,499e6;AERO:,55.46e6,,7.75;PENDLE:,,,32;UNI:,,,49;PUMP:,161.06e6
+2026-07-21|HYPE:705.27e6,502.01e6,6343.5e6,30.8;AERO:85.13e6,55.35e6,326.32e6,7.71;PENDLE:10.14e6,8e6,1164.5e6,34.7;UNI:977.88e6,45.33e6,3117e6,50.6;PUMP:297.39e6,163.89e6,,4.3;JUP:181.78e6,28.27e6,,23.2;AAVE:352.95e6,,14582.7e6;LIT:33.77e6,24.53e6,523.26e6,23.8;ETH:,22.39e6;VVV:,4.55e6
+2026-07-22|HYPE:712.8e6,506.8e6,6355e6,30.5;AERO:85.25e6,55.79e6,324.2e6,7.65;PENDLE:10.16e6,8.02e6,1164.5e6,34.6;UNI:1009.9e6,45.36e6,3180.5e6,50.5;PUMP:289.9e6,159.6e6,,5;JUP:180e6,28.37e6,,23.1;AAVE:,,14593.3e6;LIT:33.45e6,24.76e6,524.2e6,23.6;ETH:,22.4e6;VVV:,4.63e6
+2026-07-23|HYPE:699.8e6,496.7e6,,30.1;AERO:84.25e6,55.66e6,,7.1;UNI:,43.19e6,,54.2;VVV:,4.71e6;PENDLE:,,,33.5;JUP:,,,22.4;LIT:,,,22.4;PUMP:,,,4.8
+2026-07-24|HYPE:688.7e6,487.4e6,,30.4;AERO:83.2e6,55.5e6,306e6,7.0;UNI:1092.3e6,44.9e6,3140e6,52.8;VVV:,4.78e6;PENDLE:9.89e6,7.81e6,1190e6,33.2;JUP:175.6e6,27.7e6,,22.2;LIT:32.7e6,24.5e6;PUMP:305.2e6,168.2e6;AAVE:,,14192.3e6
+2026-07-27|HYPE:624.33e6,439.08e6,6364.5e6,33.0;AERO:74.43e6,50.99e6,305.9e6,8.3;UNI:1134.7e6,39.62e6,3059.7e6,59.5;VVV:,5e6;PENDLE:9.34e6,7.38e6,1206.6e6,35.8;JUP:157.61e6,25.75e6,1579.7e6,24.2;LIT:29.18e6,22.45e6,525.7e6;PUMP:312.43e6,174.05e6;AAVE:341.92e6,,14738.8e6
+`;
+const BACKFILL_CSV=`
+2024-07-01|AERO:215.6e6,213.4e6,541.1e6;PENDLE:23.91e6,17.95e6;UNI:907.4e6
+2024-07-08|AERO:201.5e6,199.4e6,456.4e6;PENDLE:20.8e6,15.72e6;UNI:845.8e6
+2024-07-15|AERO:192.2e6,190.4e6,543.2e6,5.04;PENDLE:18.75e6,14.22e6,,56.3;UNI:771.8e6
+2024-07-22|AERO:209.7e6,208e6,611.7e6,3.42;PENDLE:17.51e6,13.32e6,,47.3;UNI:783.9e6
+2024-07-29|AERO:217.4e6,215.6e6,606.4e6,3.4;PENDLE:21.01e6,16.27e6,,35.6;UNI:763.3e6
+2024-08-05|AERO:219.8e6,218e6,455.3e6,2.82;PENDLE:18.97e6,14.76e6,,29.7;UNI:864e6
+2024-08-12|AERO:230.2e6,228.3e6,518.1e6,2.64;PENDLE:17.98e6,13.99e6,,32.6;UNI:871.1e6
+2024-08-19|AERO:212.6e6,210.9e6,572.6e6,2.94;PENDLE:16.53e6,12.89e6,,38.2;UNI:759.2e6
+2024-08-26|AERO:203.4e6,202e6,568.7e6,2.9;PENDLE:5.961e6,4.521e6,,126;UNI:687.6e6
+2024-09-02|AERO:183.7e6,181.8e6,576.3e6,2.76;PENDLE:8.606e6,6.649e6,,71.8;UNI:585.1e6
+2024-09-09|AERO:172.4e6,170.4e6,548.6e6,3.06;PENDLE:8.191e6,6.33e6,,96.2;UNI:461.2e6
+2024-09-16|AERO:169.1e6,166.7e6,624.3e6,4.4;PENDLE:7.551e6,5.841e6,,101;UNI:457.3e6
+2024-09-23|AERO:189e6,186.3e6,736e6,5.02;PENDLE:7.489e6,5.803e6,,130;UNI:526.1e6
+2024-09-30|AERO:219.8e6,216.9e6,838.9e6,4.54;PENDLE:7.717e6,5.911e6,,108;UNI:578.6e6
+2024-10-07|AERO:249.9e6,246.4e6,915.9e6,4.52;PENDLE:7.852e6,6.011e6,,107;UNI:637.8e6
+2024-10-14|AERO:297.4e6,292.8e6,976.8e6,4.42;PENDLE:9.088e6,6.883e6,,102;UNI:720.2e6
+2024-10-21|AERO:314.7e6,309.2e6,955.9e6,3.51;PENDLE:10.57e6,7.947e6,,105;UNI:729.3e6
+2024-10-28|AERO:332.6e6,326.1e6,969e6,3.45;PENDLE:8.639e6,6.351e6,,134;UNI:753.3e6
+2024-11-04|AERO:337.4e6,330.6e6,885.9e6,3.8;PENDLE:14.65e6,11.1e6,,79.1;UNI:768.2e6
+2024-11-11|AERO:362.4e6,354.5e6,1076e6,3.44;PENDLE:16.79e6,12.64e6,,72;UNI:956.5e6
+2024-11-18|AERO:393.9e6,384.3e6,1088e6,3.05;PENDLE:18.47e6,13.86e6,,60.1;UNI:1110e6
+2024-11-25|AERO:412.5e6,401.1e6,1066e6,3.27;PENDLE:24.66e6,18.69e6,,50.1;UNI:1397e6
+2024-12-02|AERO:446.8e6,430e6,1147e6,4.1;PENDLE:22.66e6,16.91e6,,66.2;UNI:1714e6
+2024-12-09|AERO:488.5e6,465.8e6,1207e6,4.41;PENDLE:26.23e6,19.63e6,,53.6;UNI:2031e6
+2024-12-16|AERO:491.7e6,466.2e6,1250e6,3.3;PENDLE:28.02e6,21.08e6,,47.3;UNI:2068e6
+2024-12-23|AERO:517.4e6,488.9e6,1115e6,2.93;PENDLE:36.55e6,27.69e6,,30.8;UNI:2074e6
+2024-12-30|AERO:508.5e6,479.4e6,1071e6,2.99;PENDLE:35.7e6,26.8e6,,34.6;UNI:1878e6
+2025-01-06|AERO:491.5e6,457.2e6,1138e6,2.5;PENDLE:37.25e6,29.22e6,,24.2;UNI:1693e6
+2025-01-13|HYPE:331.1e6,312.3e6,,19.4;AERO:479.6e6,441.9e6,920.9e6,2.61;PENDLE:112.1e6,105e6,,6.19;UNI:1522e6
+2025-01-20|HYPE:556.2e6,524.3e6,,11;AERO:473.3e6,432.6e6,916.2e6,2.17;PENDLE:108.2e6,102.9e6,,5.72;UNI:1572e6
+2025-01-27|HYPE:607.1e6,571.7e6,,11.6;AERO:477.1e6,418.4e6,773.8e6,2.41;PENDLE:101.4e6,98.66e6,,6.16;UNI:1682e6
+2025-02-03|HYPE:696.7e6,656.1e6,,9.91;AERO:458.3e6,397.3e6,664.8e6,2.16;PENDLE:107.7e6,105.5e6,,4.98;UNI:1713e6
+2025-02-10|HYPE:694e6,653.5e6,,9.92;AERO:414.3e6,355.5e6,672e6,2.13;PENDLE:29.99e6,28.26e6,,20.7;UNI:1617e6
+2025-02-17|HYPE:636.2e6,600.2e6,,10.6;AERO:342.5e6,288.1e6,659.5e6,2.51;PENDLE:26.01e6,24.64e6,,24.1;UNI:1400e6
+2025-02-24|HYPE:605e6,573.8e6,,9.33;AERO:308.8e6,257.9e6,582e6,2.32;PENDLE:24.71e6,23.49e6,,21.8;UNI:1224e6
+2025-03-03|HYPE:632e6,601.1e6,,7.3;AERO:259.4e6,232.1e6,514.7e6,2.61;PENDLE:32.11e6,31.04e6,,14.3;UNI:1129e6
+2025-03-10|HYPE:612.9e6,583.1e6,,5.47;AERO:225e6,202.5e6,433.3e6,2.44;PENDLE:27.89e6,26.96e6,,13.2;UNI:1066e6
+2025-03-17|HYPE:598.8e6,568.7e6,,6.53;AERO:205.4e6,186.3e6,494.2e6,2.63;PENDLE:27.44e6,26.51e6,,15.8;UNI:977.9e6
+2025-03-24|HYPE:569.2e6,539.7e6,,6.85;AERO:181.9e6,163.1e6,534.8e6,2.96;PENDLE:30.4e6,29.51e6,,17;UNI:855.4e6
+2025-03-31|HYPE:467.2e6,441.8e6,,6.7;AERO:155e6,138e6,498.2e6,2.73;PENDLE:17.68e6,16.84e6,,28.3;UNI:688.9e6
+2025-04-07|HYPE:466.1e6,439e6,,8.23;AERO:141.8e6,124.9e6,398e6,2.82;PENDLE:16.69e6,15.88e6,,35.6;UNI:588.5e6
+2025-04-14|HYPE:487.9e6,459.5e6,,9.08;AERO:135.6e6,118.4e6,407.9e6,3.1;PENDLE:16.03e6,15.31e6,,34.1;UNI:565.4e6
+2025-04-21|HYPE:507.2e6,477.6e6,,9.57;AERO:128.5e6,113.9e6,429.2e6,4.18;PENDLE:15.04e6,14.38e6,,39;UNI:590.5e6
+2025-04-28|HYPE:537.8e6,506.5e6,,10;AERO:136.6e6,120.6e6,476.7e6,5.7;PENDLE:15.6e6,15.11e6,,40;UNI:681.6e6
+2025-05-05|HYPE:513.6e6,483.7e6,,11.6;AERO:138.3e6,121.2e6,496.1e6,5.34;PENDLE:18.6e6,18.14e6,,33.5;UNI:685.7e6
+2025-05-12|HYPE:564.9e6,532e6,,11.7;AERO:159.2e6,137.6e6,534.6e6,4.55;UNI:800.7e6
+2025-05-19|HYPE:667.9e6,629e6,,12.6;AERO:186.5e6,157.3e6,537.1e6,4.17;PENDLE:35.29e6,34.85e6,,22.7;UNI:920.9e6
+2025-05-26|HYPE:812.2e6,764.9e6,,11.3;AERO:189.7e6,156.6e6,513e6,3.58;PENDLE:58.36e6,57.89e6,,13.5;UNI:947e6
+2025-06-02|HYPE:904.3e6,851.6e6,,10.4;AERO:192.8e6,157.6e6,501.7e6,3.19;PENDLE:60.59e6,60.03e6,,11.7;UNI:1008e6
+2025-06-09|HYPE:854.8e6,805e6,,12.9;AERO:187.7e6,147e6,516.4e6,3.47;PENDLE:46.3e6,45.74e6,,14.6;UNI:983.9e6
+2025-06-16|HYPE:899.5e6,847.1e6,,11.4;AERO:184.8e6,144.9e6,528.2e6,6.08;PENDLE:49.94e6,49.39e6,,13.1;UNI:943.7e6
+2025-06-23|HYPE:845.5e6,796.3e6,,11.9;AERO:186.6e6,148.1e6,514.5e6,5.15;PENDLE:51.43e6,50.91e6,,11.4;UNI:890.3e6
+2025-06-30|HYPE:777.2e6,731.9e6,,14.1;AERO:179.4e6,144.5e6,534.2e6,5.13;PENDLE:18.36e6,17.96e6,,34.4;UNI:827.6e6
+2025-07-07|HYPE:775.2e6,730e6,,14.4;AERO:172.1e6,142.8e6,530.5e6,4.8;PENDLE:16.88e6,16.55e6,,38.6
+2025-07-14|HYPE:873.6e6,822.7e6,,14.5;AERO:165.6e6,142.9e6,572.5e6,6.03;PENDLE:17.43e6,17.11e6,,42.6
+2025-07-21|HYPE:1005e6,946.1e6,,11.3;AERO:172.7e6,149.3e6,601e6,5.53;PENDLE:16.92e6,16.51e6,,44.7
+2025-07-28|HYPE:1120e6,1055e6,,10.6;AERO:185.7e6,158e6,576.6e6,4.98;PENDLE:16.53e6,15.95e6,,48.9
+2025-08-04|HYPE:1263e6,1161e6,,8.53;AERO:198.8e6,167.3e6,532.8e6,4.4;PENDLE:29.41e6,28.61e6,,26.1
+2025-08-11|HYPE:1397e6,1237e6,,9.58;AERO:219.6e6,180.6e6,581.4e6,6.85;PENDLE:33.61e6,32.59e6,,27.9
+2025-08-18|HYPE:1485e6,1250e6,,8.43;AERO:231.7e6,188.6e6,596.4e6,6.76;PENDLE:40.85e6,39.56e6,,23.7
+2025-08-25|HYPE:1682e6,1345e6,,9.09;AERO:243.6e6,196.5e6,588.7e6,6.15;PENDLE:50.97e6,49.46e6,,17.7
+2025-09-01|HYPE:1725e6,1354e6,,8.63;AERO:242.2e6,193.9e6,618.5e6,5.61;PENDLE:48.61e6,46.69e6,,17.3
+2025-09-08|HYPE:1695e6,1326e6,,10.4;AERO:226.7e6,182.5e6,623.7e6,6.01;PENDLE:48.98e6,45.52e6,,18.9
+2025-09-15|HYPE:1638e6,1227e6,,12;AERO:400.8e6,358e6,667.5e6,3.43;PENDLE:44e6,39.14e6,,22.3
+2025-09-22|HYPE:1506e6,1116e6,,9.71;AERO:424.7e6,372.5e6,638.9e6,2.59;PENDLE:39.52e6,32.15e6,,24.6
+2025-09-29|HYPE:1403e6,1037e6,,12.1;AERO:428e6,372.3e6,575.1e6,2.84;PENDLE:41.84e6,31.31e6,,26.9
+2025-10-06|HYPE:1485e6,1092e6,,10.4;AERO:444.6e6,384.9e6,670.5e6,2.59;PENDLE:42.65e6,31.7e6,,24.1
+2025-10-13|HYPE:1553e6,1195e6,,8.16;AERO:279.4e6,215.7e6,553.3e6,3.68;PENDLE:61.1e6,46.47e6,,12.5
+2025-10-20|HYPE:1529e6,1203e6,,8.31;AERO:251.5e6,197.2e6,529.3e6,3.75;PENDLE:51.62e6,39.11e6,,14.1
+2025-10-27|HYPE:1451e6,1132e6,,10.9;AERO:256.8e6,196.2e6,561.3e6,4.98;PENDLE:42.49e6,32.22e6,,17.1
+2025-11-03|HYPE:1483e6,1153e6,,8.81;AERO:255.4e6,192.9e6,517.1e6,4.28;PENDLE:48.98e6,37.92e6,,12
+2025-11-10|HYPE:1316e6,1013e6,,9.76;AERO:243.3e6,182.8e6,506.6e6,5;PENDLE:46.36e6,36.1e6,,12.6
+2025-11-17|HYPE:1315e6,1012e6,,9.84;AERO:240.7e6,181.3e6,425.5e6,4.13;PENDLE:26.45e6,20.33e6,,20.1
+2025-11-24|HYPE:1356e6,1042e6,,8.55;AERO:204.7e6,158.3e6,425.7e6,4.22;PENDLE:41.09e6,32.05e6,,14.8
+2025-12-01|HYPE:1288e6,984e6,,9.01;AERO:179.6e6,142e6,395.5e6,4.53;PENDLE:37.26e6,29.04e6,,15.8
+2025-12-08|HYPE:1154e6,875.9e6,,8;AERO:145.1e6,113e6,453e6,5.07;PENDLE:34.46e6,26.97e6,,14.5
+2025-12-15|HYPE:1037e6,783.5e6,,7.93;AERO:120.1e6,92.81e6,438.3e6,4.97;PENDLE:33.33e6,26.17e6,,12.1
+2025-12-22|HYPE:893e6,668.9e6,,9.33;AERO:101.6e6,78.65e6,440e6,5.79;PENDLE:21.04e6,16.47e6,,17.9
+2025-12-29|HYPE:818.6e6,610.9e6,,10.7;AERO:95.26e6,73.83e6,452.5e6,5.29;PENDLE:15.92e6,12.5e6,,26.8;UNI:,1.45e6
+2026-01-05|HYPE:754.8e6,569.7e6,,11.7;AERO:91.37e6,71.71e6,501.3e6,7.12;PENDLE:15.44e6,12.17e6,,29.6;UNI:,8.509e6
+2026-01-12|HYPE:739.9e6,566.2e6,,11.3;AERO:93.04e6,74.94e6,479.1e6,7.37;PENDLE:15.73e6,12.45e6,,30.5;UNI:,15.2e6
+2026-01-19|HYPE:726.6e6,559.1e6,,9.94;AERO:102e6,85.46e6,489.7e6,5.39;PENDLE:13.74e6,10.86e6,,34.3;UNI:,22.03e6,,139
+2026-01-26|HYPE:799.3e6,611.4e6,,13.6;AERO:107.4e6,90.49e6,473.5e6,4.68;PENDLE:9.739e6,7.676e6,,43.7;UNI:,28.81e6,,101
+2026-02-02|HYPE:996.5e6,775.6e6,,11.3;AERO:117.9e6,96.51e6,376.4e6,3.3;PENDLE:13.39e6,10.58e6,,22.3;UNI:,36.75e6,,62.3
+2026-02-09|HYPE:1119e6,866e6,,9.02;AERO:123.2e6,97.17e6,362.6e6,2.93;PENDLE:14.06e6,11.11e6,,17.5;UNI:,45.18e6,,46.2
+2026-02-16|HYPE:1075e6,830.9e6,,8.74;AERO:118.7e6,90.78e6,362e6,3.22;PENDLE:10.85e6,8.554e6,,23.6;UNI:,45.58e6,,46.2
+2026-02-23|HYPE:1009e6,780.1e6,,9.44;AERO:108e6,80.18e6,347.5e6,4.42;PENDLE:15.55e6,12.32e6,,18;UNI:,43.53e6,,56.8
+2026-03-02|HYPE:918.9e6,701.2e6,,11.6;AERO:102.2e6,74.55e6,353.9e6,4.64;PENDLE:11.23e6,8.878e6,,25.4;UNI:,41.42e6,,61
+2026-03-09|HYPE:769.9e6,577.6e6,,16.6;AERO:92.11e6,64.63e6,330.8e6,4.95;PENDLE:12.72e6,10.08e6,,22.4;UNI:,34.81e6,,70.1
+2026-03-16|HYPE:787.5e6,589.4e6,,17.2;AERO:84.89e6,57.47e6,356.2e6,5.31;PENDLE:11.33e6,8.978e6,,23.8;UNI:,41.7e6,,53.6
+2026-03-23|HYPE:865e6,646.9e6,,15.3;AERO:88.01e6,60.02e6,342.3e6,5.08;PENDLE:8.023e6,6.329e6,,32.9;UNI:,50.57e6,,43.5
+2026-03-30|HYPE:818.2e6,607e6,,14.6;AERO:82.46e6,54.97e6,347.6e6,5.36;PENDLE:7.233e6,5.706e6,,32.4;UNI:,54.27e6,,38.2
+2026-04-06|HYPE:769.3e6,562.2e6,,17.7;AERO:79.97e6,52.59e6,349.4e6,6.21;PENDLE:8.672e6,6.859e6,,26.1;UNI:,56.29e6,,34
+2026-04-13|HYPE:771.7e6,560e6,,20.6;AERO:88.72e6,52.76e6,366.2e6,6.67;PENDLE:8.082e6,6.388e6,,31;UNI:,53.41e6,,37.7
+2026-04-20|HYPE:754.7e6,541.2e6,,19.1;AERO:102.2e6,55.03e6,348.8e6,6.91;PENDLE:11.35e6,9.003e6,,24.4;UNI:,56.94e6,,35.1
+2026-04-27|HYPE:719.9e6,520.8e6,,19.1;AERO:107e6,52.81e6,375.6e6,8.1;PENDLE:20.47e6,16.29e6,,13.4;UNI:,56.33e6,,35.2
+2026-05-04|HYPE:723.6e6,524.9e6,,20.7;AERO:113.7e6,55.32e6,380.9e6,7.62;PENDLE:21.76e6,17.3e6,,18.3;UNI:,55.12e6,,39
+2026-05-11|HYPE:703.8e6,516.3e6,,19.2;AERO:125.6e6,68.09e6,402.2e6,6.3;PENDLE:22.79e6,18.1e6,,18.7;UNI:,53.67e6,,41.6
+2026-05-18|HYPE:688.2e6,505.3e6,,29.2;AERO:128.2e6,76.34e6,370.2e6,5.13;PENDLE:23.26e6,18.47e6,,16.8;UNI:,49.19e6,,45.2
+2026-05-25|HYPE:728.8e6,539.6e6,,26.8;AERO:131.4e6,80.56e6,362.9e6,4.74;PENDLE:13.18e6,10.39e6,,25.4;UNI:,46.15e6,,40.4
+2026-06-01|HYPE:815e6,610.8e6,,27.1;AERO:138.7e6,83.46e6,350.5e6,3.94;PENDLE:15.42e6,12.16e6,,18.1;UNI:,49.22e6,,33
+2026-06-08|HYPE:955.4e6,722.9e6,,19.6;AERO:133.3e6,72.93e6,292.5e6,4.41;PENDLE:11.62e6,9.106e6,,23.1;UNI:,59.78e6,,26
+2026-06-15|HYPE:977e6,734.6e6,,24.9;AERO:119.6e6,62.81e6,311.7e6,7;PENDLE:11.47e6,9.001e6,,27.8;UNI:,60.74e6,,32
+2026-06-22|HYPE:970.1e6,723.4e6,,22.2;AERO:115.4e6,60.7e6,318.1e6,7.98;PENDLE:8.39e6,6.525e6,,33.8;UNI:,59.57e6,,30.3
+2026-06-29|HYPE:985.2e6,729.5e6,,22.4;AERO:108.7e6,57.66e6,310.9e6,8.28;PENDLE:12.82e6,10.07e6,,25.5;UNI:,62.17e6,,28.8
+2026-07-06|HYPE:800.2e6,577e6,,29.7;AERO:96.12e6,55.25e6,330.9e6,8.95;PENDLE:10.21e6,8.03e6,,33.7;UNI:,49.9e6,,41.6
+2026-07-13|HYPE:756.7e6,539.1e6,,31;AERO:91.34e6,56.41e6,320.6e6,8.19;PENDLE:11.34e6,8.936e6,,30.5;UNI:,48.01e6,,47.9
+2026-07-19|HYPE:705.1e6,501.9e6,,33.3
+2026-07-20|AERO:85.32e6,55.87e6,323.7e6,8.27;PENDLE:10.16e6,8.023e6,,34;UNI:,45.52e6,,50.6
+2026-07-21|AERO:,,327e6
+`;
+function parseHist(csv){ return csv.trim().split("\n").map(L=>{ const i=L.indexOf("|"); const o={d:L.slice(0,i),v:{}}; L.slice(i+1).split(";").forEach(seg=>{ if(!seg) return; const j=seg.indexOf(":"); const f=seg.slice(j+1).split(","); const e={}; [["fees",f[0]],["rev",f[1]],["tvl",f[2]],["mcRev",f[3]]].forEach(kx=>{ if(kx[1]) e[kx[0]]=Number(kx[1]); }); o.v[seg.slice(0,j)]=e; }); return o; }); }
+const SERIESCOLORS = { HYPE:"var(--s1)", AERO:"var(--s2)", PENDLE:"var(--s3)", UNI:"var(--s5)", PUMP:"var(--s6)", JUP:"var(--s4)", AAVE:"var(--muted)", LIT:"var(--text-2)", ETH:"var(--muted)", VVV:"var(--text-2)" };
+const GRAY_SERIES = { AAVE:1, LIT:1, ETH:1, VVV:1 }; /* fold-over entities: gray + dashed (fixed hues stay ≤6 per the palette; ETH/VVV = burn-flow cohort, gray in the rev chart, named in legend/tooltip) */
+const HISTORY = parseHist(HISTORY_CSV);
+const BACKFILL = parseHist(BACKFILL_CSV);
+/* merged render view: static backfill + live run points (same-date duplicates are harmless) */
+const HIST_ALL = BACKFILL.concat(HISTORY).slice().sort((a,b)=>a.d<b.d?-1:1);
+
+function histChart(elId, metric, fmtVal, useLog){
+  const el=document.getElementById(elId); if(!el) return;
+  el.replaceChildren();
+  const series={};
+  HIST_ALL.forEach(h=>{ for(const s in h.v){ const val=h.v[s][metric]; if(val!=null){ (series[s]=series[s]||[]).push({x:Date.parse(h.d), y:val, d:h.d}); } } });
+  const names=Object.keys(series);
+  if(!names.length){ const n=document.createElement("div"); n.className="hint"; n.textContent="No history yet."; el.append(n); return; }
+  Object.values(series).forEach(pts=>pts.sort((a,b)=>a.x-b.x));
+  names.sort((a,b)=>series[b][series[b].length-1].y - series[a][series[a].length-1].y);
+  const W=960,H=300,L=66,R=88,T=14,B=32;
+  /* x-domain from the points THIS metric has — MC/Rev stays run-points-wide while fees/rev/TVL span the backfill */
+  const xsAll=[]; names.forEach(s=>series[s].forEach(p=>xsAll.push(p.x)));
+  const x0=Math.min(...xsAll), x1=Math.max(...xsAll);
+  const ys=[]; names.forEach(s=>series[s].forEach(p=>ys.push(p.y)));
+  const tr=v=>useLog?Math.log10(v):v;
+  let y0=Math.min(...ys.map(tr)), y1=Math.max(...ys.map(tr));
+  if(y1===y0){ y0-=1; y1+=1; }
+  const yp=(y1-y0)*0.08; y0-=yp; y1+=yp;
+  if(!useLog && y0<0 && Math.min(...ys)>=0) y0=0; /* never show a negative axis on an all-positive linear ratio chart */
+  const X=t=>L+(t-x0)/((x1-x0)||1)*(W-L-R);
+  const Y=v=>H-B-(tr(v)-y0)/(y1-y0)*(H-T-B);
+  const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+  svg.setAttribute("viewBox","0 0 "+W+" "+H); svg.setAttribute("width","100%");
+  for(let k=0;k<5;k++){
+    const gy=T+(H-T-B)*k/4, lv=y1-(y1-y0)*k/4, real=useLog?Math.pow(10,lv):lv;
+    const ln=document.createElementNS(svg.namespaceURI,"line");
+    ln.setAttribute("x1",L); ln.setAttribute("x2",W-R); ln.setAttribute("y1",gy); ln.setAttribute("y2",gy);
+    ln.setAttribute("stroke","var(--grid)"); ln.setAttribute("stroke-width","1"); svg.append(ln);
+    const tx=document.createElementNS(svg.namespaceURI,"text");
+    tx.setAttribute("x",L-6); tx.setAttribute("y",gy+3.5); tx.setAttribute("text-anchor","end");
+    tx.setAttribute("font-size","11"); tx.setAttribute("fill","var(--muted)"); tx.textContent=fmtVal(real); svg.append(tx);
+  }
+  const dSet=[...new Set(xsAll)].sort((a,b)=>a-b);
+  if(dSet.length<=14){
+    dSet.forEach(t=>{ const d=new Date(t).toISOString().slice(0,10);
+      const tx=document.createElementNS(svg.namespaceURI,"text");
+      tx.setAttribute("x",X(t)); tx.setAttribute("y",H-8); tx.setAttribute("text-anchor","middle");
+      tx.setAttribute("font-size","11"); tx.setAttribute("fill","var(--muted)");
+      tx.textContent=d.slice(5).replace("-","/"); svg.append(tx); });
+  } else {
+    /* long span: month ticks thinned to ≤8 */
+    const MO=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const a=new Date(x0); let y=a.getUTCFullYear(), m=a.getUTCMonth()+1; if(m>11){m=0;y++;}
+    const marks=[]; while(Date.UTC(y,m,1)<x1){ marks.push({t:Date.UTC(y,m,1),y,m}); m++; if(m>11){m=0;y++;} }
+    const step=Math.max(1,Math.ceil(marks.length/8));
+    marks.filter((_,i)=>i%step===0).forEach(mk=>{
+      const tx=document.createElementNS(svg.namespaceURI,"text");
+      tx.setAttribute("x",X(mk.t)); tx.setAttribute("y",H-8); tx.setAttribute("text-anchor","middle");
+      tx.setAttribute("font-size","11"); tx.setAttribute("fill","var(--muted)");
+      tx.textContent=MO[mk.m]+" "+String(mk.y).slice(2); svg.append(tx); });
+  }
+  const toLabel=new Set(names.slice(0,4));
+  const endLabels=[];
+  names.forEach(s=>{
+    const pts=series[s], col=SERIESCOLORS[s]||"var(--muted)";
+    if(pts.length>1){
+      /* split the line at gaps >45 days — never draw a bridge across missing data (e.g. UNI fees 6/30/25 → 7/10/26) */
+      const GAP=45*86400e3; let seg=[];
+      const flush=()=>{ if(seg.length>1){ const p=document.createElementNS(svg.namespaceURI,"path");
+        p.setAttribute("d","M"+seg.map(q=>X(q.x).toFixed(1)+","+Y(q.y).toFixed(1)).join(" L"));
+        p.setAttribute("fill","none"); p.setAttribute("stroke",col); p.setAttribute("stroke-width","2");
+        if(GRAY_SERIES[s]) p.setAttribute("stroke-dasharray","5 3");
+        p.setAttribute("stroke-linejoin","round"); p.setAttribute("stroke-linecap","round"); svg.append(p); } seg=[]; };
+      pts.forEach((q,i)=>{ if(i>0 && q.x-pts[i-1].x>GAP) flush(); seg.push(q); }); flush();
+    }
+    const dense=pts.length>40; /* backfilled series: the line carries the shape, visible dots only at the live end */
+    pts.forEach((q,qi)=>{
+      if(!dense || qi===pts.length-1){
+        const c=document.createElementNS(svg.namespaceURI,"circle");
+        c.setAttribute("cx",X(q.x)); c.setAttribute("cy",Y(q.y)); c.setAttribute("r",dense?"3.5":(pts.length<=3?"6":"4.5")); /* sparse newcomers get big dots so every legend entry is visibly on the chart */
+        c.setAttribute("fill",col); c.setAttribute("stroke","var(--surface-1)"); c.setAttribute("stroke-width","2"); svg.append(c);
+      }
+      const hit=document.createElementNS(svg.namespaceURI,"circle");
+      hit.setAttribute("cx",X(q.x)); hit.setAttribute("cy",Y(q.y)); hit.setAttribute("r","13"); hit.setAttribute("fill","transparent");
+      bindTip(hit,e=>showTip(e,[[s+" · "+q.d.slice(5).replace("-","/"),fmtVal(q.y)]])); svg.append(hit);
+    });
+    if(toLabel.has(s)){ const last=pts[pts.length-1]; endLabels.push({s, x:X(last.x), y:Y(last.y)}); }
+  });
+  endLabels.sort((a,b)=>a.y-b.y);
+  let prevY=-99;
+  endLabels.forEach(lb=>{
+    const ly=Math.max(lb.y, prevY+14); prevY=ly;
+    const tx=document.createElementNS(svg.namespaceURI,"text");
+    tx.setAttribute("x",(W-R)+9); tx.setAttribute("y",ly+4);
+    tx.setAttribute("font-size","11.5"); tx.setAttribute("font-weight","600"); tx.setAttribute("fill","var(--text-2)");
+    tx.textContent=lb.s; svg.append(tx);
+  });
+  el.append(svg);
+  const lg=document.createElement("div"); lg.style.cssText="display:flex;flex-wrap:wrap;gap:8px 12px;margin-top:6px";
+  names.forEach(s=>{
+    const chip=document.createElement("span"); chip.className="chip";
+    const dot=document.createElement("span"); dot.className="dot"; dot.style.background=SERIESCOLORS[s]||"var(--muted)";
+    chip.append(dot,document.createTextNode(s)); lg.append(chip);
+  });
+  el.append(lg);
+}
+function renderHistory(){
+  histChart("histFees","fees",v=>fm.usd(v),true);
+  histChart("histRev","rev",v=>fm.usd(v),true);
+  histChart("histMcRev","mcRev",v=>fm.x(v),false);
+  histChart("histTvl","tvl",v=>fm.usd(v),true);
+}
+
+/* ===== INCOMING UNLOCKS & EMISSIONS (owner directive 7/21) =====
+   ENGINE: refresh amounts + the price valuation each rebake; keep the 12-mo window rolling; tiers in tooltips.
+   AERO now charted as MEASURED (v13): T1 supply-delta average 4.46M/wk (blockscout totalSupply 6/8 stamp → 7/22); the
+   exact single-epoch mint refreshes every Thursday post-flip (00:00 UTC) from the same keyless endpoint — never bake
+   the stale Dec-24 Fed print (0.67%/wk ≈ 9.3M) as current. */
+const UNLOCKS = { window:"Aug 2026 → Jul 2027", priced:"7/23 price basis", rows:[
+  { sym:"HYPE", what:"authorized ceiling", usd12:7.06e9, rate:"9.92M HYPE/mo", pct:"+46.8% of circ if fully claimed", col:"var(--s1)", hatch:true, offscale:true,
+    tip:"238M core-contributor whitepaper schedule, ~9.92M/mo through ~Nov-2027 (T2). Next event ~Aug 6. This is the authorization, not the observed pace." },
+  { sym:"HYPE", what:"realized claim pace", usd12:175.176e6, rate:"~250K HYPE/mo est", pct:"+1.2%/yr of circ", col:"var(--s1)",
+    tip:"Observed claims: 201,995 HYPE ($12.5M) Jun 7 · ~$15.5M July (trackers, on-chain verifiable). Historical claims ran 1.4–17.6% of ceiling — Tokenomist estimate→committed→completed standard." },
+  { sym:"AERO", what:"gauge emissions + rebases (measured)", usd12:101.491e6, rate:"≈4.46M AERO/wk T1 avg", pct:"+24.8%/yr of circ · 0.23%/wk of total (~¾ lands locked)", col:"var(--s2)",
+    tip:"MEASURED 7/22 (T1): totalSupply via keyless Base blockscout API 1,940.44M vs CoinPaprika 1,912.42M (6/8 stamp) = +28.02M AERO / 44 days ≈ 4.46M/wk ≈ $101M/yr at spot. Fed-voted weekly (±0.01%-of-supply steps, bounds 0.01–1%/wk; voters stepped it down from 0.67%/wk at Dec-24 activation to ~0.23%/wk now). Recipients: LP gauges + locker rebases; with the Foundation PGF buy-and-lock (~200M AERO cumulative, T2), circulating float grew only ~0.9–1.2M/wk — ~3/4 of the mint never hits the market. METHOD REVISED 7/23: four identical totalSupply reads through 19h post-flip prove the mint does NOT appear at the epoch flip — supply is now measured as Thursday-to-Thursday same-hour deltas (~20:00 UTC); the 44-day average stands as the T1 figure." },
+  { sym:"VVV", what:"staking emissions", usd12:35.4025e6, rate:"250K VVV/mo", pct:"+6.5%/yr of circ", col:"var(--s5)",
+    tip:"Cut to 3M/yr effective 7/1/26 (launch 14M/yr → monthly cuts 6→5→4→3M; T2/T3). All emissions to sVVV stakers; the buy-and-burn pushes the other way — stated goal is net deflation." },
+  { sym:"PENDLE", what:"incentive emissions", usd12:8.88438e6, rate:"~469K PENDLE/mo est", pct:"+3.3%/yr of circ", col:"var(--s3)",
+    tip:"Terminal regime ≈2%/yr of supply (T3 — the 1.1%/wk decay schedule ends Apr–Sep-2026 per conflicting secondary sources; pin-down queued). sPENDLE/vePENDLE-directed." },
+  { sym:"LIT", what:"team+investor vesting (est)", usd12:328.977e6, rate:"~12.5M LIT/mo est", pct:"+60%/yr of circ est", col:"var(--s6)", est:true,
+    tip:"Team 26% + investors 24% (500M LIT) vest into 2029 (Tokenomist) — straight-lined ≈ $333M/yr at spot. CADENCE UNDISCLOSED (mix of cliff and linear): could be zero for months then lumpy. The widest error bars here; monitor-status reason #1." },
+  { sym:"PUMP", what:"3-yr vesting (est)", usd12:198.647e6, rate:"~7.58B PUMP/mo est", pct:"+22.7%/yr of circ", col:"var(--s4)", est:true,
+    tip:"OWNER FLAG CONFIRMED (7/21): the 7/15 cliff (57.28B, $86.5M, 121 wallets) STARTED a 3-year linear vesting of the remaining ~272.7B team+investor PUMP ≈ 7.58B/mo ≈ $15.2M/mo est (T3 press; next tranches 'materially smaller' than the cliff). Continuous supply-in through mid-2029." },
+], zeros:[
+  "UNI — fully vested since 2024 (Tokenomist: 62.1% of 1B circulating; treasury spend is governance-gated, not scheduled); no active emissions.",
+  "JUP — team/investor vesting COMPLETE (Jan-27-26; Mercurial final tranche 2/25); 'Jupiter Goes Green' net-zero emissions passed; ~3.54B in reserves has NO schedule (governance-gated). Scheduled supply-in: zero.",
+  "ETH — no unlocks or vesting; net issuance ≈ +0.3–0.5%/yr post-burn (validator yield, not a vesting overhang).",
+  "RENDER — 'fully unlocked' (Tokenomist): no dated cliffs; residual ~19.5% dribbles via escrow/partner + BME dynamics through 2051 (~1%/yr net inflation — see tile).",
+]};
+/* ===== SUPPLY IN vs VALUE OUT (owner directive 7/21) =====
+   ENGINE: refresh both legs each rebake — in = UNLOCKS realized-pace rows (+ AERO/RENDER emission ests, ETH issuance est);
+   out = holders rev ann (same numbers as the tiles). est flags stay until a leg is T1/T2-verified. */
+const NETFLOW = { rows:[
+  { sym:"HYPE",   in12:175.176e6, inEst:true,  out12:439.076e6, net:"net OUT $311M/yr",
+    tip:"Assistance-Fund buybacks ($487.4M/yr, fresh 7/24 print) currently absorb ~2.8× the realized unlock pace ($176M/yr est at 7/23 prices). Ceiling scenario: −$6.7B/yr net IN if the full 9.92M/mo were claimed." },
+  { sym:"UNI",    in12:0, inNone:"fully vested · no emissions", out12:39.6192e6, net:"net OUT $45M/yr",
+    tip:"Pure sink at the current burn rate — zero scheduled supply against $44.9M/yr of fee burn (7/24 print). Pro-forma post-vote: 2–3× the out-leg." },
+  { sym:"PENDLE", in12:8.88438e6, inEst:true, out12:7.38438e6, net:"≈ wash (−$1.0M/yr)",
+    tip:"Terminal-regime emissions (~$8.8M/yr est at 7/23 prices) vs sPENDLE buybacks ($7.8M/yr) — currently offsetting; inside estimate noise (no rank weight per Rule v3 sign-flip guard)." },
+  { sym:"RENDER", in12:10.1289e6, inEst:true, out12:null, outNone:"burns unmeasured (Foundation reports monthly)", net:"net IN ~$10.4M/yr est",
+    tip:"BME emissions ~7.0M RENDER/yr est vs burns that only print in monthly Foundation reports (~Aug 8 next) — net inflation ~1%/yr until burns catch up." },
+  { sym:"VVV",    in12:35.4025e6, out12:5.00245e6, net:"net IN $32M/yr (floor)",
+    tip:"Staking emissions $36.8M/yr (7/23 prices) vs the T1 burn FLOOR $4.78M/yr (7/24 cache-busted print, still growing — though the 7-day pace cooled −37% vs the 30-day average; a $2.89M print failed continuity and was retracted) — narrows to ~$23M/yr net IN if the venicestats rate (~$14M/yr) verifies. Stated goal: net deflation." },
+  { sym:"AERO",   in12:101.491e6, out12:50.9906e6, net:"net IN ~$44M/yr (ownership basis)",
+    tip:"Gross mint MEASURED (T1 supply delta, 44-day avg 4.46M/wk ≈ $99M/yr at 7/23 spot) vs veAERO fee share $55.5M/yr (fresh 7/24 print; the $51.4M 'restatement' was a stale-feed echo) → net-of-dilution ≈ −$44M/yr ≈ −11% of MC/yr — the emissions-outrunning-fees kill-trigger remains CONFIRMED on the ownership basis. FLOAT BASIS: circulating supply grew only ~0.9–1.2M/wk (est) — locker rebases + recipients locking + the Foundation PGF buy-and-lock (~200M AERO cumulative, T2) absorb ~3/4 of the mint. METHOD (revised 7/23): epoch-flip before/after reads do NOT capture the mint (four identical reads through 7/23 ~19:40 UTC) — supply now measured as Thursday-to-Thursday same-hour deltas." },
+  { sym:"JUP",    in12:0e6, inNone:"vesting complete · net-zero emissions", out12:25.7511e6, net:"net OUT $28M/yr",
+    tip:"Team/investor vesting completed Jan-2026; 'Jupiter Goes Green' net-zero emissions passed — zero scheduled supply against $27.7M/yr of Litterbox buybacks. One of three positive-net tokens on the page." },
+  { sym:"PUMP",   in12:198.647e6, inEst:true, out12:174.047e6, net:"net IN ~$6M/yr est",
+    tip:"The 7/15 cliff started 3-yr linear vesting ≈ $175M/yr est (7/23 prices) vs $168.2M/yr of 50%-of-revenue burns — the mechanically-cheapest gross multiple is marginally NET-DILUTIVE while the vesting spigot runs." },
+  { sym:"LIT",    in12:328.977e6, inEst:true, out12:24.50e6, net:"deep net IN est",
+    tip:"Straight-lined team+investor vesting ≈ $333M/yr est (cadence UNDISCLOSED — could be cliff-lumpy) vs $24.5M/yr TWAP buybacks. The overhang that keeps LIT monitor-only, now quantified." },
+  { sym:"ETH",    in12:1849.4e6, inEst:true, out12:22.4e6, net:"net IN ~$1.75B/yr",
+    tip:"Validator issuance ~940K ETH/yr est ($1.77B at 7/23) vs EIP-1559 burn $22.4M/yr — the 'burn < issuance' steelman, quantified. Glamsterdam's gas-limit raise is the catalyst that could close it." },
+]};
+function renderNetflow(){
+  const el=document.getElementById("netflowBars"); if(!el) return; el.replaceChildren();
+  /* each row scales to its own larger leg — the message is the WITHIN-ROW in-vs-out ratio; absolute $ live in the labels
+     (a shared scale left 5 of 7 rows sub-1% wide under ETH's $1.8B issuance — unreadable) */
+  NETFLOW.rows.forEach(r=>{
+    const rowMax=Math.max(r.in12||0,r.out12||0)||1;
+    const row=document.createElement("div"); row.className="ubar-row";
+    const lab=document.createElement("div"); lab.className="lab"; lab.textContent=r.sym;
+    const track=document.createElement("div"); track.className="nf-track";
+    if(r.in12>0){ const b=document.createElement("div"); b.className="nf-bar nf-in"+(r.inEst?" est":""); b.style.width=Math.max(2,r.in12/rowMax*100)+"%"; track.append(b); }
+    else if(r.inNone){ const n=document.createElement("div"); n.className="nf-none top"; n.textContent="in: "+r.inNone; track.append(n); }
+    if(r.out12>0){ const b=document.createElement("div"); b.className="nf-bar nf-out"; b.style.width=Math.max(2,r.out12/rowMax*100)+"%"; track.append(b); }
+    else if(r.outNone){ const n=document.createElement("div"); n.className="nf-none bot"; n.textContent="out: "+r.outNone; track.append(n); }
+    const val=document.createElement("div"); val.className="val";
+    const nets=document.createElement("span"); nets.className="net"; nets.textContent=r.net; val.append(nets);
+    const p=document.createElement("span"); p.className="pct";
+    p.textContent="in "+(r.in12>0?fm.usd(r.in12)+(r.inEst?" est":""):"—")+" · out "+(r.out12>0?fm.usd(r.out12):"—"); val.append(p);
+    bindTip(track,e=>showTip(e,[[r.sym+" · supply in vs value out", r.net],["",r.tip]]));
+    row.append(lab,track,val); el.append(row);
+  });
+  const nt=document.getElementById("netflowNotes");
+  if(nt){ nt.textContent="Each row is scaled to its own larger leg — read the in-vs-out ratio within a row; absolute dollars are in the right-hand labels (a shared scale would leave most rows invisible under ETH's $1.8B issuance). est = derived estimate, dashed outline — ETH from ~940K ETH/yr validator issuance; HYPE in-leg from realized claim pace; RENDER from ~7M RENDER/yr BME est. AERO's in-leg is MEASURED (T1 44-day supply-delta average, solid bar; the exact epoch mint refreshes weekly post-flip). Out-legs are the same holders-rev numbers as the tiles (T1 where printed)."; }
+}
+function renderUnlocks(){
+  const el=document.getElementById("unlockBars"); if(!el) return; el.replaceChildren();
+  const scaleMax=Math.max(...UNLOCKS.rows.filter(r=>!r.offscale).map(r=>r.usd12));
+  UNLOCKS.rows.forEach(r=>{
+    const row=document.createElement("div"); row.className="ubar-row";
+    const lab=document.createElement("div"); lab.className="lab"; lab.textContent=r.sym+" — "+r.what;
+    const track=document.createElement("div"); track.className="ubar-track";
+    const bar=document.createElement("div"); bar.className="ubar"+(r.hatch?" hatch":"")+(r.est?" est":"");
+    bar.style.setProperty("--ubarcol", r.col);
+    if(!r.hatch) bar.style.background=r.col;
+    bar.style.width=(r.offscale?100:Math.max(1.2,r.usd12/scaleMax*100))+"%";
+    track.append(bar);
+    const val=document.createElement("div"); val.className="val";
+    val.append(document.createTextNode(fm.usd(r.usd12)+" / 12 mo"+(r.offscale?" · OFF-SCALE":"")));
+    const p=document.createElement("span"); p.className="pct"; p.textContent=r.rate+" · "+r.pct; val.append(p);
+    bindTip(track,e=>showTip(e,[[r.sym+" · "+r.what, fm.usd(r.usd12)+"/12mo"],["",r.tip]]));
+    row.append(lab,track,val); el.append(row);
+  });
+  const nt=document.getElementById("unlockNotes");
+  if(nt){ nt.replaceChildren();
+    UNLOCKS.zeros.forEach(z=>{ const d=document.createElement("div"); d.textContent="• "+z; nt.append(d); });
+    const d=document.createElement("div"); d.style.marginTop="6px";
+    d.textContent="Bar scale is set by the realized-pace rows; HYPE's authorized ceiling ($7.21B/12mo) is drawn full-width and HATCHED because it is ~40× the chart scale — the gap between the hatched and solid HYPE bars is the story: authorization vs observed restraint. Window "+UNLOCKS.window+" · "+UNLOCKS.priced+".";
+    nt.append(d);
+  }
+}
+
+/* runtime state */
+let state = TOKENS.map(t => ({ ...t, price:null, d24:null, d7:null, mc:null, fdv:null, vol:null, spark:null, ...t.baked }));
+let mode = "none";            /* live | stale | none */
+let sourceLabel = "";         /* which tracker supplied prices */
+let lastGood = { asof: LAST_KNOWN.asof, bySym: {...LAST_KNOWN.bySym} };
+let asofLabel = "connecting…";
+
+const fm = {
+  usd(v, dp) { if (v==null) return "—";
+    if (v>=1e9) return "$"+(v/1e9).toFixed(v>=1e10?0:2)+"B";
+    if (v>=1e6) return "$"+(v/1e6).toFixed(v>=1e8?0:1)+"M";
+    if (v>=1e3) return "$"+(v/1e3).toFixed(1)+"K";
+    return "$"+v.toFixed(dp!=null?dp:(v<2?4:2)); },
+  price(v){ if (v==null) return "—";
+    if (v>=1000) return "$"+v.toLocaleString("en-US",{maximumFractionDigits:0});
+    if (v>=1) return "$"+v.toFixed(2);
+    if (v>=0.01) return "$"+v.toFixed(4);
+    return "$"+v.toFixed(6); },
+  pct(v){ return v==null?"—":(v>0?"+":"")+v.toFixed(1)+"%"; },
+  x(v){ return v==null?"—":v.toFixed(v<10?1:0)+"×"; },
+  ratio(v){ return v==null?"—":v.toFixed(2); }
+};
+const cls = v => v==null?"dim":(v>=0?"up":"down");
+function mcRev(t){ return (t.mc && t.rev) ? t.mc/t.rev : null; }
+/* MC / NET holders revenue (owner directive 7/21): denominator = holders rev MINUS next-12-mo supply-in
+   (unlocks + emissions, realized-pace basis — same IN legs as the NETFLOW chart; refresh together each rebake).
+   Negative denominator = the token is net-dilutive today → "dil-neg", sorted after all real multiples. */
+const IN12 = { HYPE:175.176e6, UNI:0, PENDLE:8.88438e6, RENDER:10.1289e6, VVV:35.4025e6, AERO:101.491e6, ETH:1849.4e6, /* repriced to the 7/27 basis */
+  PUMP:198.647e6,  /* 3-yr linear vesting of remaining team+investor 272.7B post-7/15-cliff ≈ 7.58B/mo × $0.002004 est (T3 press + Tokenomist) */
+  JUP:0,
+  AAVE:0,     /* Aavenomics 3.0 has no scheduled emissions or vesting, so supply-in is zero and the
+                 net multiple equals the gross one. AAVE was ABSENT from IN12 until 7/27, which made the
+                 net-of-dilution chart silently omit the #7 seat while its own note claimed FULL COVERAGE. */       /* team/investor vesting COMPLETE Jan-27-26 (Mercurial final 2/25); net-zero emissions passed; ~3.54B reserves have NO schedule (governance-gated, like UNI treasury) */
+  LIT:328.977e6    /* team 26% + investors 24% (500M) straight-lined into 2029 × $2.22 est — CADENCE UNDISCLOSED, could be cliff-lumpy; the widest error bars on the board */ };
+function mcNet(t){
+  if(!t.mc || !t.rev || IN12[t.sym]==null) return null;   /* no invented in-legs: blank where the schedule is unknown (e.g. LIT undisclosed vesting) */
+  const net=t.rev-IN12[t.sym];
+  return net>0 ? t.mc/net : -1;                            /* -1 = dilution-negative sentinel */
+}
+/* ===== NET-OF-DILUTION MULTIPLE CHART — THE PRIMARY DIAL (owner directive 7/22 PM) =====
+   MC / (holders rev − supply-in), same IN12 legs as the net-flow chart. NET_MODEL holds explicit per-token
+   models where the naive subtraction misleads (owner: "create a model and note how you calculated") —
+   ENGINE: refresh NET_MODEL inputs every run alongside IN12 (AERO inn = float-growth $/yr from the AERO
+   supply ledger on the Aerodrome row page); every bar's tooltip must show the full calculation. */
+const NET_MODEL = {
+  AERO: { inn:25.0906e6, est:true, basis:"float-adjusted model",
+    calc:"AERO MODEL (float-adjusted): fee share $55.5M/yr (fresh T1 print) MINUS market-relevant supply-in = measured circulating-FLOAT growth ~0.9–1.2M AERO/wk ≈ $23.3M/yr midpoint at spot — NOT the ~$99M/yr gross mint, because ~3/4 of mint lands locked (locker rebases + recipients re-locking + Foundation PGF buy-and-lock ~200M cumulative) and never reaches the market. Net ≈ +$32.2M/yr → MC $388M ÷ $32.2M ≈ 12.1× (dashed: modeled). HONESTY: on the strict OWNERSHIP basis (gross mint) AERO is net-NEGATIVE, ~−$44M/yr, kill-trigger active — both bases render on the net-flow chart." },
+};
+/* Red dil-neg rows — every tracked name whose supply-in exceeds capture appears ON the chart (owner directive 7/22).
+   ENGINE: refresh these legs with IN12 + NET_MODEL every rebake; est marks hold until each leg verifies. */
+const DILNEG = [
+  { sym:"PENDLE", txt:"≈ wash — net −$1.0M/yr est (inside noise)", tip:"rev $7.81M/yr − emissions ~$8.8M/yr est (terminal ≈2%/yr regime; decay-end pin-down queued); Rule v3 sign-flip guard: a wash inside estimate error carries no rank weight" },
+  { sym:"PUMP", txt:"net-dilutive — net ≈ −$6M/yr est", tip:"burn $168.2M/yr − 3-yr team/investor vesting ~$175M/yr est — the spigot runs to mid-2029; the cheapest gross multiple on the board is still marginally net-dilutive" },
+  { sym:"VVV", txt:"net-dilutive — net −$32M/yr at the T1 burn floor", tip:"burn floor $4.78M/yr (T1 7/24, growing — a $2.89M print failed continuity and was retracted) − staking emissions $36.8M/yr; narrows to ~−$23M/yr if the venicestats rate (~$14M/yr) verifies — the tracked re-contest trigger" },
+  { sym:"ENA", txt:"net-dilutive — net ≈ −$184M/yr est · monitor", tip:"T3-modeled buyback ~$26M/yr − ~2.55B ENA/yr emissions ≈ $210M/yr at spot — failing math (TAO-pattern, milder); no holders-rev adapter exists" },
+  { sym:"LIT", txt:"net-dilutive — deep est (undisclosed cadence)", tip:"TWAP buybacks $24.5M/yr (T1) − straight-lined team/investor vesting ~$333M/yr est ≈ −$309M/yr; cadence undisclosed — could be cliff-lumpy; monitor-status reason #1" },
+  { sym:"ONDO", txt:"net-dilutive — net ≈ −$0.9B/yr est · monitor", tip:"$0 reaches holders today − ~184.5M ONDO/mo unlock tranches ≈ $909M/yr at spot (through Jan-2029); re-vet trigger = fee switch or any programmatic capture going live" },
+];
+function renderGrossBars(){
+  const el=document.getElementById("pfBars"); if(!el) return; el.replaceChildren();
+  const EST_GROSS={ AAVE:"rev is the $7.02M/yr T2-est buyback pace — the DefiLlama adapter prints ZERO on 24h, 7d AND 30d (last non-zero day 6/24; 8 non-zero days in six months, so capture is EVENT-SPARSE and a 30-day rolling sum is the wrong instrument). The estimate is the sole basis for this multiple", VVV:"rev is the T1 adapter burn $5.00M/yr. Venice's OWN statistics now disagree DOWNWARD: venicestats /api/metrics puts July at 23,178 VVV / $267,696 → ~$3.62M/yr, ~45% BELOW the adapter, which would make this ~160× not ~118×. The adapter's own trailing 7d annualizes $3.25M, 35.1% under its 30d average — a fourth consecutive cooling reading, now corroborated by a second source", JUP:"MC on provider-implied 3.32B circ (6/8 stamp)", LIT:"MC on provider-implied 250M circ (6/10 stamp)", PUMP:"MC on 400.05B post-cliff circ (Tokenomist)" };
+  const rows=[];
+  state.forEach(t=>{
+    const m=mcRev(t); if(!m) return;
+    if(t.sym==="ETH"){ rows.push({sym:"ETH", v:m, cap:true, tip:"MC "+fm.usd(t.mc)+" ÷ burn "+fm.usd(t.rev)+" = "+fm.x(m)+" — OFF-SCALE, drawn hatched at the chart cap: the burn is negligible vs MC (the issuance steelman is quantified on the tile; Glamsterdam's gas-limit raise is the re-rate catalyst)"}); return; }
+    rows.push({sym:t.sym, v:m, est:!!EST_GROSS[t.sym], tip:"MC "+fm.usd(t.mc)+" ÷ holders rev "+fm.usd(t.rev)+" = "+fm.x(m)+(EST_GROSS[t.sym]?" · "+EST_GROSS[t.sym]:"")});
+  });
+  if(!rows.length){ const nn=document.createElement("div"); nn.className="hint"; nn.textContent="Loads with price data."; el.append(nn); return; }
+  const max=Math.max(...rows.filter(r=>!r.cap).map(r=>r.v));
+  rows.sort((a,b)=>a.v-b.v).forEach(r=>{
+    const row=document.createElement("div"); row.className="hbar-row";
+    const lab=document.createElement("div"); lab.className="lab"; lab.textContent=r.sym;
+    const track=document.createElement("div"); track.className="hbar-track";
+    const bar=document.createElement("div"); bar.className="hbar"+(r.est?" est":"")+(r.cap?" cap":"");
+    bar.style.width=(r.cap?100:Math.max(2,(r.v/max)*100))+"%";
+    bindTip(bar,e=>showTip(e,[["MC / holders revenue",fm.x(r.v)],["",r.tip]]));
+    track.append(bar);
+    const val=document.createElement("div"); val.className="val"; val.textContent=fm.x(r.v)+(r.cap?" OFF-SCALE":(r.est?" est":""));
+    row.append(lab,track,val); el.append(row);
+  });
+}
+function renderNetBars(){
+  const el=document.getElementById("pfNetBars"); if(!el) return; el.replaceChildren();
+  const rows=[];
+  state.forEach(t=>{
+    const m=NET_MODEL[t.sym];
+    if(m && t.mc && t.rev!=null){
+      const net=t.rev-m.inn;
+      if(net>0) rows.push({sym:t.sym, v:t.mc/net, est:true, tip:m.calc});
+      return;
+    }
+    if(t.xMult) return; /* ETH honorary (issuance = payment for security — category error on this dial) + VVV covered in the note */
+    const n=mcNet(t);
+    if(n==null || n<0) return; /* dil-neg + unmeasured named in the note — the absence IS the finding */
+    const isEst=(t.sym==="AAVE"||t.sym==="JUP"||t.sym==="LIT"||t.sym==="PUMP");
+    rows.push({sym:t.sym, v:n, est:isEst,
+      tip:"MC "+fm.usd(t.mc)+" ÷ (holders rev "+fm.usd(t.rev)+" − supply-in "+(IN12[t.sym]>0?fm.usd(IN12[t.sym]):"$0 (none scheduled)")+") = "+fm.x(n)});
+  });
+  if(!rows.length){ const nn=document.createElement("div"); nn.className="hint"; nn.textContent="Loads with price data."; el.append(nn); return renderNetNote(); }
+  const max=Math.max(...rows.map(r=>r.v));
+  rows.sort((a,b)=>a.v-b.v).forEach(r=>{
+    const row=document.createElement("div"); row.className="hbar-row";
+    const lab=document.createElement("div"); lab.className="lab"; lab.textContent=r.sym;
+    const track=document.createElement("div"); track.className="hbar-track";
+    const bar=document.createElement("div"); bar.className="hbar"+(r.est?" est":"");
+    bar.style.width=Math.max(2,(r.v/max)*100)+"%";
+    bindTip(bar,e=>showTip(e,[["MC / net captured flow",fm.x(r.v)],["",r.tip]]));
+    track.append(bar);
+    const val=document.createElement("div"); val.className="val"; val.textContent=fm.x(r.v)+(r.est?" est":"");
+    row.append(lab,track,val); el.append(row);
+  });
+  DILNEG.forEach(dn=>{
+    const row=document.createElement("div"); row.className="hbar-row";
+    const lab=document.createElement("div"); lab.className="lab"; lab.textContent=dn.sym;
+    const track=document.createElement("div"); track.className="hbar-track";
+    const n=document.createElement("span"); n.className="nomult"; n.textContent=dn.txt;
+    track.append(n);
+    bindTip(track,e=>showTip(e,[[dn.sym+" — net-dilutive today","no multiple"],["",dn.tip]]));
+    const val=document.createElement("div"); val.className="val"; val.textContent="no ×";
+    row.append(lab,track,val); el.append(row);
+  });
+  renderNetNote();
+}
+function renderNetNote(){
+  const nt=document.getElementById("pfNetNotes"); if(!nt) return;
+  nt.textContent="Red rows above = net-dilutive today: supply-in exceeds captured value, so NO net multiple exists — the absence IS the finding; est marks hold until each leg verifies. AERO's bar is the MODELED float-adjusted basis — hover it for the full calculation; the strict ownership basis is −$45–50M/yr (see the net-flow chart). Not shown: RENDER + HNT (no revenue print — re-entry event ~Aug 8), TAO (no root-level capture mechanism — nothing to net), ETH honorary (issuance is payment for security — category error on this dial; quantified on its tile and the net-flow chart). Est bases dashed on bars: AERO (model), AAVE (T2 buyback pace), JUP (provider-implied supply). ENGINE: DILNEG rows + EST_GROSS notes refresh alongside IN12 + NET_MODEL every rebake.";
+}
+
+const SPARKS30 = {"ETH": [1668.45, 1649.27, 1571.84, 1581.76, 1573.07, 1574.09, 1587.52, 1570.8, 1618.25, 1716.97, 1757.59, 1766.39, 1769.77, 1772.03, 1733.53, 1754.6, 1783.21, 1800.13, 1803.71, 1785.01, 1781.56, 1871.87, 1882.62, 1824.18, 1844.08, 1867.55, 1863.17, 1943.84, 1923.94, 1886.01], "HYPE": [62.0854, 63.7623, 64.4566, 63.5705, 62.34, 62.4908, 65.3038, 63.4432, 63.1931, 67.5121, 71.28, 68.5015, 70.1767, 70.9506, 67.7176, 68.194, 68.6849, 66.6437, 67.3983, 65.5487, 63.4485, 66.8962, 65.7192, 59.4344, 59.3726, 60.9571, 60.6255, 62.8986, 59.041445, 58.7314], "AERO": [0.523554, 0.522871, 0.475317, 0.470185, 0.467024, 0.47042, 0.462889, 0.471475, 0.483892, 0.504947, 0.56099, 0.576432, 0.56476, 0.582662, 0.538027, 0.54128, 0.519576, 0.532928, 0.520914, 0.493431, 0.487643, 0.507054, 0.491053, 0.490996, 0.466858, 0.453256, 0.44816, 0.435319, 0.425368, 0.435311], "PENDLE": [1.27645, 1.28694, 1.25493, 1.25361, 1.24906, 1.31382, 1.33201, 1.31324, 1.474, 1.49337, 1.46305, 1.43658, 1.38286, 1.42244, 1.50258, 1.58268, 1.53819, 1.55783, 1.53071, 1.50296, 1.46791, 1.53368, 1.57899, 1.51775, 1.52712, 1.52475, 1.53617, 1.64564, 1.624434, 1.58414], "VVV": [13.3688, 13.453, 13.6859, 13.4357, 13.3132, 13.0747, 13.3335, 12.4232, 13.1567, 14.0278, 13.0701, 11.4285, 11.6089, 10.9108, 10.3982, 11.3648, 11.313, 10.6715, 10.859, 10.5514, 11.0781, 10.5997, 10.6186, 10.0742, 11.7108, 11.9641, 11.4862, 12.6391, 12.391454, 11.9415], "UNI": [2.8939, 2.93513, 2.90895, 2.93828, 2.91391, 2.93079, 2.85248, 2.75527, 2.82548, 3.18885, 3.17852, 3.19975, 3.11163, 3.16988, 3.22893, 3.35729, 3.54714, 3.52307, 3.64178, 3.55661, 3.57339, 3.59461, 3.63647, 3.51016, 3.51974, 3.53031, 3.44427, 3.72286, 3.862812, 3.85364], "RENDER": [1.60608, 1.55959, 1.51232, 1.62202, 1.5577, 1.56073, 1.52896, 1.49622, 1.54312, 1.60766, 1.58582, 1.59891, 1.59792, 1.60522, 1.52201, 1.55378, 1.56351, 1.57915, 1.54648, 1.51769, 1.49804, 1.52287, 1.49978, 1.46334, 1.46959, 1.47976, 1.47493, 1.54439, 1.510667, 1.48721]}; /* 30 daily PT closes 6/24→7/23, owned archive + shard — refresh from the price-archive appends each rebake */
+const BENCH = {"dates": ["2026-07-10", "2026-07-11", "2026-07-12", "2026-07-13", "2026-07-14", "2026-07-15", "2026-07-16", "2026-07-17", "2026-07-18", "2026-07-19", "2026-07-20", "2026-07-21", "2026-07-22", "2026-07-23"], "board": [100.0, 99.526, 98.991, 96.425, 95.884, 98.46, 98.034, 94.107, 96.083, 96.707, 95.79, 100.309, 97.913, 96.453], "eth": [100.0, 100.949, 101.15, 100.101, 99.907, 104.972, 105.575, 102.298, 103.414, 104.73, 104.484, 109.008, 107.892, 105.765], "btc": [100.0, 99.958, 99.583, 98.071, 97.357, 100.479, 99.646, 97.677, 99.539, 100.596, 99.922, 103.14, 102.352, 101.814]};; /* seed-six EW (documented 7/10 seed: ETH HYPE AERO VVV RENDER PENDLE — composition restated 7/24, log entry) vs ETH vs BTC, base 100 @ 7/10 closes — recomputed from the owned price archive each rebake */
+const BENCH2 = { inception:"2026-07-23", labels:["board EW","ETH","BTC"],
+  dates:[], board:[], eth:[], btc:[] };
+/* ENGINE (owner directive 7/23 — "run this from today"): BENCH2 = board-of-record equal weight (the CURRENT 8 seats:
+   HYPE AERO UNI JUP PENDLE VVV AAVE ETH) vs ETH vs BTC, all base 100 at the 2026-07-23 PT close (captured by the 7/24
+   morning run via the previous-day-close rule). Morning runs APPEND one point per day from the price shard and rebase
+   nothing. Composition changes create a new inception note in the tooltip, never a silent rebase. Once BENCH2 has >= 2
+   points the chart draws BENCH2 as primary; the seed-six series stays available as the from-7/10 context record. */
+const BH = { /* B/H scores from the Token DB — refresh each scored run; net sign drives color */
+  HYPE:{b:76,h:63,mos:"Thin",net:1}, AERO:{b:71,h:43,mos:"Moderate",net:-1}, UNI:{b:67,h:56,mos:"Thin",net:1},
+  JUP:{b:55,h:36,mos:"Thin",net:1}, PENDLE:{b:62,h:46,mos:"Thin",net:0}, VVV:{b:56,h:61,mos:"Thin",net:-1},
+  AAVE:{b:60,h:50,mos:"Thin",net:0}, ETH:{b:75,h:48,mos:"honorary",net:0,hollow:true},
+  RENDER:{b:48,h:55,mos:"vetted",net:0,small:true}, TAO:{b:30,h:62,mos:"monitor",net:0,small:true}, ONDO:{b:35,h:70,mos:"monitor",net:0,small:true} };
+
+function renderBH(){
+  const el=document.getElementById("bhScatter"); if(!el) return; el.replaceChildren();
+  const W=460,H=320,L=40,R=14,T=12,B=34;
+  const X=v=>L+(v/100)*(W-L-R), Y=v=>H-B-(v/100)*(H-T-B);
+  const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+  svg.setAttribute("viewBox","0 0 "+W+" "+H); svg.setAttribute("width","100%");
+  [[0,"0"],[50,"50"],[100,"100"]].forEach(g=>{
+    const gl=document.createElementNS(svg.namespaceURI,"line");
+    gl.setAttribute("x1",X(g[0])); gl.setAttribute("x2",X(g[0])); gl.setAttribute("y1",T); gl.setAttribute("y2",H-B);
+    gl.setAttribute("stroke",g[0]===50?"var(--baseline)":"var(--grid)"); svg.append(gl);
+    const gh=document.createElementNS(svg.namespaceURI,"line");
+    gh.setAttribute("x1",L); gh.setAttribute("x2",W-R); gh.setAttribute("y1",Y(g[0])); gh.setAttribute("y2",Y(g[0]));
+    gh.setAttribute("stroke",g[0]===50?"var(--baseline)":"var(--grid)"); svg.append(gh);
+    const tx=document.createElementNS(svg.namespaceURI,"text"); tx.setAttribute("x",X(g[0])); tx.setAttribute("y",H-16);
+    tx.setAttribute("text-anchor","middle"); tx.setAttribute("font-size","10"); tx.setAttribute("fill","var(--muted)"); tx.textContent=g[1]; svg.append(tx);
+    const ty=document.createElementNS(svg.namespaceURI,"text"); ty.setAttribute("x",L-6); ty.setAttribute("y",Y(g[0])+3);
+    ty.setAttribute("text-anchor","end"); ty.setAttribute("font-size","10"); ty.setAttribute("fill","var(--muted)"); ty.textContent=g[1]; svg.append(ty);
+  });
+  const xl=document.createElementNS(svg.namespaceURI,"text"); xl.setAttribute("x",(L+W-R)/2); xl.setAttribute("y",H-2);
+  xl.setAttribute("text-anchor","middle"); xl.setAttribute("font-size","11"); xl.setAttribute("fill","var(--text-2)"); xl.textContent="Business score → (more confirmed)"; svg.append(xl);
+  const yl=document.createElementNS(svg.namespaceURI,"text"); yl.setAttribute("x",12); yl.setAttribute("y",(T+H-B)/2);
+  yl.setAttribute("font-size","11"); yl.setAttribute("fill","var(--text-2)"); yl.setAttribute("transform","rotate(-90 12 "+((T+H-B)/2)+")"); yl.setAttribute("text-anchor","middle"); yl.textContent="Hype score → (more priced in)"; svg.append(yl);
+  const hg=document.createElementNS(svg.namespaceURI,"text"); hg.setAttribute("x",W-R-4); hg.setAttribute("y",H-B-8);
+  hg.setAttribute("text-anchor","end"); hg.setAttribute("font-size","10"); hg.setAttribute("fill","var(--muted)"); hg.textContent="hunting ground ↘"; svg.append(hg);
+  const dz=document.createElementNS(svg.namespaceURI,"text"); dz.setAttribute("x",L+6); dz.setAttribute("y",T+14);
+  dz.setAttribute("font-size","10"); dz.setAttribute("fill","var(--muted)"); dz.textContent="↖ danger zone"; svg.append(dz);
+  for(const sym in BH){ const s=BH[sym]; const t=state.find(x=>x.sym===sym);
+    const mc=t&&t.mc?t.mc:2e8; const r=s.small?4:Math.min(16,5+Math.sqrt(mc/1e9)*3.2);
+    const col=s.small?"var(--muted)":(s.net>0?"var(--good)":(s.net<0?"var(--bad)":"var(--muted)"));
+    const c=document.createElementNS(svg.namespaceURI,"circle");
+    c.setAttribute("cx",X(s.b)); c.setAttribute("cy",Y(s.h)); c.setAttribute("r",r);
+    if(s.hollow){ c.setAttribute("fill","none"); c.setAttribute("stroke",col); c.setAttribute("stroke-width","2"); c.setAttribute("stroke-dasharray","4 3"); }
+    else { c.setAttribute("fill",col); c.setAttribute("fill-opacity",s.small?"0.6":"0.82"); c.setAttribute("stroke","var(--surface-1)"); c.setAttribute("stroke-width","1.5"); }
+    bindTip(c,e=>showTip(e,[[sym+" · B "+s.b+" / H "+s.h,(s.mos==="honorary"?"honorary (indicative)":"Margin of safety: "+s.mos)],["",s.net>0?"positive net value flow":(s.net<0?"net-dilutive today":"net unmeasured / wash")]])); svg.append(c);
+    const lb=document.createElementNS(svg.namespaceURI,"text");
+    lb.setAttribute("x",X(s.b)+r+3); lb.setAttribute("y",Y(s.h)+3.5);
+    lb.setAttribute("font-size",s.small?"9.5":"11"); lb.setAttribute("font-weight",s.small?"400":"600"); lb.setAttribute("fill",s.small?"var(--muted)":"var(--text-2)");
+    lb.textContent=sym; svg.append(lb);
+  }
+  el.append(svg);
+}
+function renderBench(){
+  const el=document.getElementById("benchChart"); if(!el) return; el.replaceChildren();
+  const W=460,H=300,L=40,R=58,T=12,B=30;
+  const useB2 = BENCH2.dates.length>=2;
+  const SRC = useB2 ? {dates:BENCH2.dates, rows:[["board EW",BENCH2.board,"var(--s1)"],["ETH",BENCH2.eth,"var(--s5)"],["BTC",BENCH2.btc,"var(--s3)"]]} : {dates:BENCH.dates, rows:[["seed-six EW",BENCH.board,"var(--s1)"],["ETH",BENCH.eth,"var(--s5)"],["BTC",BENCH.btc,"var(--s3)"]]};
+  const series=SRC.rows;
+  const all=series.flatMap(s=>s[1]); let y0=Math.min(...all), y1=Math.max(...all);
+  const pad=(y1-y0)*0.1||1; y0-=pad; y1+=pad;
+  const n=SRC.dates.length;
+  const X=i=>L+(i/(n-1))*(W-L-R), Y=v=>H-B-((v-y0)/(y1-y0))*(H-T-B);
+  const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+  svg.setAttribute("viewBox","0 0 "+W+" "+H); svg.setAttribute("width","100%");
+  for(let k=0;k<4;k++){ const gv=y0+(y1-y0)*k/3;
+    const ln=document.createElementNS(svg.namespaceURI,"line");
+    ln.setAttribute("x1",L); ln.setAttribute("x2",W-R); ln.setAttribute("y1",Y(gv)); ln.setAttribute("y2",Y(gv));
+    ln.setAttribute("stroke",Math.abs(gv-100)<((y1-y0)/6)?"var(--baseline)":"var(--grid)"); svg.append(ln);
+    const tx=document.createElementNS(svg.namespaceURI,"text"); tx.setAttribute("x",L-5); tx.setAttribute("y",Y(gv)+3);
+    tx.setAttribute("text-anchor","end"); tx.setAttribute("font-size","10"); tx.setAttribute("fill","var(--muted)"); tx.textContent=gv.toFixed(0); svg.append(tx);
+  }
+  [0,Math.floor((n-1)/2),n-1].forEach(i=>{ const tx=document.createElementNS(svg.namespaceURI,"text");
+    tx.setAttribute("x",X(i)); tx.setAttribute("y",H-8); tx.setAttribute("text-anchor","middle"); tx.setAttribute("font-size","10");
+    tx.setAttribute("fill","var(--muted)"); tx.textContent=SRC.dates[i].slice(5).replace("-","/"); svg.append(tx); });
+  const ends=[];
+  series.forEach(([nm,vals,col])=>{
+    const p=document.createElementNS(svg.namespaceURI,"path");
+    p.setAttribute("d","M"+vals.map((v,i)=>X(i).toFixed(1)+","+Y(v).toFixed(1)).join(" L"));
+    p.setAttribute("fill","none"); p.setAttribute("stroke",col); p.setAttribute("stroke-width",nm==="seed-six EW"?"2.5":"1.8");
+    p.setAttribute("stroke-linejoin","round"); svg.append(p);
+    vals.forEach((v,i)=>{ const hit=document.createElementNS(svg.namespaceURI,"circle");
+      hit.setAttribute("cx",X(i)); hit.setAttribute("cy",Y(v)); hit.setAttribute("r","10"); hit.setAttribute("fill","transparent");
+      bindTip(hit,e=>showTip(e,[[nm+" · "+SRC.dates[i].slice(5).replace("-","/"),v.toFixed(1)]])); svg.append(hit); });
+    ends.push({nm,col,y:Y(vals[vals.length-1]),v:vals[vals.length-1]});
+  });
+  ends.sort((a,b)=>a.y-b.y); let py=-99;
+  ends.forEach(e2=>{ const ly=Math.max(e2.y,py+13); py=ly;
+    const tx=document.createElementNS(svg.namespaceURI,"text"); tx.setAttribute("x",W-R+6); tx.setAttribute("y",ly+3.5);
+    tx.setAttribute("font-size","10.5"); tx.setAttribute("font-weight","600"); tx.setAttribute("fill",e2.col); tx.textContent=e2.nm+" "+e2.v.toFixed(0); svg.append(tx); });
+  el.append(svg);
+  const nt=document.getElementById("benchNote");
+  if(nt) nt.textContent = (useB2 ? "PRIMARY — board-of-record EW (8 seats) vs ETH vs BTC since the 7/23 close: "+(BENCH2.board[BENCH2.board.length-1]-100).toFixed(1)+"% · ETH "+(BENCH2.eth[BENCH2.eth.length-1]-100).toFixed(1)+"% · BTC "+(BENCH2.btc[BENCH2.btc.length-1]-100).toFixed(1)+"%. " : "PRIMARY accountability starts at the Jul 23 close: board-of-record EW — HYPE · AERO · UNI · JUP · PENDLE · VVV · AAVE · ETH — vs ETH vs BTC; the chart switches to it automatically at the second close (this weekend). ")+"Context, seed six since 7/10 (through the 7/23 close): −3.5% vs ETH +5.8% / BTC +1.8% — the watchlist trails both benchmarks so far; leaving that visible is the point. Re-reported by every scored run; validated at the monthly retro.";
+}
+
+const tip = document.getElementById("tip");
+function showTip(evt, rows){
+  tip.replaceChildren(...rows.map(([l,v])=>{
+    const d=document.createElement("div");
+    const s1=document.createElement("span"); s1.className="v"; s1.textContent=v;
+    const s2=document.createElement("span"); s2.className="l"; s2.textContent=" "+l;
+    d.append(s1,s2); return d;
+  }));
+  tip.style.display="block";
+  const x=Math.min(evt.clientX+14, innerWidth-280), y=Math.min(evt.clientY+14, innerHeight-90);
+  tip.style.left=x+"px"; tip.style.top=y+"px";
+}
+function hideTip(){ tip.style.display="none"; }
+function bindTip(el,fn){ el.addEventListener("pointermove",fn); el.addEventListener("pointerdown",function(e){ fn(e); e.stopPropagation(); }); el.addEventListener("pointerleave",hideTip); }
+document.addEventListener("pointerdown",hideTip);
+window.addEventListener("scroll",hideTip,{passive:true});
+
+function renderTiles(){
+  const el=document.getElementById("tiles"); el.replaceChildren();
+  state.filter(t=>t.tile!==false).forEach(t=>{
+    const tile=document.createElement("div"); tile.className="tile";
+    const sym=document.createElement("div"); sym.className="sym";
+    const dot=document.createElement("span");
+    dot.style.cssText="width:8px;height:8px;border-radius:50%;background:"+SLOTCOLORS[t.accrual.slot];
+    sym.append(dot, document.createTextNode(t.sym));
+    const nm=document.createElement("span"); nm.className="name"; nm.textContent=t.name; sym.append(nm);
+    const pr=document.createElement("div"); pr.className="price"; pr.textContent=fm.price(t.price);
+    const de=document.createElement("div"); de.className="deltas";
+    const a=document.createElement("span"); a.className=cls(t.d24); a.textContent=fm.pct(t.d24)+" 24h";
+    const b=document.createElement("span"); b.className=cls(t.d7); b.textContent=fm.pct(t.d7)+" 7d";
+    de.append(a,b);
+    tile.append(sym,pr,de);
+    if (mode==="stale" && t.price!=null){
+      const st=document.createElement("div"); st.className="stalenote";
+      st.textContent="as of "+(lastGood.asof||BAKED_ASOF);
+      tile.append(st);
+    }
+    const sp=document.createElement("div"); sp.className="spark";
+    if (t.spark && t.spark.length>10) sp.append(sparkSVG(t.spark));
+    else if (SPARKS30[t.sym]) sp.append(sparkSVG(SPARKS30[t.sym])); /* baked 30d from the owned archive — embed-safe */
+    else { const n=document.createElement("span"); n.className="nospark"; n.textContent=mode==="live"?"7d spark loading…":"no daily archive yet — spark loads live"; sp.append(n); }
+    tile.append(sp); el.append(tile);
+  });
+}
+function sparkSVG(arr){
+  const W=140,H=30,min=Math.min(...arr),max=Math.max(...arr),rng=(max-min)||1;
+  const pts=arr.map((v,i)=>[(i/(arr.length-1))*W, H-2-((v-min)/rng)*(H-6)]);
+  const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+  svg.setAttribute("viewBox","0 0 "+W+" "+H); svg.setAttribute("width","100%"); svg.setAttribute("height",H);
+  const p=document.createElementNS(svg.namespaceURI,"path");
+  p.setAttribute("d","M"+pts.map(q=>q[0].toFixed(1)+","+q[1].toFixed(1)).join(" L"));
+  p.setAttribute("fill","none"); p.setAttribute("stroke","var(--muted)"); p.setAttribute("stroke-width","1.5");
+  p.setAttribute("stroke-linejoin","round"); p.setAttribute("stroke-linecap","round");
+  const last=pts[pts.length-1];
+  const c=document.createElementNS(svg.namespaceURI,"circle");
+  c.setAttribute("cx",last[0]); c.setAttribute("cy",last[1]); c.setAttribute("r","3");
+  c.setAttribute("fill","var(--bar)"); c.setAttribute("stroke","var(--surface-1)"); c.setAttribute("stroke-width","2");
+  svg.append(p,c); return svg;
+}
+function renderBars(elId, rows, fmt, tipLabel){
+  const el=document.getElementById(elId); el.replaceChildren();
+  if (!rows.length){ const n=document.createElement("div"); n.className="hint"; n.textContent="Loads with live price data."; el.append(n); return; }
+  const max=Math.max(...rows.map(r=>r.v));
+  rows.sort((a,b)=>a.v-b.v).forEach(r=>{
+    const row=document.createElement("div"); row.className="hbar-row";
+    const lab=document.createElement("div"); lab.className="lab"; lab.textContent=r.sym;
+    const track=document.createElement("div"); track.className="hbar-track";
+    const bar=document.createElement("div"); bar.className="hbar";
+    bar.style.width=Math.max(2,(r.v/max)*100)+"%";
+    bindTip(bar,e=>showTip(e,[[tipLabel,fmt(r.v)],["",r.name]]));
+    track.append(bar);
+    const val=document.createElement("div"); val.className="val"; val.textContent=fmt(r.v);
+    row.append(lab,track,val); el.append(row);
+  });
+}
+const RANKS={HYPE:1,AERO:2,UNI:3,JUP:4,PENDLE:5,VVV:6,AAVE:7,ETH:8}; /* board v14.1 — held under hysteresis on the 7/27 run; refresh with every board change */
+const COLS=[
+  {k:"sym", label:"Token"},
+  {k:"_rank", label:"Rank", f:t=>RANKS[t.sym]?("#"+RANKS[t.sym]):"—", v:t=>RANKS[t.sym]??null},
+  {k:"price", label:"Price", f:t=>fm.price(t.price)},
+  {k:"d24", label:"24h", f:t=>fm.pct(t.d24), c:t=>cls(t.d24)},
+  {k:"d7", label:"7d", f:t=>fm.pct(t.d7), c:t=>cls(t.d7)},
+  {k:"mc", label:"Mkt cap", f:t=>fm.usd(t.mc)},
+  {k:"_mcfdv", label:"MC/FDV", f:t=>(t.mc&&t.fdv)?fm.ratio(t.mc/t.fdv):"—", v:t=>(t.mc&&t.fdv)?t.mc/t.fdv:null},
+  {k:"feesAnn", label:"Fees ann.", f:t=>fm.usd(t.feesAnn)},
+  {k:"rev", label:"Holders rev ann.", f:t=>fm.usd(t.rev)},
+  {k:"_pf", label:"MC/Rev", f:t=>fm.x(mcRev(t)), v:t=>mcRev(t)},
+  {k:"_fdvrev", label:"FDV/Rev", f:t=>(t.fdv&&t.rev)?fm.x(t.fdv/t.rev):"—", v:t=>(t.fdv&&t.rev)?t.fdv/t.rev:null},
+  {k:"_pfnet", label:"MC/Rev net", f:t=>{const n=mcNet(t); return n==null?"—":(n<0?"net-dilutive":fm.x(n));}, v:t=>{const n=mcNet(t); return n==null?null:(n<0?8.8e8:n);}},
+  {k:"tvl", label:"TVL", f:t=>fm.usd(t.tvl)},
+  {k:"vol30d", label:"Trade vol 30d", f:t=>fm.usd(t.vol30d)},
+];
+let sortK="_rank", sortDir=1; /* default: board rank — the discipline's face forward (owner-approved D33); one click on "MC/Rev net" restores cheapest-first */
+function renderTable(){
+  const tbl=document.getElementById("mtable"); tbl.replaceChildren();
+  const thead=document.createElement("thead"); const hr=document.createElement("tr");
+  COLS.forEach(col=>{
+    const th=document.createElement("th"); th.textContent=col.label;
+    if (sortK===col.k){ const s=document.createElement("span"); s.className="arr"; s.textContent=sortDir<0?" ▼":" ▲"; th.append(s); }
+    th.addEventListener("click",()=>{ sortDir=(sortK===col.k)?-sortDir:1; sortK=col.k; renderTable(); });
+    hr.append(th);
+  });
+  thead.append(hr); tbl.append(thead);
+  const rows=[...state];
+  if (sortK){
+    const col=COLS.find(c=>c.k===sortK);
+    rows.sort((a,b)=>{
+      if (sortK==="sym") return a.sym.localeCompare(b.sym)*sortDir;
+      const va=col.v?col.v(a):a[sortK], vb=col.v?col.v(b):b[sortK];
+      return ((va==null)-(vb==null)) || (va-vb)*sortDir;
+    });
+  }
+  const tb=document.createElement("tbody");
+  rows.forEach(t=>{
+    const tr=document.createElement("tr");
+    COLS.forEach(col=>{
+      const td=document.createElement("td");
+      if (col.k==="sym"){ td.className="tok"; td.textContent=t.sym;
+        const s=document.createElement("span"); s.className="tokname"; s.textContent=t.name; td.append(s); }
+      else { td.textContent=col.f(t); if (col.c) td.className=col.c(t); }
+      tr.append(td);
+    });
+    tb.append(tr);
+  });
+  tbl.append(tb);
+}
+function renderNotes(){
+  const tbl=document.getElementById("ntable"); tbl.replaceChildren();
+  const thead=document.createElement("thead"); const hr=document.createElement("tr");
+  ["Token","Accrual mechanism","Supply & unlock overhang"].forEach(h=>{
+    const th=document.createElement("th"); th.textContent=h; th.style.textAlign="left"; hr.append(th);
+  });
+  thead.append(hr); tbl.append(thead);
+  const tb=document.createElement("tbody");
+  state.forEach(t=>{
+    const tr=document.createElement("tr");
+    const td1=document.createElement("td"); td1.textContent=t.sym;
+    const td2=document.createElement("td");
+    const chip=document.createElement("span"); chip.className="chip";
+    const dot=document.createElement("span"); dot.className="dot"; dot.style.background=SLOTCOLORS[t.accrual.slot];
+    chip.append(dot,document.createTextNode(t.accrual.label));
+    const note=document.createElement("div"); note.className="small"; note.textContent=t.accrual.note;
+    td2.append(chip,note);
+    const td3=document.createElement("td"); td3.className="small"; td3.textContent=t.unlock;
+    tr.append(td1,td2,td3); tb.append(tr);
+  });
+  tbl.append(tb);
+}
+function renderAll(){
+  renderTiles();
+  renderNetBars();
+  renderGrossBars();
+  renderBars("revBars", state.filter(t=>t.rev).map(t=>({sym:t.sym,name:t.name+" — annualized revenue to holders",v:t.rev})), fm.usd, "Holders rev");
+  renderTable(); renderNotes(); renderHistory(); renderUnlocks(); renderNetflow(); renderBH(); renderBench();
+  document.getElementById("asof").textContent=asofLabel;
+  const badge=document.getElementById("badge");
+  const notice=document.getElementById("notice");
+  if (mode==="live"){
+    badge.textContent="LIVE"; badge.className="badge live"; notice.hidden=true;
+  } else if (mode==="stale"){
+    badge.textContent="SNAPSHOT · "+String(lastGood.asof||BAKED_ASOF).slice(0,10); badge.className="badge";
+    notice.hidden=false; notice.replaceChildren(); notice.style.borderColor="var(--border)";
+    const b=document.createElement("b"); b.textContent="SNAPSHOT — ";
+    notice.append(b, document.createTextNode("this embedded view shows the last verified data (as of "+(lastGood.asof||BAKED_ASOF)+"), refreshed by every scored run. Live self-refresh is available in the standalone file."));
+  } else {
+    badge.textContent="OFFLINE"; badge.className="badge";
+    notice.hidden=false; notice.replaceChildren();
+    const b=document.createElement("b"); b.textContent="NO PRICE DATA — ";
+    notice.append(b, document.createTextNode("no live tracker reachable and no verified snapshot baked yet (the scheduled engine fills one at its next run). Fees & TVL are the DefiLlama snapshot of "+BAKED_ASOF+"."));
+  }
+}
+
+/* ===== LIVE FETCH — CoinGecko first, then Binance, then Hyperliquid (live trackers only) ===== */
+const CG_URL="https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids="
+  + TOKENS.flatMap(t=>[t.cg,t.cgAlt]).filter(Boolean).join(",")
+  + "&sparkline=true&price_change_percentage=24h,7d";
+async function j(url, opts){ const r=await fetch(url,{signal:AbortSignal.timeout(12000), ...(opts||{})}); if(!r.ok) throw new Error(r.status); return r.json(); }
+
+function saveGood(){
+  lastGood={ asof:new Date().toISOString().slice(0,16).replace("T"," "), bySym:{} };
+  state.forEach(t=>{ if(t.price!=null) lastGood.bySym[t.sym]={price:t.price,d24:t.d24,d7:t.d7,mc:t.mc,fdv:t.fdv,vol:t.vol}; });
+}
+function applyLastGood(){
+  let any=false;
+  state.forEach(t=>{
+    const k=lastGood.bySym[t.sym]; if(!k) return;
+    any=true; Object.assign(t,{price:k.price,d24:k.d24,d7:k.d7,mc:k.mc,fdv:k.fdv,vol:k.vol});
+  });
+  return any;
+}
+
+async function tryCoinGecko(){
+  const data=await j(CG_URL);
+  if(!Array.isArray(data)||!data.length) throw new Error("empty");
+  state.forEach(t=>{
+    const m=data.find(r=>r.id===t.cg)||data.find(r=>r.id===t.cgAlt)||data.find(r=>r.symbol&&r.symbol.toUpperCase()===t.sym);
+    if(!m) return;
+    t.price=m.current_price; t.mc=m.market_cap||t.mc; t.fdv=m.fully_diluted_valuation??t.fdv;
+    t.vol=m.total_volume; if(m.circulating_supply) t.circ=m.circulating_supply;
+    t.d24=m.price_change_percentage_24h_in_currency ?? m.price_change_percentage_24h ?? null;
+    t.d7=m.price_change_percentage_7d_in_currency ?? null;
+    if (m.sparkline_in_7d && m.sparkline_in_7d.price) t.spark=m.sparkline_in_7d.price;
+  });
+  sourceLabel="CoinGecko";
+}
+async function tryBinance(){
+  const results=await Promise.allSettled(TOKENS.map(t=>t.bin?j("https://api.binance.com/api/v3/ticker/24hr?symbol="+t.bin):Promise.reject(new Error("no pair"))));
+  let any=false;
+  results.forEach((r,i)=>{
+    if(r.status!=="fulfilled"||!r.value||!r.value.lastPrice) return;
+    const t=state[i]; any=true;
+    t.price=parseFloat(r.value.lastPrice);
+    t.d24=parseFloat(r.value.priceChangePercent);
+    t.vol=parseFloat(r.value.quoteVolume)||null;
+    t.mc=t.circ?t.price*t.circ:null; /* approximated: price × last-known circulating */
+  });
+  if(!any) throw new Error("binance empty");
+  sourceLabel="Binance (fallback — MC ≈ price × circulating)";
+}
+async function tryHyperliquid(){
+  const mids=await j("https://api.hyperliquid.xyz/info",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"allMids"})});
+  let any=false;
+  state.forEach(t=>{
+    if(!t.hl) return;
+    const v=mids && (mids[t.hl] ?? mids["@"+t.hl]);
+    if(v==null) return;
+    any=true; t.price=parseFloat(v); t.mc=t.circ?t.price*t.circ:null;
+  });
+  if(!any) throw new Error("hl empty");
+  sourceLabel="Hyperliquid mids (fallback — price only)";
+}
+
+let refreshing=false, flashTimer=null;
+function setBtn(txt, stateClass){
+  const btn=document.getElementById("refreshBtn");
+  btn.textContent=txt;
+  btn.classList.remove("busy","ok","err");
+  if (stateClass) btn.classList.add(stateClass);
+}
+async function refresh(){
+  if (refreshing) return;                 /* ignore clicks while a run is in flight */
+  refreshing=true;
+  if (flashTimer){ clearTimeout(flashTimer); flashTimer=null; }
+  const root=document.getElementById("root");
+  root.classList.add("refreshing");
+  setBtn("Refreshing", "busy");
+  try {
+    /* fees + TVL (DefiLlama) — independent of price source */
+    const feeCalls=Promise.allSettled([
+      ...TOKENS.filter(t=>t.llama).map(t=>j("https://api.llama.fi/summary/fees/"+t.llama).then(d=>({slug:t.llama,kind:"fees",d})).catch(()=>null)),
+      ...TOKENS.filter(t=>t.llama).map(t=>j("https://api.llama.fi/summary/fees/"+t.llama+"?dataType=dailyHoldersRevenue").then(d=>({slug:t.llama,kind:"rev",d})).catch(()=>null)),
+      ...TOKENS.filter(t=>t.tvlSlug).map(t=>j("https://api.llama.fi/tvl/"+t.tvlSlug).then(d=>({slug:t.tvlSlug,kind:"tvl",d})).catch(()=>null)),
+      ...TOKENS.filter(t=>t.volSlugs&&t.volSlugs.length).flatMap(t=>t.volSlugs.map(p=>j("https://api.llama.fi/summary/"+p).then(d=>({sym:t.sym,kind:"vol30d",d})).catch(()=>null))),
+    ]);
+    /* price chain: CoinGecko → Binance → Hyperliquid */
+    let priced=false;
+    for (const fn of [tryCoinGecko, tryBinance, tryHyperliquid]){
+      try { await fn(); priced=true; break; } catch(e){ /* next tracker */ }
+    }
+    const volAcc={};
+    (await feeCalls).forEach(r=>{
+      if (r.status!=="fulfilled"||!r.value) return;
+      if (r.value.kind==="vol30d"){ if(r.value.d && r.value.d.total30d!=null) volAcc[r.value.sym]=(volAcc[r.value.sym]||0)+r.value.d.total30d; return; }
+      const {slug,kind,d}=r.value;
+      const t=state.find(x=>x.llama===slug||x.tvlSlug===slug); if(!t) return;
+      if (kind==="fees" && d && d.total30d!=null) t.feesAnn=d.total30d*12.17;
+      if (kind==="rev" && d && d.total30d!=null) t.rev=d.total30d*12.17;
+      if (kind==="tvl" && typeof d==="number") t.tvl=d;
+    });
+    Object.keys(volAcc).forEach(sym=>{ const t=state.find(x=>x.sym===sym); if(t) t.vol30d=volAcc[sym]; });
+    /* HYPE perp volume — straight from Hyperliquid's own API (POST works in-browser; DefiLlama derivatives is pro-gated).
+       Sums dayNtlVlm across all perp markets ×30 = monthly est, ADDED to the spot leg. */
+    try {
+      const mac=await j("https://api.hyperliquid.xyz/info",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"metaAndAssetCtxs"})});
+      if(Array.isArray(mac)&&Array.isArray(mac[1])){
+        const day=mac[1].reduce((a,c)=>a+(parseFloat(c&&c.dayNtlVlm)||0),0);
+        if(day>0){ const t=state.find(x=>x.sym==="HYPE"); if(t) t.vol30d=(t.vol30d||0)+day*30; }
+      }
+    } catch(e){ /* pane-blocked or API down — spot-only figure stands */ }
+    /* LIT volume — straight from Lighter's own public API (T1). daily_usd_volume ×30 = monthly est. */
+    try {
+      const ls=await j("https://mainnet.zklighter.elliot.ai/api/v1/exchangeStats");
+      const dv=ls && (parseFloat(ls.daily_usd_volume ?? ls.dailyUsdVolume) || 0);
+      if(dv>0){ const t=state.find(x=>x.sym==="LIT"); if(t) t.vol30d=dv*30; }
+    } catch(e){ /* pane-blocked — baked estimate stands */ }
+    /* TRUE historical MCAP hydration (owner directive 7/21): CoinGecko market_chart is reachable IN-BROWSER
+       (server-side it is robots-blocked, so the baked backfill uses price × today's circ as an est).
+       Replaces the est mcRev in BACKFILL with real weekly MCAP ÷ that week's rev, then redraws the chart. */
+    (async()=>{
+      try{
+        const targets=[["HYPE","hyperliquid"],["AERO","aerodrome-finance"],["PENDLE","pendle"],["UNI","uniswap"]];
+        let hydrated=0;
+        for(const [sym,cg] of targets){
+          try{
+            const mc=await j("https://api.coingecko.com/api/v3/coins/"+cg+"/market_chart?vs_currency=usd&days=730&interval=daily");
+            if(!mc||!Array.isArray(mc.market_caps)||!mc.market_caps.length) continue;
+            const byDay={}; mc.market_caps.forEach(p=>{ byDay[new Date(p[0]).toISOString().slice(0,10)]=p[1]; });
+            BACKFILL.forEach(h=>{ const e=h.v[sym]; if(e&&e.rev){
+              let cap=byDay[h.d];
+              if(cap==null){ const t0=Date.parse(h.d);
+                for(let k=1;k<=3&&cap==null;k++){ cap=byDay[new Date(t0-k*86400e3).toISOString().slice(0,10)] ?? byDay[new Date(t0+k*86400e3).toISOString().slice(0,10)]; } }
+              if(cap>0){ const m=cap/e.rev; e.mcRev = m>200 ? null : m; } } });  /* same >200x ramp clamp as the baked est (owner directive) */
+            hydrated++;
+          }catch(e){ /* per-token failure tolerated */ }
+        }
+        if(hydrated){
+          histChart("histMcRev","mcRev",v=>fm.x(v),false);
+          const hh=document.getElementById("histMcRevHint");
+          if(hh) hh.textContent="Lower = more business per dollar · linear scale · backfill HYDRATED with TRUE historical MCAP (CoinGecko market_chart, "+hydrated+"/4 tokens) ÷ that week's holders-rev run-rate · ETH excluded (off-scale)";
+        }
+      }catch(e){ /* pane-blocked — est backfill stands */ }
+    })();
+    if (priced){
+      mode="live"; saveGood();
+      asofLabel="live · "+sourceLabel+" · "+new Date().toLocaleString([], {month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"});
+    } else if (applyLastGood()){
+      mode="stale";
+      asofLabel="snapshot of "+(lastGood.asof||BAKED_ASOF)+" — embedded views don't allow live fetches";
+    } else {
+      mode="none";
+      asofLabel="offline — no price data (fees/TVL snapshot "+BAKED_ASOF+")";
+    }
+  } catch(e){
+    /* unexpected error — degrade to snapshot instead of leaving the UI mid-refresh */
+    if (applyLastGood()){ mode="stale"; asofLabel="snapshot of "+(lastGood.asof||BAKED_ASOF)+" — embedded views don't allow live fetches"; }
+    else { mode="none"; asofLabel="offline — refresh error"; }
+  } finally {
+    root.classList.remove("refreshing");
+    refreshing=false;
+  }
+  renderAll();
+  /* explicit outcome on the button so a click is never silent */
+  const now=new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+  if (mode==="live")       setBtn("Updated "+now, "ok");
+  else if (mode==="stale") setBtn("Snapshot "+BAKED_ASOF, null);
+  else                     setBtn("Offline — no data", "err");
+  flashTimer=setTimeout(()=>setBtn("Refresh now", null), 4500);
+}
+document.getElementById("refreshBtn").addEventListener("click",refresh);
+renderAll();
+refresh();
+setInterval(refresh, 3*60*60*1000);
+</script>
+</body>
+</html>
