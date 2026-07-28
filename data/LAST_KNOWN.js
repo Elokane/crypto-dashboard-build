@@ -1,5 +1,5 @@
 { asof: "2026-07-27 ~1:46 PM PT (all 16 instruments, cache-busted, conf 0.99)", bySym: {
-  HYPE:   { price:57.0219, d24:-3.1, d7:-8.35, mc:1.45e10, fdv:5.59e10, vol:272.71e6 },
+  HYPE:   { price:58.1234, d24:-3.1, d7:-8.35, mc:1.45e10, fdv:5.59e10, vol:272.71e6 },
   AERO:   { price:0.451192, d24:9.2, d7:3.82, mc:4.214e8, fdv:8.614e8, vol:13.59e6 },
   UNI:    { price:3.80759, d24:-1.61, d7:5.16, mc:2.357e9, fdv:3.423e9, vol:null },
   JUP:    { price:0.187427, d24:-0.16, d7:-4.35, mc:6.221e8, fdv:1.315e9, vol:null },
