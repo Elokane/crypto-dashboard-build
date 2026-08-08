@@ -33,7 +33,7 @@ else
 fi
 
 say "2/5 validate"
-BOARD=$(grep -o 'board v[0-9.]*' dist/dashboard.html | head -1 | sed 's/board //')
+BOARD=$(grep -o 'id="buildstamp">[^<]*' dist/dashboard.html | grep -o 'board v[0-9.]*' | head -1 | sed 's/board //')  # read the FOOTER STAMP, not the first mention — fixes the 8/6–8/7 publish failures (stale earlier mention misread as the version)
 ASOF=$(grep -o 'const BAKED_ASOF = "[0-9-]*"' dist/dashboard.html | grep -o '[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}')
 node tools/validate_build.js dist/dashboard.html --board "$BOARD" --asof "$ASOF"
 
