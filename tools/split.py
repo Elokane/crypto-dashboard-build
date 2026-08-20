@@ -23,7 +23,7 @@ DATA_CONSTS = [
     "BAKED_ASOF", "LAST_KNOWN", "TOKENS",
     "HISTORY_CSV", "BACKFILL_CSV",
     "UNLOCKS", "NETFLOW", "IN12", "NET_MODEL", "DILNEG",
-    "SPARKS30", "BENCH", "BENCH2", "BH", "RANKS",
+    "SPARKS30", "BENCH", "BENCH2", "BH", "RANKS", "B2GRADES",
     # EST_GROSS is declared INSIDE renderGrossBars() but is pure data — per-token basis
     # captions that go stale with the prints. Left in the engine it would be unreachable
     # to a data-only update, which is exactly how the "venicestats implies ~$14M/yr" line

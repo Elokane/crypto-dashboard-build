@@ -102,6 +102,7 @@
     <b>Discipline:</b> separate hype/narrative from business fundamentals; a token qualifies only if its value appreciates in direct relationship to the business (fees, burns, buybacks, staking revenue). No memecoins. ETH in scope; BTC tracked separately.<br>
     <b>Reading MC/FDV:</b> low ratio = large future dilution (HYPE ~0.26 and LIT ~0.25 — the deepest overhangs here); ~1.0 = fully diluted (ETH 1.00; AAVE ~0.95).<br>
     <b>Price policy:</b> live trackers only — CoinGecko, then Binance, then Hyperliquid; when none is reachable the last verified prices are shown as a dated snapshot. Fee figures are DefiLlama's 30-day run-rate, annualized ×12.17 — every figure passes automated integrity checks before it is baked; anomalous feeds are quarantined and logged in the open.<br>
+    <b>Business grade (trial):</b> a measured letter (A–E) from six pass/fail checks on public revenue data — market position, share trend, subsidy-free economics, scale, market growth, independence. Shown alongside the judged scores during a several-week trial; it does not yet drive rankings.<br>
     <b>Legend:</b> T1 = on-chain / independently verified · T2 = project-official · T3 = named analyst/press · est = estimate · net-dilutive = new supply currently exceeds the value paid to holders.<br>
     <b>About:</b> a research journal, not investment advice or a solicitation; the author may hold positions in assets discussed; past performance is no guarantee of future results. <!--__HTML:buildstamp__-->
   </footer>
@@ -593,9 +594,11 @@ function renderBars(elId, rows, fmt, tipLabel){
   });
 }
 /*__CONST:RANKS__*/
+/*__CONST:B2GRADES__*/
 const COLS=[
   {k:"sym", label:"Token"},
   {k:"_rank", label:"Rank", f:t=>RANKS[t.sym]?("#"+RANKS[t.sym]):"—", v:t=>RANKS[t.sym]??null},
+  {k:"_b2", label:"Biz grade (trial)", f:t=>B2GRADES.bySym[t.sym]||"—", v:t=>({A:5,B:4,C:3,D:2,E:1}[B2GRADES.bySym[t.sym]]??null)},
   {k:"price", label:"Price", f:t=>fm.price(t.price)},
   {k:"d24", label:"24h", f:t=>fm.pct(t.d24), c:t=>cls(t.d24)},
   {k:"d7", label:"7d", f:t=>fm.pct(t.d7), c:t=>cls(t.d7)},
