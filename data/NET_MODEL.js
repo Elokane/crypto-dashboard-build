@@ -1,4 +1,4 @@
 {
-  AERO: { inn:2.53050e+07, est:true, basis:"float-adjusted model",
+  AERO: { inn:2.93983e+07, est:true, basis:"float-adjusted model",
     calc:"AERO MODEL (float-adjusted), RESTATED 2026-07-30, repriced 2026-08-10: fee share $45.92M/yr (net-flow-derived from the engine's published 8/10 bases) MINUS market-relevant supply-in = float growth ~1.17M AERO/wk = $25.31M/yr at 8/10 spot - NOT the ~$102M/yr gross mint, because ~3/4 of mint lands locked (locker rebases + recipients re-locking + Foundation buy-and-lock ~200M cumulative) and never reaches the market. Net = +$20.61M/yr = +5.31% of MC -> dashed: modeled. HONESTY: on the strict OWNERSHIP basis (gross mint, MEASURED at 4,732,658 AERO for a single epoch = ~247M AERO/yr = $102.4M/yr at 8/10 spot) AERO is net-NEGATIVE at -$56.50M/yr, or -14.54% of market value, kill-trigger active - both bases render on the net-flow chart, and because the two readings straddle zero the leg carries no rank weight under the sign-flip guard." },
 }
