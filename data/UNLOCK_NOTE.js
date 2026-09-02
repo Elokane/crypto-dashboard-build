@@ -1,1 +1,1 @@
-"Bar scale is set by the realized-pace rows. Zero scheduled supply-in: UNI (fully vested), JUP (vesting complete, net-zero emissions), ETH (no unlocks; issuance is mandate-excluded), RENDER (unlocked; residual dribble)."
+"Bar scale is set by the realized-pace rows. Zero scheduled supply-in: UNI (fully vested), JUP (vesting complete), ETH (no unlocks), RENDER (unlocked; residual dribble)."

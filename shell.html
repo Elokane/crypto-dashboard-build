@@ -13,7 +13,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Crypto Value-Capture Watchlist</title>
 <style>
-:root {--surface-1: #1a1a19; --page: #0d0d0d;--text-1: #ffffff; --text-2: #c3c2b7; --muted: #898781;--grid: #2c2c2a; --baseline: #383835;--border: rgba(255,255,255,0.10);--good: #0ca30c; --bad: #d03b3b; --stale: #ec835a;--s1: #3987e5; --s2: #199e70; --s3: #c98500; --s4: #008300; --s5: #9085e9; --s6: #e66767;--bar: #3987e5; --bar-track: #184f95;--wash: rgba(57,135,229,0.10);}@media (prefers-color-scheme: light) {:root {--surface-1: #fcfcfb; --page: #f9f9f7;--text-1: #0b0b0b; --text-2: #52514e; --muted: #898781;--grid: #e1e0d9; --baseline: #c3c2b7;--border: rgba(11,11,11,0.10);--good: #006300; --bad: #d03b3b; --stale: #b45309;--s1: #2a78d6; --s2: #1baf7a; --s3: #eda100; --s4: #008300; --s5: #4a3aa7; --s6: #e34948;--bar: #2a78d6; --bar-track: #b7d3f6;--wash: rgba(42,120,214,0.10);}}* { box-sizing: border-box; margin: 0; padding: 0; }body {background: var(--page); color: var(--text-1);font-family: system-ui, -apple-system, "Segoe UI", sans-serif;font-size: 14px; line-height: 1.45; padding: 20px;}.wrap { max-width: 1080px; margin: 0 auto; }header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 16px; margin-bottom: 6px; }h1 { font-size: 20px; font-weight: 650; letter-spacing: -0.01em; }.badge {font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;border: 1px solid var(--border); color: var(--text-2);}.badge.live { color: var(--good); border-color: var(--good); }.badge.stale { color: var(--stale); border-color: var(--stale); }.sub { color: var(--muted); font-size: 12px; margin-bottom: 18px; }.sub b { color: var(--text-2); font-weight: 600; }.notice {border: 1px solid var(--stale); color: var(--text-2); border-radius: 8px;padding: 8px 12px; font-size: 12px; margin: -8px 0 18px;}.notice b { color: var(--stale); }.stalenote { color: var(--muted); font-size: 10px; font-weight: 600; margin-top: 3px; letter-spacing: 0.03em; }button.refresh {margin-left: auto; background: none; border: 1px solid var(--border); color: var(--text-2);border-radius: 6px; padding: 4px 12px; font-size: 12px; cursor: pointer; font-family: inherit;min-width: 116px; text-align: center; transition: color .15s, border-color .15s, opacity .15s;}button.refresh:hover { background: var(--wash); color: var(--text-1); }button.refresh.busy { opacity: 0.7; cursor: progress; }button.refresh.busy::before {content: ""; display: inline-block; width: 9px; height: 9px; margin-right: 6px;vertical-align: -1px; border: 1.5px solid currentColor; border-top-color: transparent;border-radius: 50%; animation: spin .7s linear infinite;}button.refresh.ok { color: var(--good); border-color: var(--good); }button.refresh.err { color: var(--stale); border-color: var(--stale); }@keyframes spin { to { transform: rotate(360deg); } }@media (prefers-reduced-motion: reduce) { button.refresh.busy::before { animation: none; } }.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); gap: 10px; margin-bottom: 22px; }.tile {background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px;padding: 12px 14px 10px;}.tile .sym { font-size: 12px; font-weight: 600; color: var(--text-2); display: flex; align-items: center; gap: 6px; }.tile .name { font-size: 11px; color: var(--muted); font-weight: 400; }.tile .price { font-size: 21px; font-weight: 600; margin: 4px 0 2px; }.tile .deltas { font-size: 12px; display: flex; gap: 10px; }.tile .spark { height: 30px; margin-top: 8px; position: relative; }.tile .spark .nospark { font-size: 10px; color: var(--muted); position: absolute; bottom: 0; }.up { color: var(--good); } .down { color: var(--bad); }.dim { color: var(--muted); }h2 { font-size: 14px; font-weight: 650; margin: 0 0 2px; }.hint { font-size: 12px; color: var(--muted); margin-bottom: 12px; }.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; margin-bottom: 22px; }.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }.hbar-row { display: grid; grid-template-columns: 64px 1fr 74px; align-items: center; gap: 10px; margin: 9px 0; }.hbar-row .lab { font-size: 12px; color: var(--text-2); font-weight: 600; text-align: right; }.hbar-track { position: relative; height: 16px; }.hbar {position: absolute; left: 0; top: 0; bottom: 0;background: var(--bar); border-radius: 0 4px 4px 0; min-width: 3px; cursor: default;}.hbar-row .val { font-size: 12px; color: var(--text-1); font-variant-numeric: tabular-nums; }.hbar.est { opacity: .85; outline: 1px dashed var(--muted); outline-offset: -1px; }.hbar.cap { background: repeating-linear-gradient(45deg, var(--bar) 0 5px, transparent 5px 9px); border: 1px dashed var(--bar); border-left: none; }.nomult { font-size: 11px; color: var(--bad); opacity: .9; position: absolute; top: 1px; white-space: nowrap; }.ubar-row { display: grid; grid-template-columns: 205px 1fr 170px; align-items: center; gap: 10px; margin: 12px 0; }.ubar-row .lab { font-size: 12px; color: var(--text-2); font-weight: 600; text-align: right; line-height: 1.25; }.ubar-track { position: relative; height: 18px; }.ubar { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 0 4px 4px 0; min-width: 2px; }.ubar.hatch { background: repeating-linear-gradient(45deg, var(--ubarcol) 0 5px, transparent 5px 9px); border: 1px dashed var(--ubarcol); border-left: none; }.ubar.est { opacity: .8; outline: 1px dashed var(--muted); outline-offset: -1px; }.nf-track { position: relative; height: 26px; }.nf-bar { position: absolute; left: 0; height: 10px; border-radius: 0 3px 3px 0; min-width: 2px; }.nf-in { top: 1px; background: var(--s3); }.nf-out { bottom: 1px; background: var(--s1); }.nf-bar.est { opacity: .8; outline: 1px dashed var(--muted); outline-offset: -1px; }.nf-none { position: absolute; left: 0; font-size: 10px; color: var(--muted); }.nf-none.top { top: -1px; } .nf-none.bot { bottom: -1px; }.ubar-row .val .net { font-weight: 600; color: var(--text-1); display: block; font-size: 11px; }.ubar-row .val { font-size: 12px; color: var(--text-1); font-variant-numeric: tabular-nums; line-height: 1.3; }.ubar-row .val .pct { color: var(--muted); font-size: 10.5px; display: block; }.axis-note { font-size: 11px; color: var(--muted); margin-top: 10px; border-top: 1px solid var(--grid); padding-top: 8px; }.tablewrap { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 6px 2px; overflow-x: auto; margin-bottom: 22px; }table { border-collapse: collapse; width: 100%; min-width: 1060px; }th, td { padding: 8px 12px; text-align: right; font-size: 12.5px; white-space: nowrap; }th:first-child, td:first-child { text-align: left; position: sticky; left: 0; background: var(--surface-1); }th {color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em;border-bottom: 1px solid var(--baseline); cursor: pointer; user-select: none;}th:hover { color: var(--text-2); }th .arr { font-size: 9px; }td { border-bottom: 1px solid var(--grid); color: var(--text-1); font-variant-numeric: tabular-nums; }tr:last-child td { border-bottom: none; }tr:hover td { background: var(--wash); }td.tok { font-weight: 600; }td .tokname { color: var(--muted); font-size: 11px; font-weight: 400; margin-left: 5px; }.chip { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-2); font-weight: 500; }.chip .dot { width: 8px; height: 8px; border-radius: 50%; border: 2px solid var(--surface-1); box-shadow: 0 0 0 1px var(--border); }.notes td { white-space: normal; text-align: left; font-variant-numeric: normal; vertical-align: top; }.notes table { min-width: 720px; }.notes td:first-child { font-weight: 600; }.notes .small { font-size: 12px; color: var(--text-2); }footer { color: var(--muted); font-size: 11.5px; line-height: 1.6; border-top: 1px solid var(--grid); padding-top: 12px; }footer b { color: var(--text-2); font-weight: 600; }#tip {position: fixed; pointer-events: none; z-index: 10; display: none;background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px;padding: 8px 11px; font-size: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.35); max-width: 260px;}#tip .v { font-weight: 650; font-size: 13px; }#tip .l { color: var(--text-2); }.refreshing .tiles, .refreshing .cards, .refreshing .tablewrap { opacity: 0.55; transition: opacity .2s; }.asofchip { display:inline-block; margin-left:8px; padding:1px 7px; border:1px solid var(--border); border-radius:999px; font-size:10px; color:var(--muted); white-space:nowrap; vertical-align:1px; }
+:root {--surface-1: #1a1a19; --page: #0d0d0d;--text-1: #ffffff; --text-2: #c3c2b7; --muted: #898781;--grid: #2c2c2a; --baseline: #383835;--border: rgba(255,255,255,0.10);--good: #0ca30c; --bad: #d03b3b; --stale: #ec835a;--s1: #3987e5; --s2: #199e70; --s3: #c98500; --s4: #008300; --s5: #9085e9; --s6: #e66767;--bar: #3987e5; --bar-track: #184f95;--wash: rgba(57,135,229,0.10);}@media (prefers-color-scheme: light) {:root {--surface-1: #fcfcfb; --page: #f9f9f7;--text-1: #0b0b0b; --text-2: #52514e; --muted: #898781;--grid: #e1e0d9; --baseline: #c3c2b7;--border: rgba(11,11,11,0.10);--good: #006300; --bad: #d03b3b; --stale: #b45309;--s1: #2a78d6; --s2: #1baf7a; --s3: #eda100; --s4: #008300; --s5: #4a3aa7; --s6: #e34948;--bar: #2a78d6; --bar-track: #b7d3f6;--wash: rgba(42,120,214,0.10);}}* { box-sizing: border-box; margin: 0; padding: 0; }body {background: var(--page); color: var(--text-1);font-family: system-ui, -apple-system, "Segoe UI", sans-serif;font-size: 14px; line-height: 1.45; padding: 20px;}.wrap { max-width: 1080px; margin: 0 auto; }header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 16px; margin-bottom: 6px; }h1 { font-size: 20px; font-weight: 650; letter-spacing: -0.01em; }.badge {font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;border: 1px solid var(--border); color: var(--text-2);}.badge.live { color: var(--good); border-color: var(--good); }.badge.stale { color: var(--stale); border-color: var(--stale); }.sub { color: var(--muted); font-size: 12px; margin-bottom: 18px; }.sub b { color: var(--text-2); font-weight: 600; }.notice {border: 1px solid var(--stale); color: var(--text-2); border-radius: 8px;padding: 8px 12px; font-size: 12px; margin: -8px 0 18px;}.notice b { color: var(--stale); }.stalenote { color: var(--muted); font-size: 10px; font-weight: 600; margin-top: 3px; letter-spacing: 0.03em; }button.refresh {margin-left: auto; background: none; border: 1px solid var(--border); color: var(--text-2);border-radius: 6px; padding: 4px 12px; font-size: 12px; cursor: pointer; font-family: inherit;min-width: 116px; text-align: center; transition: color .15s, border-color .15s, opacity .15s;}button.refresh:hover { background: var(--wash); color: var(--text-1); }button.refresh.busy { opacity: 0.7; cursor: progress; }button.refresh.busy::before {content: ""; display: inline-block; width: 9px; height: 9px; margin-right: 6px;vertical-align: -1px; border: 1.5px solid currentColor; border-top-color: transparent;border-radius: 50%; animation: spin .7s linear infinite;}button.refresh.ok { color: var(--good); border-color: var(--good); }button.refresh.err { color: var(--stale); border-color: var(--stale); }@keyframes spin { to { transform: rotate(360deg); } }@media (prefers-reduced-motion: reduce) { button.refresh.busy::before { animation: none; } }.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); gap: 10px; margin-bottom: 22px; }.tile {background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px;padding: 12px 14px 10px;}.tile .sym { font-size: 12px; font-weight: 600; color: var(--text-2); display: flex; align-items: center; gap: 6px; }.tile .name { font-size: 11px; color: var(--muted); font-weight: 400; }.tile .price { font-size: 21px; font-weight: 600; margin: 4px 0 2px; }.tile .deltas { font-size: 12px; display: flex; gap: 10px; }.tile .spark { height: 30px; margin-top: 8px; position: relative; }.tile .spark .nospark { font-size: 10px; color: var(--muted); position: absolute; bottom: 0; }.up { color: var(--good); } .down { color: var(--bad); }.dim { color: var(--muted); }h2 { font-size: 14px; font-weight: 650; margin: 0 0 2px; }.hint { font-size: 12px; color: var(--muted); margin-bottom: 12px; }.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; margin-bottom: 22px; }.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }.hbar-row { display: grid; grid-template-columns: 64px 1fr 74px; align-items: center; gap: 10px; margin: 9px 0; }.hbar-row .lab { font-size: 12px; color: var(--text-2); font-weight: 600; text-align: right; }.hbar-track { position: relative; height: 16px; }.hbar {position: absolute; left: 0; top: 0; bottom: 0;background: var(--bar); border-radius: 0 4px 4px 0; min-width: 3px; cursor: default;}.hbar-row .val { font-size: 12px; color: var(--text-1); font-variant-numeric: tabular-nums; }.hbar.est { opacity: .85; outline: 1px dashed var(--muted); outline-offset: -1px; }.hbar.cap { background: repeating-linear-gradient(45deg, var(--bar) 0 5px, transparent 5px 9px); border: 1px dashed var(--bar); border-left: none; }.nomult { font-size: 11px; color: var(--bad); opacity: .9; position: absolute; top: 1px; white-space: nowrap; }.ubar-row { display: grid; grid-template-columns: 205px 1fr 170px; align-items: center; gap: 10px; margin: 12px 0; }.ubar-row .lab { font-size: 12px; color: var(--text-2); font-weight: 600; text-align: right; line-height: 1.25; }.ubar-track { position: relative; height: 18px; }.ubar { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 0 4px 4px 0; min-width: 2px; }.ubar.hatch { background: repeating-linear-gradient(45deg, var(--ubarcol) 0 5px, transparent 5px 9px); border: 1px dashed var(--ubarcol); border-left: none; }.ubar.est { opacity: .8; outline: 1px dashed var(--muted); outline-offset: -1px; }.nf-track { position: relative; height: 26px; }.nf-bar { position: absolute; left: 0; height: 10px; border-radius: 0 3px 3px 0; min-width: 2px; }.nf-in { top: 1px; background: var(--s3); }.nf-out { bottom: 1px; background: var(--s1); }.nf-bar.est { opacity: .8; outline: 1px dashed var(--muted); outline-offset: -1px; }.nf-none { position: absolute; left: 0; font-size: 10px; color: var(--muted); }.nf-none.top { top: -1px; } .nf-none.bot { bottom: -1px; }.ubar-row .val .net { font-weight: 600; color: var(--text-1); display: block; font-size: 11px; }.ubar-row .val { font-size: 12px; color: var(--text-1); font-variant-numeric: tabular-nums; line-height: 1.3; }.ubar-row .val .pct { color: var(--muted); font-size: 10.5px; display: block; }.axis-note { font-size: 11px; color: var(--muted); margin-top: 10px; border-top: 1px solid var(--grid); padding-top: 8px; }.tablewrap { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 6px 2px; overflow-x: auto; margin-bottom: 22px; }table { border-collapse: collapse; width: 100%; min-width: 1060px; }th, td { padding: 8px 12px; text-align: right; font-size: 12.5px; white-space: nowrap; }th:first-child, td:first-child { text-align: left; position: sticky; left: 0; background: var(--surface-1); }th {color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em;border-bottom: 1px solid var(--baseline); cursor: pointer; user-select: none;}th:hover { color: var(--text-2); }th .arr { font-size: 9px; }td { border-bottom: 1px solid var(--grid); color: var(--text-1); font-variant-numeric: tabular-nums; }tr:last-child td { border-bottom: none; }tr:hover td { background: var(--wash); }td.tok { font-weight: 600; }td .tokname { color: var(--muted); font-size: 11px; font-weight: 400; margin-left: 5px; }.chip { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-2); font-weight: 500; }.chip .dot { width: 8px; height: 8px; border-radius: 50%; border: 2px solid var(--surface-1); box-shadow: 0 0 0 1px var(--border); }.notes td { white-space: normal; text-align: left; font-variant-numeric: normal; vertical-align: top; }.notes table { min-width: 720px; }.notes td:first-child { font-weight: 600; }.notes .small { font-size: 12px; color: var(--text-2); }.notes .small b { color: var(--text-1); font-weight: 650; }footer { color: var(--muted); font-size: 11.5px; line-height: 1.6; border-top: 1px solid var(--grid); padding-top: 12px; }footer b { color: var(--text-2); font-weight: 600; }#tip {position: fixed; pointer-events: none; z-index: 10; display: none;background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px;padding: 8px 11px; font-size: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.35); max-width: 260px;}#tip .v { font-weight: 650; font-size: 13px; }#tip .l { color: var(--text-2); }.refreshing .tiles, .refreshing .cards, .refreshing .tablewrap { opacity: 0.55; transition: opacity .2s; }.asofchip { display:inline-block; margin-left:8px; padding:1px 7px; border:1px solid var(--border); border-radius:999px; font-size:10px; color:var(--muted); white-space:nowrap; vertical-align:1px; }
 </style>
 </head>
 <body>
@@ -24,9 +24,6 @@
     <!--__HTML:updatedChip__-->
     <button class="refresh" id="refreshBtn" type="button">Refresh now</button>
   </header>
-  <div class="sub">
-<!--__HTML:subBasis__-->
-  </div>
   <div class="notice" id="notice" hidden></div>
 
   <div class="tiles" id="tiles"></div>
@@ -39,7 +36,7 @@
       <div class="axis-note"><!--__HTML:axisnote0__--></div>
     </div>
     <div class="card">
-      <h2>Accountability — watchlist vs just holding ETH or BTC</h2>
+      <h2>Board vs holding ETH or BTC</h2>
       <div class="hint"><!--__HTML:hint1__--></div>
       <div id="benchChart"></div>
       <div class="axis-note" id="benchNote"></div>
@@ -72,7 +69,7 @@
   <div class="cards" style="grid-template-columns:1fr">
     <div class="card"><h2>Fees annualized</h2><div class="hint"><!--__HTML:hint6__--></div><div id="histFees"></div></div>
     <div class="card"><h2>Holders revenue annualized</h2><div class="hint"><!--__HTML:hint7__--></div><div id="histRev"></div></div>
-    <div class="card"><h2>MC / holders revenue</h2><div class="hint" id="histMcRevHint">Weekly market cap ÷ holders-revenue run-rate · backfill estimated at today's circulating (live mode hydrates true historical MCAP) · ETH excluded · early post-burn UNI weeks above 200× clamped</div><div id="histMcRev"></div></div>
+    <div class="card"><h2>MC / holders revenue</h2><div class="hint" id="histMcRevHint">Weekly market cap ÷ holders-revenue run-rate · ETH excluded · UNI weeks above 200× clamped</div><div id="histMcRev"></div></div>
     <div class="card"><h2>TVL</h2><div class="hint"><!--__HTML:hint8__--></div><div id="histTvl"></div></div>
   </div>
 
@@ -101,7 +98,7 @@
   <footer>
     <b>Discipline:</b> separate hype/narrative from business fundamentals; a token qualifies only if its value appreciates in direct relationship to the business (fees, burns, buybacks, staking revenue). No memecoins. ETH in scope; BTC tracked separately.<br>
     <b>Reading MC/FDV:</b> low ratio = a large share of the eventual supply is still to come (deep dilution overhang); ~1.0 = fully diluted.<br>
-    <b>Data:</b> live trackers first (CoinGecko, then Binance, then Hyperliquid); offline, the last verified snapshot is shown with its date. Fees are DefiLlama 30-day run-rates, annualized ×12.17; an unverifiable feed is carried at its last verified value.<br>
+    <b>Data:</b> <span id="asof"></span> · <!--__HTML:footBasis__--><br>
     <b>Business grade (trial):</b> a measured letter (A–E) from six checks on public revenue data, shown alongside the judged scores during a trial; it does not yet drive rankings.<br>
     <b>Legend:</b> T1 = on-chain / independently verified · T2 = project-official · T3 = named analyst/press · est = estimate · net-dilutive = new supply currently exceeds the value paid to holders.<br>
     <b>About:</b> a research journal, not investment advice or a solicitation; the author may hold positions in assets discussed; past performance is no guarantee of future results. <!--__HTML:buildstamp__-->
@@ -110,26 +107,8 @@
 <div id="tip"></div>
 
 <script>
-/* ===== CONFIG =====
-   ENGINE LAW + full v7-v16 changelog: CANONICAL on the Notion law page, section "Dashboard-file engine law - CANONICAL
-   HOME" (moved out of this file 7/22 PM so uploads fit the pipeline). Iron rules kept in-file:
-   (1) LAST_KNOWN + per-token baked values + BAKED_ASOF refresh together every rebake; prices from live trackers or a
-       stamped T1 carried basis only.
-   (2) HISTORY_CSV gets EXACTLY ONE appended line per verified run basis (empty fields = null), never overwritten;
-       BACKFILL_CSV is the static owned archive - never append, never regenerate; REJECT any incoming fee print that
-       equals a prior bake to the dollar (echo tell).
-   (3) IN12 + NETFLOW legs + NET_MODEL + DILNEG + EST_GROSS refresh together every run; every bar/row tooltip carries
-       its full calculation.
-   (4) C20 additions: read claude/state.json FIRST (canonical board/state; the build stamp — FOOTER, id=buildstamp — must match it);
-       every transcribed print passes claude/tools/validate_prints.py BEFORE baking (echo-fingerprint + archive-
-       fingerprint + rolling-sum continuity + share-jump; QUARANTINE => carry last verified, queue, cache-busted retry,
-       never narrate); all api.llama.fi fetches carry &cb=<runid>; AERO supply via Thu-to-Thu same-hour blockscout
-       deltas (epoch-flip reads proven non-capturing 7/23); SPARKS30 + BENCH refresh from the owned archive shards;
-       BH scores refresh from the Token DB each scored run.
-   (5) AUDIENCE (owner-approved 2026-07-24, law-page audience law): this is a GUEST-FACING build. Keep: the header
-       "Updated <date>" chip (stamp lives in the FOOTER), plain-language chart titles, rank-first table default,
-       net-dilutive wording (never "dil-neg"), the footer legend + disclaimer, SNAPSHOT (not STALE) presentation in
-       embeds, tap-to-show tooltips, no file paths / correction IDs / owner-directive phrasing in rendered text. */
+/* Data constants are spliced in by tools/build.py; rendered prose lives in data/_html.json and data/*.js.
+   Rendered text carries findings only — never process, sourcing or run narration (tools/scope_gate.py enforces it). */
 /*__CONST:BAKED_ASOF__*/
 /*__CONST:LAST_KNOWN__*/
 /*__CONST:TOKENS__*/
@@ -649,6 +628,9 @@ function renderTable(){
   });
   tbl.append(tb);
 }
+function emph(el,text){ /* **bold** → <b>, text nodes only */
+  String(text||"").split("**").forEach((seg,i)=>{ if(!seg) return; if(i%2){ const b=document.createElement("b"); b.textContent=seg; el.append(b); } else el.append(document.createTextNode(seg)); });
+}
 function renderNotes(){
   const tbl=document.getElementById("ntable"); tbl.replaceChildren();
   const thead=document.createElement("thead"); const hr=document.createElement("tr");
@@ -664,9 +646,9 @@ function renderNotes(){
     const chip=document.createElement("span"); chip.className="chip";
     const dot=document.createElement("span"); dot.className="dot"; dot.style.background=SLOTCOLORS[t.accrual.slot];
     chip.append(dot,document.createTextNode(t.accrual.label));
-    const note=document.createElement("div"); note.className="small"; note.textContent=t.accrual.note;
+    const note=document.createElement("div"); note.className="small"; emph(note,t.accrual.note);
     td2.append(chip,note);
-    const td3=document.createElement("td"); td3.className="small"; td3.textContent=t.unlock;
+    const td3=document.createElement("td"); td3.className="small"; emph(td3,t.unlock);
     tr.append(td1,td2,td3); tb.append(tr);
   });
   tbl.append(tb);
@@ -684,14 +666,12 @@ function renderAll(){
     badge.textContent="LIVE"; badge.className="badge live"; notice.hidden=true;
   } else if (mode==="stale"){
     badge.textContent="SNAPSHOT · "+String(lastGood.asof||BAKED_ASOF).slice(0,10); badge.className="badge";
-    notice.hidden=false; notice.replaceChildren(); notice.style.borderColor="var(--border)";
-    const b=document.createElement("b"); b.textContent="SNAPSHOT — ";
-    notice.append(b, document.createTextNode("this embedded view shows the last verified data (as of "+(lastGood.asof||BAKED_ASOF)+"), refreshed daily. Live self-refresh is available in the standalone file."));
+    notice.hidden=true; notice.replaceChildren();
   } else {
     badge.textContent="OFFLINE"; badge.className="badge";
     notice.hidden=false; notice.replaceChildren();
     const b=document.createElement("b"); b.textContent="NO PRICE DATA — ";
-    notice.append(b, document.createTextNode("no live tracker reachable and no verified snapshot available yet. Fees & TVL are the DefiLlama snapshot of "+BAKED_ASOF+"."));
+    notice.append(b, document.createTextNode("fees and TVL as of "+BAKED_ASOF+"."));
   }
 }
 
@@ -740,7 +720,7 @@ async function tryBinance(){
     t.mc=t.circ?t.price*t.circ:null; /* approximated: price × last-known circulating */
   });
   if(!any) throw new Error("binance empty");
-  sourceLabel="Binance (fallback — MC ≈ price × circulating)";
+  sourceLabel="Binance";
 }
 async function tryHyperliquid(){
   const mids=await j("https://api.hyperliquid.xyz/info",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"allMids"})});
@@ -752,7 +732,7 @@ async function tryHyperliquid(){
     any=true; t.price=parseFloat(v); t.mc=t.circ?t.price*t.circ:null;
   });
   if(!any) throw new Error("hl empty");
-  sourceLabel="Hyperliquid mids (fallback — price only)";
+  sourceLabel="Hyperliquid";
 }
 
 let refreshing=false, flashTimer=null;
@@ -831,24 +811,24 @@ async function refresh(){
         if(hydrated){
           histChart("histMcRev","mcRev",v=>fm.x(v),false);
           const hh=document.getElementById("histMcRevHint");
-          if(hh) hh.textContent="Weekly TRUE historical MCAP ("+hydrated+"/4 tokens hydrated) ÷ holders-revenue run-rate · ETH excluded · >200× clamped";
+          if(hh) hh.textContent="Weekly market cap ÷ holders-revenue run-rate · ETH excluded · UNI weeks above 200× clamped";
         }
       }catch(e){ /* pane-blocked — est backfill stands */ }
     })();
     if (priced){
       mode="live"; saveGood();
-      asofLabel="live · "+sourceLabel+" · "+new Date().toLocaleString([], {month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"});
+      asofLabel="prices live · "+sourceLabel+" · "+new Date().toLocaleString([], {month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"});
     } else if (applyLastGood()){
       mode="stale";
-      asofLabel="snapshot of "+(lastGood.asof||BAKED_ASOF)+" — embedded views don't allow live fetches";
+      asofLabel="prices as of "+(lastGood.asof||BAKED_ASOF);
     } else {
       mode="none";
-      asofLabel="offline — no price data (fees/TVL snapshot "+BAKED_ASOF+")";
+      asofLabel="no price data · fees and TVL as of "+BAKED_ASOF;
     }
   } catch(e){
     /* unexpected error — degrade to snapshot instead of leaving the UI mid-refresh */
-    if (applyLastGood()){ mode="stale"; asofLabel="snapshot of "+(lastGood.asof||BAKED_ASOF)+" — embedded views don't allow live fetches"; }
-    else { mode="none"; asofLabel="offline — refresh error"; }
+    if (applyLastGood()){ mode="stale"; asofLabel="prices as of "+(lastGood.asof||BAKED_ASOF); }
+    else { mode="none"; asofLabel="no price data"; }
   } finally {
     root.classList.remove("refreshing");
     refreshing=false;

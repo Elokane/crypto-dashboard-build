@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 """
-scope_gate.py — the Scope law's arithmetic (Methodology, 2026-08-24 amendments, §C20).
+scope_gate.py — the Scope law's arithmetic (Methodology §C20; form rules of 2026-09-02).
 
 One rule: guest-facing text carries findings, not process, and every section has a
-budget. This script is the budget. A write that fails it is not made; a dashboard
+budget. Form rules (2026-09-02, owner): nothing but the embed under "Live dashboard";
+"How to read this page" is a closed toggle heading with no history and no correction-ID
+explainer; no "accountability" anywhere; the dashboard header carries no prose and its
+sourcing/process text lives only in the footer; per-token notes are short and emphasise
+the outlier fact or date. This script is the budget. A write that fails it is not made; a dashboard
 build that fails it is not filed. Where the law's prose and this script disagree, the
 script governs until the prose is amended and the script changed in the same session.
 
@@ -22,10 +26,10 @@ import json, re, sys, os
 # ----------------------------------------------------------------------------- budgets
 # Words, not characters. The nearer the top of a surface, the tighter the budget.
 LIVE_CAPS = {
-    "_preamble":                    130,   # italic intro + About callout
+    "_preamble":                    100,   # italic intro + About callout
     "# Thesis & framework":         140,
     "# How to read this page":      720,
-    "# Live dashboard":              70,   # one line + the embed (embed line not counted)
+    "# Live dashboard":               0,   # NOTHING between the heading and the embed
     "### Market update":            400,
     "# 🏆 Top 7 picks":            1500,   # header line + ranked-on line + seven cards
     "# Vetted":                     320,
@@ -44,8 +48,9 @@ LIVE_EQ_TOGGLE_CAP   = 1800  # words per equities dossier toggle (research notes
 LIVE_MAX_ABOVE_ARCHIVE_BYTES = 90_000
 
 DASH_CAPS = {   # data/_html.json slots, by name prefix (ratcheted 2026-08-27; caps only go down)
-    "updatedChip": 8, "subBasis": 45, "hint": 32, "axisnote": 50, "buildstamp": 12,
+    "updatedChip": 8, "footBasis": 40, "hint": 32, "axisnote": 50, "buildstamp": 12,
 }
+DASH_RETIRED_SLOTS = {"subBasis"}   # header prose — retired 2026-09-02; build.py also refuses an unused slot
 DASH_NOTE_CAPS = {  # the four rendered note slots (data-bearing, regenerated each bake)
     "NET_NOTE": 30, "BENCH_NOTE": 55, "NETFLOW_NOTE": 35, "UNLOCK_NOTE": 40,
 }
@@ -96,8 +101,29 @@ FORBIDDEN = [
     (r"\bENGINE:|\bengine law\b|\brebake\w*\b",         "engine instruction"),
     (r"\bdil-neg\b",                                    "internal jargon"),
     (r"\bprior gap state\b|\bearlier gap state\b",      "stale honesty-box history"),
+    (r"\baccountab\w*",                                  "accountability talk (owner: never)"),
+    (r"\bsign-flip guard\b|\brank weight\b",            "ranking-rule internals"),
+    (r"\badapter\b|\bmachine-readable\b|\bprovider-implied\b|\bhand-set\b", "sourcing/process talk"),
+    (r"\bembedded views?\b|\bself-refresh\w*\b|\bstandalone file\b|\blive fetch\w*\b", "embed self-description"),
+]
+PLAIN_FORBIDDEN = [   # owner, 2026-09-02: plain English above the log — no rule internals, no data-window or sourcing mechanics
+    (r"\b(?:primary|net|business|valuation|hype) dial\b|\bdials?\b(?= (?:abstain|read|says|agree))", "ranking-rule jargon (dial)"),
+    (r"\bhysteresis\b|\bpersistence\b|\babstain\w*\b|\bscoreable\b|\bwritten scale\b|\bno rank weight\b", "ranking-rule internals"),
+    (r"\b(?:\w+ )?legs? (?:of|carry|carries)\b|\bthe (?:\d+% |net(?:-flow)? |valuation |business )?leg\b", "ranking-rule internals (legs)"),
+    (r"\b(?:second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|\d+(?:st|nd|rd|th)) (?:scored )?reading\b|\breadings\b|\breading(?:s)? (?:on|for|of) the\b", "reading counters"),
+    (r"\bprints?\b|\bprinted\b|\bprinting\b", "'print' jargon — say figure, revenue, payment"),
+    (r"\bfee window\b|\bwindow (?:advanced|advances|rolls?|rolled|stood|stands)\b|\bUTC\b", "data-window mechanics"),
+    (r"\battribution artifact\b|\bzero-print\b|\bsame-weekday\b|\bex-zero\b", "data-check mechanics"),
+    (r"\bsecond (?:price )?(?:source|origin)\b|\bone source\b|\bhourly (?:shape|tape)\b|\bsource(?:s)? (?:is|are|was|were) (?:un)?reachable\b", "sourcing narration"),
+    (r"\bdata note\b|\bsix-name context\b|\bseed[- ]six\b", "retired context / data note"),
+]
+HOWTO_FORBIDDEN = [   # "How to read this page": definitions only — no history, no correction bookkeeping
+    (r"\b(?:since|from|as of|until|before|after) \d{1,2} (?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w*\b", "history in the key"),
+    (r"\b(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w* \d{4}\b|\b20\d\d-\d\d-\d\d\b", "date in the key"),
+    (r"\bcorrection\w*\b|\bC-number\w*|\bnumbered ID\b|\bsee the log\b", "correction bookkeeping in the key"),
 ]
 DASH_EXTRA_FORBIDDEN = [
+    (r"\bprints?\b|\bprinted\b", "'print' jargon in dashboard prose"),
     (r"\b(?:RESOLVED|CORRECTED|STATUS|UPDATED|NEW|NOTE|PRINT|RE-VERIFIED|RESTATED|WITHDRAWN|MEASURED|REFRESH|EARLY RUN)\b[^.;]{0,14}\b\d{1,2}/\d{1,2}\b", "dated run-stamp"),
     (r"\b\d{1,2}/\d{1,2}(?: [A-Z]{2,})?:", "dated run-stamp"),
     (r"\bsee the log\b|\bsee the note\b", "cross-reference to a log the dashboard does not have"),
@@ -187,15 +213,21 @@ def live(path):
             head_wo_embed = "\n".join(l for l in head.split("\n") if "<embed" not in l)
             n = words(head_wo_embed)
             if n > LIVE_CAPS["# Live dashboard"]:
-                fails.append(f"Live dashboard line {n} words > {LIVE_CAPS['# Live dashboard']}")
+                fails.append(f"text between the Live dashboard heading and the embed ({n} words) — the embed stands alone")
             if mu:
                 n = words(mu)
                 if n > LIVE_CAPS["### Market update"]:
                     fails.append(f"Market update {n} words > {LIVE_CAPS['### Market update']}")
-            fails += scan_patterns(text, FORBIDDEN, name)
+            fails += scan_patterns(text, FORBIDDEN + PLAIN_FORBIDDEN, name)
             continue
         cap_key = next((k for k in LIVE_CAPS if name.startswith(k)), None)
         outside, toggles = split_toggles(text)
+        if name.startswith("# How to read this page"):
+            if 'toggle="true"' not in name:
+                fails.append("How to read this page must be a toggle heading ({toggle=\"true\"}), closed by default")
+            if any(l.strip() and not l.startswith("\t") for l in text.split("\n")):
+                fails.append("How to read this page: every child line must be tab-indented inside the toggle")
+            fails += scan_patterns(text, HOWTO_FORBIDDEN, name)
         if name.startswith("# What changed"):
             n = words(outside)
             if n > LIVE_CAPS["# What changed"]:
@@ -208,7 +240,7 @@ def live(path):
                 if n > cap:
                     fails.append(f"log toggle '{summ[:50]}' body {n} words > {cap}")
                 fails += scan_patterns(summ + "\n" + tb, FORBIDDEN, "log toggle")
-            fails += scan_patterns(outside, FORBIDDEN, name)
+            fails += scan_patterns(outside, FORBIDDEN + PLAIN_FORBIDDEN, name)
             continue
         if name.startswith("# Crypto-exposed equities"):
             n = words(outside)
@@ -218,7 +250,9 @@ def live(path):
                 n = words(tb)
                 if n > LIVE_EQ_TOGGLE_CAP:
                     fails.append(f"equities toggle '{summ[:50]}' body {n} words > {LIVE_EQ_TOGGLE_CAP}")
-            fails += scan_patterns(text, FORBIDDEN, name)
+            fails += scan_patterns(outside, FORBIDDEN + PLAIN_FORBIDDEN, name)
+            for summ, tb in toggles:
+                fails += scan_patterns(summ + "\n" + tb, FORBIDDEN, "equities toggle")
             continue
         if name.startswith("# Honesty box") and toggles:
             fails.append("Honesty box carries toggles — earlier states belong in the Archive")
@@ -234,7 +268,8 @@ def live(path):
                 fails.append(f"{name[:40]} {n} words > {LIVE_CAPS[cap_key]}")
         else:
             warns.append(f"section without a budget: {name[:60]}")
-        fails += scan_patterns(text, FORBIDDEN, name)
+        plain = not (name.startswith("# Honesty box") or name.startswith("# Engine cadence"))
+        fails += scan_patterns(text, FORBIDDEN + (PLAIN_FORBIDDEN if plain else []), name)
     return fails, warns
 
 # ----------------------------------------------------------------------------- dash
@@ -249,8 +284,10 @@ def dash(repo):
     fails, warns = [], []
     d = os.path.join(repo, "data")
     html = json.load(open(os.path.join(d, "_html.json"), encoding="utf-8"))
+    for k in DASH_RETIRED_SLOTS & set(html):
+        fails.append(f"_html.json {k}: retired slot — the dashboard header carries no prose")
     for k, v in html.items():
-        cap = next((c for p, c in DASH_CAPS.items() if k.startswith(p)), 60)
+        cap = next((c for p, c in DASH_CAPS.items() if k.startswith(p)), 40)
         n = words(v)
         if n > cap:
             fails.append(f"_html.json {k}: {n} words > {cap}")
@@ -263,6 +300,13 @@ def dash(repo):
         ("NET_MODEL.js",[("calc", "calc"), ("basis", "net")]),
         ("LAST_KNOWN.js",[("asof", "asof")]),
     ]
+    lk = open(os.path.join(d, "LAST_KNOWN.js"), encoding="utf-8").read()
+    for s in js_strings(lk, "asof"):
+        if not re.fullmatch(r"\d{4}-\d\d-\d\d(?: \d{1,2}:\d\d [AP]M PT)?", s):
+            fails.append(f"LAST_KNOWN.js asof must be a date/time only, not a sourcing note — …{s[:60]}…")
+    for s in js_strings(open(os.path.join(d, "TOKENS.js"), encoding="utf-8").read(), "name"):
+        if re.search(r"\(|\d{1,2}/\d{1,2}", s):
+            fails.append(f"TOKENS.js name carries a parenthetical or date — …{s}…")
     for fn, keys in checks:
         p = os.path.join(d, fn)
         if not os.path.exists(p):
@@ -309,7 +353,10 @@ def dash(repo):
     # rendered strings hard-coded in the shell must not carry data claims or engine text
     shell = open(os.path.join(repo, "shell.html"), encoding="utf-8").read()
     for pat, why in ((r"ENGINE:", "engine instruction in shell"), (r"\(8 seats\)|\b8 seats\b", "stale seat count in shell"),
-                     (r"re-entry event ~Aug", "stale dated claim in shell")):
+                     (r"re-entry event ~Aug", "stale dated claim in shell"),
+                     (r"(?i)accountab", "accountability in shell"), (r'class="sub"', "header prose block in shell"),
+                     (r"embedded view shows|self-refresh", "snapshot banner prose in shell"),
+                     (r"claude/|state\.json|validate_prints", "internal path in shell")):
         if re.search(pat, shell):
             fails.append(f"shell.html: {why}")
     return fails, warns

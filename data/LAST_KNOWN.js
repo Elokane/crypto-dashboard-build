@@ -1,4 +1,4 @@
-{ asof: "2026-08-28 09:00 AM PT (16:00 UTC) · DefiLlama historical", bySym: {
+{ asof: "2026-08-28 09:00 AM PT", bySym: {
   HYPE:  { price:81.585481, d24:-3.69, d7:6.56, mc:2.07666e+10, fdv:6.26634e+10, vol:null },
   AERO:  { price:0.503739, d24:-2.88, d7:4.54, mc:4.71589e+08, fdv:8.64826e+08, vol:null },
   UNI:   { price:4.488557, d24:-0.71, d7:13.27, mc:2.77961e+09, fdv:4.18364e+09, vol:null },
