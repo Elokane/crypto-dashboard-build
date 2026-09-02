@@ -1,1 +1,1 @@
-{ asof:"2026-08-23 reading, carried", bySym:{ HYPE:"B", AERO:"D", UNI:"A", JUP:"C", PENDLE:"D", VVV:"C" } }
+{ asof:"2026-09-02 re-score", bySym:{ HYPE:"B", AERO:"D", UNI:"A", JUP:"C", PENDLE:"D", VVV:"C" } }
