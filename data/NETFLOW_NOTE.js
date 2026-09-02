@@ -1,0 +1,1 @@
+"Out-legs are the tiles' holders revenue; in-legs are priced at the day's basis. AERO's in-leg is measured on-chain; ETH's is validator issuance, mandate-excluded; HYPE uses the realized claim pace, not the ceiling."

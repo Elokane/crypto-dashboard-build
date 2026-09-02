@@ -110,5 +110,33 @@
     "pre_value_ws": "",
     "lead_comment": "",
     "gap": ""
+  },
+  {
+    "name": "NET_NOTE",
+    "decl_prefix": "const NET_NOTE =",
+    "pre_value_ws": " ",
+    "lead_comment": "",
+    "gap": ""
+  },
+  {
+    "name": "BENCH_NOTE",
+    "decl_prefix": "const BENCH_NOTE =",
+    "pre_value_ws": " ",
+    "lead_comment": "",
+    "gap": ""
+  },
+  {
+    "name": "NETFLOW_NOTE",
+    "decl_prefix": "const NETFLOW_NOTE =",
+    "pre_value_ws": " ",
+    "lead_comment": "",
+    "gap": ""
+  },
+  {
+    "name": "UNLOCK_NOTE",
+    "decl_prefix": "const UNLOCK_NOTE =",
+    "pre_value_ws": " ",
+    "lead_comment": "",
+    "gap": ""
   }
 ]

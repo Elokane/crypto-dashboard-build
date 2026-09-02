@@ -72,7 +72,7 @@
   <div class="cards" style="grid-template-columns:1fr">
     <div class="card"><h2>Fees annualized</h2><div class="hint"><!--__HTML:hint6__--></div><div id="histFees"></div></div>
     <div class="card"><h2>Holders revenue annualized</h2><div class="hint"><!--__HTML:hint7__--></div><div id="histRev"></div></div>
-    <div class="card"><h2>MC / holders revenue</h2><div class="hint" id="histMcRevHint">Lower = more business per dollar · linear scale · pre-7/10 line = weekly price × TODAY'S circulating supply ÷ that week's holders-rev run-rate (EST — CoinGecko's historical-MCAP API is robots-blocked server-side; open the dashboard standalone and live mode hydrates TRUE historical MCAP from CoinGecko and redraws this chart) · ETH excluded (~10,400× burn multiple is off-scale — see its note) · UNI's first post-burn weeks omitted until the multiple settles below 200× (the Dec-25/Jan-26 ramp printed thousands-× values that wrecked the y-scale)</div><div id="histMcRev"></div></div>
+    <div class="card"><h2>MC / holders revenue</h2><div class="hint" id="histMcRevHint">Weekly market cap ÷ holders-revenue run-rate · backfill estimated at today's circulating (live mode hydrates true historical MCAP) · ETH excluded · early post-burn UNI weeks above 200× clamped</div><div id="histMcRev"></div></div>
     <div class="card"><h2>TVL</h2><div class="hint"><!--__HTML:hint8__--></div><div id="histTvl"></div></div>
   </div>
 
@@ -100,9 +100,9 @@
 
   <footer>
     <b>Discipline:</b> separate hype/narrative from business fundamentals; a token qualifies only if its value appreciates in direct relationship to the business (fees, burns, buybacks, staking revenue). No memecoins. ETH in scope; BTC tracked separately.<br>
-    <b>Reading MC/FDV:</b> low ratio = large future dilution (HYPE ~0.26 and LIT ~0.25 — the deepest overhangs here); ~1.0 = fully diluted (ETH 1.00; AAVE ~0.95).<br>
-    <b>Price policy:</b> live trackers only — CoinGecko, then Binance, then Hyperliquid; when none is reachable the last verified prices are shown as a dated snapshot. Fee figures are DefiLlama's 30-day run-rate, annualized ×12.17 — every figure passes automated integrity checks before it is baked; anomalous feeds are quarantined and logged in the open.<br>
-    <b>Business grade (trial):</b> a measured letter (A–E) from six pass/fail checks on public revenue data — market position, share trend, subsidy-free economics, scale, market growth, independence. Shown alongside the judged scores during a several-week trial; it does not yet drive rankings.<br>
+    <b>Reading MC/FDV:</b> low ratio = a large share of the eventual supply is still to come (deep dilution overhang); ~1.0 = fully diluted.<br>
+    <b>Data:</b> live trackers first (CoinGecko, then Binance, then Hyperliquid); offline, the last verified snapshot is shown with its date. Fees are DefiLlama 30-day run-rates, annualized ×12.17; an unverifiable feed is carried at its last verified value.<br>
+    <b>Business grade (trial):</b> a measured letter (A–E) from six checks on public revenue data, shown alongside the judged scores during a trial; it does not yet drive rankings.<br>
     <b>Legend:</b> T1 = on-chain / independently verified · T2 = project-official · T3 = named analyst/press · est = estimate · net-dilutive = new supply currently exceeds the value paid to holders.<br>
     <b>About:</b> a research journal, not investment advice or a solicitation; the author may hold positions in assets discussed; past performance is no guarantee of future results. <!--__HTML:buildstamp__-->
   </footer>
@@ -254,13 +254,13 @@ function renderHistory(){
 }
 
 /* ===== INCOMING UNLOCKS & EMISSIONS (owner directive 7/21) =====
-   ENGINE: refresh amounts + the price valuation each rebake; keep the 12-mo window rolling; tiers in tooltips.
+   Engine duty: refresh amounts + the price valuation each rebuild; keep the 12-mo window rolling; tiers in tooltips.
    AERO now charted as MEASURED (v13): T1 supply-delta average 4.46M/wk (blockscout totalSupply 6/8 stamp → 7/22); the
    exact single-epoch mint refreshes every Thursday post-flip (00:00 UTC) from the same keyless endpoint — never bake
    the stale Dec-24 Fed print (0.67%/wk ≈ 9.3M) as current. */
 /*__CONST:UNLOCKS__*/
 /* ===== SUPPLY IN vs VALUE OUT (owner directive 7/21) =====
-   ENGINE: refresh both legs each rebake — in = UNLOCKS realized-pace rows (+ AERO/RENDER emission ests, ETH issuance est);
+   Engine duty: refresh both legs each rebuild — in = UNLOCKS realized-pace rows (+ AERO/RENDER emission ests, ETH issuance est);
    out = holders rev ann (same numbers as the tiles). est flags stay until a leg is T1/T2-verified. */
 /*__CONST:NETFLOW__*/
 function renderNetflow(){
@@ -284,7 +284,7 @@ function renderNetflow(){
     row.append(lab,track,val); el.append(row);
   });
   const nt=document.getElementById("netflowNotes");
-  if(nt){ nt.textContent="Each row is scaled to its own larger leg — read the in-vs-out ratio within a row; absolute dollars are in the right-hand labels (a shared scale would leave most rows invisible under ETH's $1.8B issuance). est = derived estimate, dashed outline — ETH from ~940K ETH/yr validator issuance; HYPE in-leg from realized claim pace; RENDER from ~7M RENDER/yr BME est. AERO's in-leg is MEASURED (T1 44-day supply-delta average, solid bar; the exact epoch mint refreshes weekly post-flip). Out-legs are the same holders-rev numbers as the tiles (T1 where printed)."; }
+  if(nt){ nt.textContent=NETFLOW_NOTE; }
 }
 function renderUnlocks(){
   const el=document.getElementById("unlockBars"); if(!el) return; el.replaceChildren();
@@ -308,7 +308,8 @@ function renderUnlocks(){
   if(nt){ nt.replaceChildren();
     UNLOCKS.zeros.forEach(z=>{ const d=document.createElement("div"); d.textContent="• "+z; nt.append(d); });
     const d=document.createElement("div"); d.style.marginTop="6px";
-    d.textContent="Bar scale is set by the realized-pace rows; HYPE's authorized ceiling ($7.21B/12mo) is drawn full-width and HATCHED because it is ~40× the chart scale — the gap between the hatched and solid HYPE bars is the story: authorization vs observed restraint. Window "+UNLOCKS.window+" · "+UNLOCKS.priced+".";
+    const off=UNLOCKS.rows.find(r=>r.offscale);
+    d.textContent=UNLOCK_NOTE+(off?" "+off.sym+"'s authorized ceiling ("+fm.usd(off.usd12)+"/12 mo) is drawn full-width and hatched because it is off-scale.":"")+" Window "+UNLOCKS.window+" · "+UNLOCKS.priced+".";
     nt.append(d);
   }
 }
@@ -349,11 +350,11 @@ function mcNet(t){
 /* ===== NET-OF-DILUTION MULTIPLE CHART — THE PRIMARY DIAL (owner directive 7/22 PM) =====
    MC / (holders rev − supply-in), same IN12 legs as the net-flow chart. NET_MODEL holds explicit per-token
    models where the naive subtraction misleads (owner: "create a model and note how you calculated") —
-   ENGINE: refresh NET_MODEL inputs every run alongside IN12 (AERO inn = float-growth $/yr from the AERO
+   Engine duty: refresh NET_MODEL inputs every run alongside IN12 (AERO inn = float-growth $/yr from the AERO
    supply ledger on the Aerodrome row page); every bar's tooltip must show the full calculation. */
 /*__CONST:NET_MODEL__*/
 /* Red dil-neg rows — every tracked name whose supply-in exceeds capture appears ON the chart (owner directive 7/22).
-   ENGINE: refresh these legs with IN12 + NET_MODEL every rebake; est marks hold until each leg verifies. */
+   Engine duty: refresh these legs with IN12 + NET_MODEL every rebuild; est marks hold until each leg verifies. */
 /*__CONST:DILNEG__*/
 function renderGrossBars(){
   const el=document.getElementById("pfBars"); if(!el) return; el.replaceChildren();
@@ -361,7 +362,7 @@ function renderGrossBars(){
   const rows=[];
   state.forEach(t=>{
     const m=mcRev(t); if(!m) return;
-    if(t.sym==="ETH"){ rows.push({sym:"ETH", v:m, cap:true, tip:"MC "+fm.usd(t.mc)+" ÷ burn "+fm.usd(t.rev)+" = "+fm.x(m)+" — OFF-SCALE, drawn hatched at the chart cap: the burn is negligible vs MC (the issuance steelman is quantified on the tile; Glamsterdam's gas-limit raise is the re-rate catalyst)"}); return; }
+    if(m>300){ rows.push({sym:t.sym, v:m, cap:true, tip:"MC "+fm.usd(t.mc)+" ÷ "+fm.usd(t.rev)+" = "+fm.x(m)+" — OFF-SCALE, drawn hatched at the chart cap"+(t.sym==="ETH"?": the burn is negligible vs MC (Glamsterdam's gas-limit raise is the re-rate catalyst)":(EST_GROSS[t.sym]?" · "+EST_GROSS[t.sym]:""))}); return; }
     rows.push({sym:t.sym, v:m, est:!!EST_GROSS[t.sym], tip:"MC "+fm.usd(t.mc)+" ÷ holders rev "+fm.usd(t.rev)+" = "+fm.x(m)+(EST_GROSS[t.sym]?" · "+EST_GROSS[t.sym]:"")});
   });
   if(!rows.length){ const nn=document.createElement("div"); nn.className="hint"; nn.textContent="Loads with price data."; el.append(nn); return; }
@@ -422,13 +423,13 @@ function renderNetBars(){
 }
 function renderNetNote(){
   const nt=document.getElementById("pfNetNotes"); if(!nt) return;
-  nt.textContent="Red rows above = net-dilutive today: supply-in exceeds captured value, so NO net multiple exists — the absence IS the finding; est marks hold until each leg verifies. AERO's bar is the MODELED float-adjusted basis — hover it for the full calculation; the strict ownership basis is −$45–50M/yr (see the net-flow chart). Not shown: RENDER + HNT (no revenue print — re-entry event ~Aug 8), TAO (no root-level capture mechanism — nothing to net), ETH honorary (issuance is payment for security — category error on this dial; quantified on its tile and the net-flow chart). Est bases dashed on bars: AERO (model), AAVE (T2 buyback pace), JUP (provider-implied supply). ENGINE: DILNEG rows + EST_GROSS notes refresh alongside IN12 + NET_MODEL every rebake.";
+  nt.textContent=NET_NOTE;
 }
 
 /*__CONST:SPARKS30__*/
 /*__CONST:BENCH__*/
 /*__CONST:BENCH2__*/
-/* ENGINE (owner directive 7/23 — "run this from today"): BENCH2 = board-of-record equal weight (the CURRENT 8 seats:
+/* Engine duty (from 7/23): BENCH2 = board-of-record equal weight (the seats of record — eight at inception, seven since 8/6:
    HYPE AERO UNI JUP PENDLE VVV AAVE ETH) vs ETH vs BTC, all base 100 at the 2026-07-23 PT close (captured by the 7/24
    morning run via the previous-day-close rule). Morning runs APPEND one point per day from the price shard and rebase
    nothing. Composition changes create a new inception note in the tooltip, never a silent rebase. Once BENCH2 has >= 2
@@ -515,7 +516,10 @@ function renderBench(){
     tx.setAttribute("font-size","10.5"); tx.setAttribute("font-weight","600"); tx.setAttribute("fill",e2.col); tx.textContent=e2.nm+" "+e2.v.toFixed(0); svg.append(tx); });
   el.append(svg);
   const nt=document.getElementById("benchNote");
-  if(nt) nt.textContent = (useB2 ? "PRIMARY — board-of-record EW (8 seats) vs ETH vs BTC since the 7/23 close: "+(BENCH2.board[BENCH2.board.length-1]-100).toFixed(1)+"% · ETH "+(BENCH2.eth[BENCH2.eth.length-1]-100).toFixed(1)+"% · BTC "+(BENCH2.btc[BENCH2.btc.length-1]-100).toFixed(1)+"%. " : "PRIMARY accountability starts at the Jul 23 close: board-of-record EW — HYPE · AERO · UNI · JUP · PENDLE · VVV · AAVE · ETH — vs ETH vs BTC; the chart switches to it automatically at the second close (this weekend). ")+"Context, seed six since 7/10 (through the 7/23 close): −3.5% vs ETH +5.8% / BTC +1.8% — the watchlist trails both benchmarks so far; leaving that visible is the point. Re-reported by every scored run; validated at the monthly retro.";
+  const pc=(v)=>(v-100>=0?"+":"")+(v-100).toFixed(1)+"%";
+  const b2=BENCH2.board.length-1, b1=BENCH.board.length-1;
+  if(nt) nt.textContent = (useB2 ? "Board of record, equal weight, seven seats, vs ETH vs BTC since the "+BENCH2.inception.slice(5).replace("-","/")+" close: board "+pc(BENCH2.board[b2])+" · ETH "+pc(BENCH2.eth[b2])+" · BTC "+pc(BENCH2.btc[b2])+". " : "")
+    + "Context, seed six since "+BENCH.dates[0].slice(5).replace("-","/")+" (through "+BENCH.dates[b1].slice(5).replace("-","/")+"): "+pc(BENCH.board[b1])+" vs ETH "+pc(BENCH.eth[b1])+" / BTC "+pc(BENCH.btc[b1])+". "+BENCH_NOTE;
 }
 
 const tip = document.getElementById("tip");
@@ -550,15 +554,10 @@ function renderTiles(){
     const b=document.createElement("span"); b.className=cls(t.d7); b.textContent=fm.pct(t.d7)+" 7d";
     de.append(a,b);
     tile.append(sym,pr,de);
-    if (mode==="stale" && t.price!=null){
-      const st=document.createElement("div"); st.className="stalenote";
-      st.textContent="as of "+(lastGood.asof||BAKED_ASOF);
-      tile.append(st);
-    }
     const sp=document.createElement("div"); sp.className="spark";
     if (t.spark && t.spark.length>10) sp.append(sparkSVG(t.spark));
     else if (SPARKS30[t.sym]) sp.append(sparkSVG(SPARKS30[t.sym])); /* baked 30d from the owned archive — embed-safe */
-    else { const n=document.createElement("span"); n.className="nospark"; n.textContent=mode==="live"?"7d spark loading…":"no daily archive yet — spark loads live"; sp.append(n); }
+    else { const n=document.createElement("span"); n.className="nospark"; n.textContent=""; sp.append(n); }
     tile.append(sp); el.append(tile);
   });
 }
@@ -595,6 +594,10 @@ function renderBars(elId, rows, fmt, tipLabel){
 }
 /*__CONST:RANKS__*/
 /*__CONST:B2GRADES__*/
+/*__CONST:NET_NOTE__*/
+/*__CONST:BENCH_NOTE__*/
+/*__CONST:NETFLOW_NOTE__*/
+/*__CONST:UNLOCK_NOTE__*/
 const COLS=[
   {k:"sym", label:"Token"},
   {k:"_rank", label:"Rank", f:t=>RANKS[t.sym]?("#"+RANKS[t.sym]):"—", v:t=>RANKS[t.sym]??null},
@@ -683,12 +686,12 @@ function renderAll(){
     badge.textContent="SNAPSHOT · "+String(lastGood.asof||BAKED_ASOF).slice(0,10); badge.className="badge";
     notice.hidden=false; notice.replaceChildren(); notice.style.borderColor="var(--border)";
     const b=document.createElement("b"); b.textContent="SNAPSHOT — ";
-    notice.append(b, document.createTextNode("this embedded view shows the last verified data (as of "+(lastGood.asof||BAKED_ASOF)+"), refreshed by every scored run. Live self-refresh is available in the standalone file."));
+    notice.append(b, document.createTextNode("this embedded view shows the last verified data (as of "+(lastGood.asof||BAKED_ASOF)+"), refreshed daily. Live self-refresh is available in the standalone file."));
   } else {
     badge.textContent="OFFLINE"; badge.className="badge";
     notice.hidden=false; notice.replaceChildren();
     const b=document.createElement("b"); b.textContent="NO PRICE DATA — ";
-    notice.append(b, document.createTextNode("no live tracker reachable and no verified snapshot baked yet (the scheduled engine fills one at its next run). Fees & TVL are the DefiLlama snapshot of "+BAKED_ASOF+"."));
+    notice.append(b, document.createTextNode("no live tracker reachable and no verified snapshot available yet. Fees & TVL are the DefiLlama snapshot of "+BAKED_ASOF+"."));
   }
 }
 
@@ -828,7 +831,7 @@ async function refresh(){
         if(hydrated){
           histChart("histMcRev","mcRev",v=>fm.x(v),false);
           const hh=document.getElementById("histMcRevHint");
-          if(hh) hh.textContent="Lower = more business per dollar · linear scale · backfill HYDRATED with TRUE historical MCAP (CoinGecko market_chart, "+hydrated+"/4 tokens) ÷ that week's holders-rev run-rate · ETH excluded (off-scale)";
+          if(hh) hh.textContent="Weekly TRUE historical MCAP ("+hydrated+"/4 tokens hydrated) ÷ holders-revenue run-rate · ETH excluded · >200× clamped";
         }
       }catch(e){ /* pane-blocked — est backfill stands */ }
     })();

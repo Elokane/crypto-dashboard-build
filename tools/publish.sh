@@ -36,6 +36,10 @@ say "2/5 validate"
 BOARD=$(grep -o 'id="buildstamp">[^<]*' dist/dashboard.html | grep -o 'board v[0-9.]*' | head -1 | sed 's/board //')  # read the FOOTER STAMP, not the first mention — fixes the 8/6–8/7 publish failures (stale earlier mention misread as the version)
 ASOF=$(grep -o 'const BAKED_ASOF = "[0-9-]*"' dist/dashboard.html | grep -o '[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}')
 node tools/validate_build.js dist/dashboard.html --board "$BOARD" --asof "$ASOF"
+# prose gates (2026-08-24): numbers restated in prose must match the payload, and rendered prose must stay
+# inside the Scope law's budgets — findings, not process. Either failing blocks the publish.
+python3 tools/validate_prose.py .
+python3 tools/scope_gate.py dash .
 
 say "3/5 credential guard"
 # Never let a token reach a public repo. Scan everything git would actually commit.

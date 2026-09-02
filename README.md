@@ -35,7 +35,7 @@ data/               the daily payload — one file per constant
   _html.json        rendered prose that carries data claims (stamps, hints, axis notes)
   _comments.json    per-constant basis annotations
 dist/dashboard.html the built artifact — this is what Notion fetches
-tools/              split.py · build.py · validate_build.js · publish.sh
+tools/              split.py · build.py · validate_build.js · validate_prose.py · scope_gate.py · publish.sh
 ```
 
 ## Daily run
@@ -80,5 +80,10 @@ benchmark date, missing data file — all caught, none published.
 `validate_build.js` checks whether the file we are about to publish is internally
 coherent. It says nothing about whether the *numbers* are right — that is
 `validate_prints.py`'s job, upstream, and neither substitutes for the other.
+`validate_prose.py` checks that prose restating a number still matches the number, and
+`scope_gate.py dash` (added 2026-08-24) enforces the Scope law on every rendered string:
+word budgets per field and a forbidden-pattern list (run narration, dated run-stamps,
+verification chatter, engine instructions, internal ids). Rendered prose is a current
+statement of fact, rewritten each run — never an accumulation of dated notes.
 
 Research notes, not investment advice.
