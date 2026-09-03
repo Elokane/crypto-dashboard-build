@@ -1,5 +1,5 @@
 {
- "updatedChip": "<span class=\"badge\">Updated Sep 2, 2026</span>",
+ "updatedChip": "<span class=\"badge\">Updated Sep 3, 2026</span>",
  "footBasis": "Prices: CoinGecko, then Binance, then Hyperliquid; otherwise the last verified snapshot. Fees, holders revenue and TVL: DefiLlama, 30-day windows ×12.17. ETH burn carried.",
  "hint0": "Each dot = current Business (x) and Hype (y) scores · size ∝ market cap · green = positive net value flow, red = negative · gray = off-board context.",
  "axisnote0": "ETH drawn hollow — honorary, indicative only. PUMP · LIT · ENA · HNT · SOL are unscored or unreconciled and are not plotted.",
@@ -17,5 +17,5 @@
  "hint10": "Supply in vs value out, annualized · each row scaled to its larger leg · est = dashed outline.",
  "hint11": "Sorted by board rank — click a column to sort; MC/Rev net puts the cheapest net cash flow first.",
  "hint12": "Mechanism and overhang per token; bold marks what matters most.",
- "buildstamp": "<span class=\"badge\" id=\"buildstamp\">build v19.23 · board v15.0 · baked 2026-09-02</span>"
+ "buildstamp": "<span class=\"badge\" id=\"buildstamp\">build v19.24 · board v15.0 · baked 2026-09-03</span>"
 }
