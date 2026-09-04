@@ -69,7 +69,7 @@
   <div class="cards" style="grid-template-columns:1fr">
     <div class="card"><h2>Fees annualized</h2><div class="hint"><!--__HTML:hint6__--></div><div id="histFees"></div></div>
     <div class="card"><h2>Holders revenue annualized</h2><div class="hint"><!--__HTML:hint7__--></div><div id="histRev"></div></div>
-    <div class="card"><h2>MC / holders revenue</h2><div class="hint" id="histMcRevHint">Weekly market cap ÷ holders-revenue run-rate · ETH excluded · UNI weeks above 200× clamped</div><div id="histMcRev"></div></div>
+    <div class="card"><h2>MC / holders revenue</h2><div class="hint" id="histMcRevHint">Weekly market cap ÷ holders-revenue run-rate · board seats only, ETH excluded · UNI weeks above 200× clamped</div><div id="histMcRev"></div></div>
     <div class="card"><h2>TVL</h2><div class="hint"><!--__HTML:hint8__--></div><div id="histTvl"></div></div>
   </div>
 
@@ -134,7 +134,7 @@ function histChart(elId, metric, fmtVal, useLog){
   el.replaceChildren();
   const series={};
   HIST_ALL.forEach(h=>{ for(const s in h.v){ const val=h.v[s][metric]; if(val!=null){ (series[s]=series[s]||[]).push({x:Date.parse(h.d), y:val, d:h.d}); } } });
-  const names=Object.keys(series);
+  const names=Object.keys(series).filter(s=>metric!=="mcRev"||seated(s)); /* owner 2026-09-03: fees, holders revenue and TVL keep the monitors; MC/Rev draws the board only — a monitor multiple in the thousands flattens every seat onto the axis */
   if(!names.length){ const n=document.createElement("div"); n.className="hint"; n.textContent="No history yet."; el.append(n); return; }
   Object.values(series).forEach(pts=>pts.sort((a,b)=>a.x-b.x));
   names.sort((a,b)=>series[b][series[b].length-1].y - series[a][series[a].length-1].y);
@@ -180,7 +180,7 @@ function histChart(elId, metric, fmtVal, useLog){
       tx.setAttribute("font-size","11"); tx.setAttribute("fill","var(--muted)");
       tx.textContent=MO[mk.m]+" "+String(mk.y).slice(2); svg.append(tx); });
   }
-  const toLabel=new Set(names.slice(0,4));
+  const toLabel=new Set(names); /* every line carries its name at the right end — a colour chip alone does not say which line is which */
   const endLabels=[];
   names.forEach(s=>{
     const pts=series[s], col=SERIESCOLORS[s]||"var(--muted)";
@@ -207,13 +207,19 @@ function histChart(elId, metric, fmtVal, useLog){
     });
     if(toLabel.has(s)){ const last=pts[pts.length-1]; endLabels.push({s, x:X(last.x), y:Y(last.y)}); }
   });
+  /* spread the end labels so none overlaps and none leaves the frame: push down from the top, then lift the whole
+     stack back inside if it overruns the bottom. Every series gets one, coloured to match its line. */
   endLabels.sort((a,b)=>a.y-b.y);
-  let prevY=-99;
+  const LGAP=12.5, LTOP=T+6, LBOT=H-B;
+  let prevY=-1e9;
+  endLabels.forEach(lb=>{ lb.ly=Math.max(lb.y, prevY+LGAP, LTOP); prevY=lb.ly; });
+  const over=endLabels.length?endLabels[endLabels.length-1].ly-LBOT:0;
+  if(over>0){ let p=-1e9; endLabels.forEach(lb=>{ lb.ly=Math.max(lb.ly-over, p+LGAP, LTOP); p=lb.ly; }); }
   endLabels.forEach(lb=>{
-    const ly=Math.max(lb.y, prevY+14); prevY=ly;
     const tx=document.createElementNS(svg.namespaceURI,"text");
-    tx.setAttribute("x",(W-R)+9); tx.setAttribute("y",ly+4);
-    tx.setAttribute("font-size","11.5"); tx.setAttribute("font-weight","600"); tx.setAttribute("fill","var(--text-2)");
+    tx.setAttribute("x",(W-R)+9); tx.setAttribute("y",lb.ly+4);
+    tx.setAttribute("font-size","11.5"); tx.setAttribute("font-weight","600");
+    tx.setAttribute("fill",SERIESCOLORS[lb.s]||"var(--muted)");
     tx.textContent=lb.s; svg.append(tx);
   });
   el.append(svg);
@@ -246,7 +252,7 @@ function renderNetflow(){
   const el=document.getElementById("netflowBars"); if(!el) return; el.replaceChildren();
   /* each row scales to its own larger leg — the message is the WITHIN-ROW in-vs-out ratio; absolute $ live in the labels
      (a shared scale left 5 of 7 rows sub-1% wide under ETH's $1.8B issuance — unreadable) */
-  NETFLOW.rows.forEach(r=>{
+  NETFLOW.rows.filter(r=>seated(r.sym)).forEach(r=>{
     const rowMax=Math.max(r.in12||0,r.out12||0)||1;
     const row=document.createElement("div"); row.className="ubar-row";
     const lab=document.createElement("div"); lab.className="lab"; lab.textContent=r.sym;
@@ -267,8 +273,9 @@ function renderNetflow(){
 }
 function renderUnlocks(){
   const el=document.getElementById("unlockBars"); if(!el) return; el.replaceChildren();
-  const scaleMax=Math.max(...UNLOCKS.rows.filter(r=>!r.offscale).map(r=>r.usd12));
-  UNLOCKS.rows.forEach(r=>{
+  const urows=UNLOCKS.rows.filter(r=>seated(r.sym));
+  const scaleMax=Math.max(...urows.filter(r=>!r.offscale).map(r=>r.usd12));
+  urows.forEach(r=>{
     const row=document.createElement("div"); row.className="ubar-row";
     const lab=document.createElement("div"); lab.className="lab"; lab.textContent=r.sym+" — "+r.what;
     const track=document.createElement("div"); track.className="ubar-track";
@@ -287,7 +294,7 @@ function renderUnlocks(){
   if(nt){ nt.replaceChildren();
     UNLOCKS.zeros.forEach(z=>{ const d=document.createElement("div"); d.textContent="• "+z; nt.append(d); });
     const d=document.createElement("div"); d.style.marginTop="6px";
-    const off=UNLOCKS.rows.find(r=>r.offscale);
+    const off=UNLOCKS.rows.filter(r=>seated(r.sym)).find(r=>r.offscale);
     d.textContent=UNLOCK_NOTE+(off?" "+off.sym+"'s authorized ceiling ("+fm.usd(off.usd12)+"/12 mo) is drawn full-width and hatched because it is off-scale.":"")+" Window "+UNLOCKS.window+" · "+UNLOCKS.priced+".";
     nt.append(d);
   }
@@ -295,6 +302,10 @@ function renderUnlocks(){
 
 /* runtime state */
 let state = TOKENS.map(t => ({ ...t, price:null, d24:null, d7:null, mc:null, fdv:null, vol:null, spark:null, ...t.baked }));
+/* owner 2026-09-03: the dashboard draws the board only — the seven seats in RANKS. Monitors and trackers stay in the data
+   files (the engine keeps refreshing them) but are never rendered. Every renderer goes through board() / seated(). */
+function seated(sym){ return RANKS[sym]!=null; }
+function board(){ return state.filter(t=>seated(t.sym)); }
 let mode = "none";            /* live | stale | none */
 let sourceLabel = "";         /* which tracker supplied prices */
 let lastGood = { asof: LAST_KNOWN.asof, bySym: {...LAST_KNOWN.bySym} };
@@ -339,7 +350,7 @@ function renderGrossBars(){
   const el=document.getElementById("pfBars"); if(!el) return; el.replaceChildren();
   /*__CONST:EST_GROSS__*/
   const rows=[];
-  state.forEach(t=>{
+  board().forEach(t=>{
     const m=mcRev(t); if(!m) return;
     if(m>300){ rows.push({sym:t.sym, v:m, cap:true, tip:"MC "+fm.usd(t.mc)+" ÷ "+fm.usd(t.rev)+" = "+fm.x(m)+" — OFF-SCALE, drawn hatched at the chart cap"+(t.sym==="ETH"?": the burn is negligible vs MC (Glamsterdam's gas-limit raise is the re-rate catalyst)":(EST_GROSS[t.sym]?" · "+EST_GROSS[t.sym]:""))}); return; }
     rows.push({sym:t.sym, v:m, est:!!EST_GROSS[t.sym], tip:"MC "+fm.usd(t.mc)+" ÷ holders rev "+fm.usd(t.rev)+" = "+fm.x(m)+(EST_GROSS[t.sym]?" · "+EST_GROSS[t.sym]:"")});
@@ -361,11 +372,11 @@ function renderGrossBars(){
 function renderNetBars(){
   const el=document.getElementById("pfNetBars"); if(!el) return; el.replaceChildren();
   const rows=[];
-  state.forEach(t=>{
+  board().forEach(t=>{
     const m=NET_MODEL[t.sym];
     if(m && t.mc && t.rev!=null){
       const net=t.rev-m.inn;
-      if(net>0) rows.push({sym:t.sym, v:t.mc/net, est:true, tip:m.calc});
+      if(net>0) rows.push({sym:t.sym, v:t.mc/net, est:true, lbl:"modeled", tip:m.calc}); /* a modeled in-leg is labelled as such, not as a mere estimate */
       return;
     }
     if(t.xMult) return; /* ETH honorary (issuance = payment for security — category error on this dial) + VVV covered in the note */
@@ -385,10 +396,10 @@ function renderNetBars(){
     bar.style.width=Math.max(2,(r.v/max)*100)+"%";
     bindTip(bar,e=>showTip(e,[["MC / net captured flow",fm.x(r.v)],["",r.tip]]));
     track.append(bar);
-    const val=document.createElement("div"); val.className="val"; val.textContent=fm.x(r.v)+(r.est?" est":"");
+    const val=document.createElement("div"); val.className="val"; val.textContent=fm.x(r.v)+(r.lbl?" "+r.lbl:(r.est?" est":""));
     row.append(lab,track,val); el.append(row);
   });
-  DILNEG.forEach(dn=>{
+  DILNEG.filter(dn=>seated(dn.sym)).forEach(dn=>{
     const row=document.createElement("div"); row.className="hbar-row";
     const lab=document.createElement("div"); lab.className="lab"; lab.textContent=dn.sym;
     const track=document.createElement("div"); track.className="hbar-track";
@@ -441,7 +452,7 @@ function renderBH(){
   hg.setAttribute("text-anchor","end"); hg.setAttribute("font-size","10"); hg.setAttribute("fill","var(--muted)"); hg.textContent="hunting ground ↘"; svg.append(hg);
   const dz=document.createElementNS(svg.namespaceURI,"text"); dz.setAttribute("x",L+6); dz.setAttribute("y",T+14);
   dz.setAttribute("font-size","10"); dz.setAttribute("fill","var(--muted)"); dz.textContent="↖ danger zone"; svg.append(dz);
-  for(const sym in BH){ const s=BH[sym]; const t=state.find(x=>x.sym===sym);
+  for(const sym in BH){ if(!seated(sym)) continue; const s=BH[sym]; const t=state.find(x=>x.sym===sym);
     const mc=t&&t.mc?t.mc:2e8; const r=s.small?4:Math.min(16,5+Math.sqrt(mc/1e9)*3.2);
     const col=s.small?"var(--muted)":(s.net>0?"var(--good)":(s.net<0?"var(--bad)":"var(--muted)"));
     const c=document.createElementNS(svg.namespaceURI,"circle");
@@ -520,7 +531,7 @@ window.addEventListener("scroll",hideTip,{passive:true});
 
 function renderTiles(){
   const el=document.getElementById("tiles"); el.replaceChildren();
-  state.filter(t=>t.tile!==false).forEach(t=>{
+  board().filter(t=>t.tile!==false).forEach(t=>{
     const tile=document.createElement("div"); tile.className="tile";
     const sym=document.createElement("div"); sym.className="sym";
     const dot=document.createElement("span");
@@ -605,7 +616,7 @@ function renderTable(){
     hr.append(th);
   });
   thead.append(hr); tbl.append(thead);
-  const rows=[...state];
+  const rows=[...board()];
   if (sortK){
     const col=COLS.find(c=>c.k===sortK);
     rows.sort((a,b)=>{
@@ -639,7 +650,7 @@ function renderNotes(){
   });
   thead.append(hr); tbl.append(thead);
   const tb=document.createElement("tbody");
-  state.forEach(t=>{
+  board().forEach(t=>{
     const tr=document.createElement("tr");
     const td1=document.createElement("td"); td1.textContent=t.sym;
     const td2=document.createElement("td");
@@ -657,7 +668,7 @@ function renderAll(){
   renderTiles();
   renderNetBars();
   renderGrossBars();
-  renderBars("revBars", state.filter(t=>t.rev).map(t=>({sym:t.sym,name:t.name+" — annualized revenue to holders",v:t.rev})), fm.usd, "Holders rev");
+  renderBars("revBars", board().filter(t=>t.rev).map(t=>({sym:t.sym,name:t.name+" — annualized revenue to holders",v:t.rev})), fm.usd, "Holders rev");
   renderTable(); renderNotes(); renderHistory(); renderUnlocks(); renderNetflow(); renderBH(); renderBench();
   document.getElementById("asof").textContent=asofLabel;
   const badge=document.getElementById("badge");
@@ -811,7 +822,7 @@ async function refresh(){
         if(hydrated){
           histChart("histMcRev","mcRev",v=>fm.x(v),false);
           const hh=document.getElementById("histMcRevHint");
-          if(hh) hh.textContent="Weekly market cap ÷ holders-revenue run-rate · ETH excluded · UNI weeks above 200× clamped";
+          if(hh) hh.textContent="Weekly market cap ÷ holders-revenue run-rate · board seats only, ETH excluded · UNI weeks above 200× clamped";
         }
       }catch(e){ /* pane-blocked — est backfill stands */ }
     })();

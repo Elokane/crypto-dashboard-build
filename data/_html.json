@@ -1,14 +1,14 @@
 {
  "updatedChip": "<span class=\"badge\">Updated Sep 3, 2026</span>",
- "footBasis": "Prices: CoinGecko, then Binance, then Hyperliquid; otherwise the last verified snapshot. Fees, holders revenue and TVL: DefiLlama, 30-day windows ×12.17. ETH burn carried.",
- "hint0": "Each dot = current Business (x) and Hype (y) scores · size ∝ market cap · green = positive net value flow, red = negative · gray = off-board context.",
- "axisnote0": "ETH drawn hollow — honorary, indicative only. PUMP · LIT · ENA · HNT · SOL are unscored or unreconciled and are not plotted.",
+ "footBasis": "Prices 5:34 PM PT, 3 Sep; fees, revenue and TVL on the 30-day window ending 2 September.",
+ "hint0": "Each dot = current Business (x) and Hype (y) scores · size ∝ market cap · green = positive net value flow, red = negative.",
+ "axisnote0": "ETH drawn hollow — honorary, indicative only.",
  "hint1": "Equal weight of the six ranked seats, buy-and-hold, base 100 at the 23 July 2026 close.",
  "hint2": "The primary dial: market cap ÷ (holders revenue − new supply), both annualized. Lower = cheaper net cash flow. Names whose supply-in exceeds capture have no net multiple.",
  "hint3": "The secondary read: market cap ÷ holders revenue, before supply-in. Lower = more business per dollar.",
- "axisnote1": "Dashed = estimated basis. ETH and SOL hatched at the chart cap (off-scale). AAVE not charted — holders revenue is zero.",
+ "axisnote1": "Dashed = estimated basis. ETH hatched at the chart cap (off-scale).",
  "hint4": "Dollars per year reaching holders via buybacks, burns or fee share · 30-day run-rate ×12.17.",
- "axisnote2": "HYPE ≈99% of fees buy HYPE (Assistance Fund) · AERO fees to veAERO · UNI TokenJar→Firepit burns · JUP Litterbox revenue buys · PENDLE revenue buys for sPENDLE · PUMP burns 50% of net revenue · LIT fee-funded TWAP buybacks · LINK weekly Reserve buys · SOL burns half the base fee.",
+ "axisnote2": "HYPE ≈99% of fees buy HYPE (Assistance Fund) · AERO fees to veAERO · UNI TokenJar→Firepit burns · JUP Litterbox revenue buys · PENDLE revenue buys for sPENDLE · VVV burns subscription and purchase revenue · ETH burns every base fee.",
  "hint5": "Weekly closes back to July 2024 plus daily marks since 10 July 2026.",
  "hint6": "All-protocol fees, 30-day run-rate ×12.17 · log scale",
  "hint7": "Holders revenue, 30-day run-rate ×12.17 · log scale · ETH and VVV burn flows in gray.",
@@ -17,5 +17,5 @@
  "hint10": "Supply in vs value out, annualized · each row scaled to its larger leg · est = dashed outline.",
  "hint11": "Sorted by board rank — click a column to sort; MC/Rev net puts the cheapest net cash flow first.",
  "hint12": "Mechanism and overhang per token; bold marks what matters most.",
- "buildstamp": "<span class=\"badge\" id=\"buildstamp\">build v19.24 · board v15.0 · baked 2026-09-03</span>"
+ "buildstamp": "<span class=\"badge\" id=\"buildstamp\">build v19.29 · board v15.0 · baked 2026-09-03</span>"
 }
