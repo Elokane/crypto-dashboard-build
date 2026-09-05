@@ -1,6 +1,6 @@
 {
- "updatedChip": "<span class=\"badge\">Updated Sep 4, 2026</span>",
- "footBasis": "Prices 9:07 AM PT, 4 Sep; fees, revenue and TVL on the 30-day window ending 3 September.",
+ "updatedChip": "<span class=\"badge\">Updated Sep 5, 2026</span>",
+ "footBasis": "Prices 9:12 AM PT, 5 Sep; fees, revenue and TVL on the 30-day window ending 4 September.",
  "hint0": "Each dot = current Business (x) and Hype (y) scores · size ∝ market cap · green = positive net value flow, red = negative.",
  "axisnote0": "ETH drawn hollow — honorary, indicative only.",
  "hint1": "Equal weight of the six ranked seats, buy-and-hold, base 100 at the 23 July 2026 close.",
@@ -17,5 +17,5 @@
  "hint10": "Supply in vs value out, annualized · each row scaled to its larger leg · est = dashed outline.",
  "hint11": "Sorted by board rank — click a column to sort; MC/Rev net puts the cheapest net cash flow first.",
  "hint12": "Mechanism and overhang per token; bold marks what matters most.",
- "buildstamp": "<span class=\"badge\" id=\"buildstamp\">build v19.30 · board v16.0 · baked 2026-09-04</span>"
+ "buildstamp": "<span class=\"badge\" id=\"buildstamp\">build v19.31 · board v16.0 · baked 2026-09-05</span>"
 }
