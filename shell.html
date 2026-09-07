@@ -303,9 +303,11 @@ function renderUnlocks(){
 /* runtime state */
 let state = TOKENS.map(t => ({ ...t, price:null, d24:null, d7:null, mc:null, fdv:null, vol:null, spark:null, ...t.baked }));
 /* owner 2026-09-03: the dashboard draws the board only — the seven seats in RANKS. Monitors and trackers stay in the data
-   files (the engine keeps refreshing them) but are never rendered. Every renderer goes through board() / seated(). */
+   files (the engine keeps refreshing them) but are never rendered. Every renderer goes through board() / seated().
+   owner 2026-09-06: board() is returned in rank order (RANKS ascending), so the tiles and the notes table follow the
+   board of record on every rebake regardless of the order TOKENS.js happens to be written in. */
 function seated(sym){ return RANKS[sym]!=null; }
-function board(){ return state.filter(t=>seated(t.sym)); }
+function board(){ return state.filter(t=>seated(t.sym)).sort((a,b)=>RANKS[a.sym]-RANKS[b.sym]); }
 let mode = "none";            /* live | stale | none */
 let sourceLabel = "";         /* which tracker supplied prices */
 let lastGood = { asof: LAST_KNOWN.asof, bySym: {...LAST_KNOWN.bySym} };

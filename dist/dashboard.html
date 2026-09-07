@@ -101,7 +101,7 @@
     <b>Data:</b> <span id="asof"></span> · Prices 9:05 AM PT, 6 Sep; fees, revenue and TVL on the 30-day window ending 5 September.<br>
     <b>Business grade (trial):</b> a measured letter (A–E) from six checks on public revenue data, shown alongside the judged scores during a trial; it does not yet drive rankings.<br>
     <b>Legend:</b> T1 = on-chain / independently verified · T2 = project-official · T3 = named analyst/press · est = estimate · net-dilutive = new supply currently exceeds the value paid to holders.<br>
-    <b>About:</b> a research journal, not investment advice or a solicitation; the author may hold positions in assets discussed; past performance is no guarantee of future results. <span class="badge" id="buildstamp">build v19.32 · board v16.0 · baked 2026-09-06</span>
+    <b>About:</b> a research journal, not investment advice or a solicitation; the author may hold positions in assets discussed; past performance is no guarantee of future results. <span class="badge" id="buildstamp">build v19.33 · board v16.0 · baked 2026-09-06</span>
   </footer>
 </div>
 <div id="tip"></div>
@@ -571,9 +571,11 @@ function renderUnlocks(){
 /* runtime state */
 let state = TOKENS.map(t => ({ ...t, price:null, d24:null, d7:null, mc:null, fdv:null, vol:null, spark:null, ...t.baked }));
 /* owner 2026-09-03: the dashboard draws the board only — the seven seats in RANKS. Monitors and trackers stay in the data
-   files (the engine keeps refreshing them) but are never rendered. Every renderer goes through board() / seated(). */
+   files (the engine keeps refreshing them) but are never rendered. Every renderer goes through board() / seated().
+   owner 2026-09-06: board() is returned in rank order (RANKS ascending), so the tiles and the notes table follow the
+   board of record on every rebake regardless of the order TOKENS.js happens to be written in. */
 function seated(sym){ return RANKS[sym]!=null; }
-function board(){ return state.filter(t=>seated(t.sym)); }
+function board(){ return state.filter(t=>seated(t.sym)).sort((a,b)=>RANKS[a.sym]-RANKS[b.sym]); }
 let mode = "none";            /* live | stale | none */
 let sourceLabel = "";         /* which tracker supplied prices */
 let lastGood = { asof: LAST_KNOWN.asof, bySym: {...LAST_KNOWN.bySym} };

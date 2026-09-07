@@ -17,5 +17,5 @@
  "hint10": "Supply in vs value out, annualized · each row scaled to its larger leg · est = dashed outline.",
  "hint11": "Sorted by board rank — click a column to sort; MC/Rev net puts the cheapest net cash flow first.",
  "hint12": "Mechanism and overhang per token; bold marks what matters most.",
- "buildstamp": "<span class=\"badge\" id=\"buildstamp\">build v19.32 · board v16.0 · baked 2026-09-06</span>"
+ "buildstamp": "<span class=\"badge\" id=\"buildstamp\">build v19.33 · board v16.0 · baked 2026-09-06</span>"
 }
