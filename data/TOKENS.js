@@ -3,7 +3,7 @@
     accrual:{label:"Buyback", slot:1, note:"**~99% of perp and spot fees buy HYPE** through the Assistance Fund \u2014 the board's largest capture engine."},
     unlock:"**Deepest overhang on the board**: core-contributor vesting runs monthly **into 2027\u201328**; claims so far run far below the authorized ceiling. Bear: the ceiling, not the observed pace, is the risk number.",
     baked:{ feesAnn:8.72494e+08, rev:6.73442e+08, tvl:6.82493e+09 } },
-  { sym:"AERO", name:"Aerodrome · #4", cg:"aerodrome-finance", bin:"AEROUSDT", hl:"AERO", llama:"aerodrome", tvlSlug:"aerodrome", volSlugs:["dexs/aerodrome"], circ:936.62e6,
+  { sym:"AERO", name:"Aerodrome · #4", cg:"aerodrome-finance", bin:"AEROUSDT", hl:"AERO", llama:"aerodrome", tvlSlug:"aerodrome", volSlugs:["dexs/aerodrome"], circ:937.39e6,
     accrual:{label:"Fee share", slot:2, note:"**100% of exchange fees** route to veAERO voters. The board's **cheapest real cash flow**, partly because the fee base has shrunk."},
     unlock:"Emissions are voted weekly in the tail regime; **about three-quarters of the mint lands locked**, so the float basis nets positive while the ownership basis stays negative. Bear: post-merger emissions policy undisclosed.",
     baked:{ feesAnn:8.64075e+07, rev:5.98485e+07, tvl:3.35664e+08 } },
