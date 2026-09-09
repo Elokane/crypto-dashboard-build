@@ -1,6 +1,6 @@
 {
- "BAKED_ASOF": "/* basis: 2026-08-27 09:00 AM PT (16:11 UTC). Prices/d24/d7 = DefiLlama coins historical; MC = price x board-basis circulating; FDV = MC / stored MC-FDV ratio. Fees / holders rev / TVL = 30-day windows ending 2026-08-26 UTC. AAVE and ONDO holders revenue structural zero; ETH burn carried; B carried at the 8/23 reading; H hand-set. Baked vol30d dropped - live mode fills it. */",
- "SPARKS30": "/* 30 daily PT closes 7/25-8/23 from the owned price archive; live mode redraws current 7d */",
- "BENCH": "/* seed-six EW (seeded 7/10 with ETH HYPE AERO VVV RENDER PENDLE) vs ETH vs BTC, base 100 @ 7/10 closes, recomputed from the owned price archive */",
- "RANKS": "/* board v15 - seven seats since 8/6 (Aave removed; ETH honorary 8->7); held through 8/27, no seat moved. Derived B (8/23 reading, carried): UNI 88, HYPE 79, JUP 60, VVV 57, PENDLE 46, AERO 38. A rank move needs the driving measure to persist across two scored readings. */"
+ "BAKED_ASOF": "/* basis: 2026-09-09 09:11 AM PT (16:11 UTC). Prices/d24/d7 = DefiLlama coins historical; MC = price x board-basis circulating; FDV = MC / stored MC-FDV ratio. Fees / holders rev / TVL = 30-day windows ending 2026-09-08 UTC, TVL pinned to the settled 00:00:00Z snapshot. AAVE and LMTS holders revenue structural zero; ETH burn carried; B = the B2 continuous score of this run; H hand-set. */",
+ "SPARKS30": "/* 30 daily PT closes ending 2026-09-08 from the owned price archive; live mode redraws current 7d */",
+ "BENCH": "/* seed-six EW (HYPE AERO UNI JUP PENDLE AAVE) vs ETH vs BTC, base 100 @ 7/10 closes, recomputed from the owned price archive */",
+ "RANKS": "/* board v16.0 - six scored seats plus ETH honorary; held 2026-09-09, no seat moved. B2 this run: UNI 89, HYPE 79, JUP 63, VVV 54, PENDLE 50, AERO 39. A rank move needs the composite lead to clear 10% on two consecutive scored readings. */"
 }
