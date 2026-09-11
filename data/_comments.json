@@ -1,6 +1,6 @@
 {
- "BAKED_ASOF": "/* basis: 2026-09-09 09:11 AM PT (16:11 UTC). Prices/d24/d7 = DefiLlama coins historical; MC = price x board-basis circulating; FDV = MC / stored MC-FDV ratio. Fees / holders rev / TVL = 30-day windows ending 2026-09-08 UTC, TVL pinned to the settled 00:00:00Z snapshot. AAVE and LMTS holders revenue structural zero; ETH burn carried; B = the B2 continuous score of this run; H hand-set. */",
+ "BAKED_ASOF": "/* basis: 2026-09-10 03:51 PM PT (22:51 UTC). Prices/d24/d7 = DefiLlama coins historical; MC = price x circulating (AERO on the 21bp/week tail rate); FDV = MC / stored ratio. Fees / holders rev / TVL = 30-day windows ending 2026-09-08 UTC, carried. AAVE and LMTS holders revenue structural zero; ETH burn carried; B and H carried. */",
  "SPARKS30": "/* 30 daily PT closes ending 2026-09-08 from the owned price archive; live mode redraws current 7d */",
  "BENCH": "/* seed-six EW (HYPE AERO UNI JUP PENDLE AAVE) vs ETH vs BTC, base 100 @ 7/10 closes, recomputed from the owned price archive */",
- "RANKS": "/* board v16.0 - six scored seats plus ETH honorary; held 2026-09-09, no seat moved. B2 this run: UNI 89, HYPE 79, JUP 63, VVV 54, PENDLE 50, AERO 39. A rank move needs the composite lead to clear 10% on two consecutive scored readings. */"
+ "RANKS": "/* board v16.0 - six scored seats plus ETH honorary; carried from the 2026-09-09 scored reading, no seat moved. B2 of that reading: UNI 89, HYPE 79, JUP 63, VVV 54, PENDLE 50, AERO 39. A rank move needs the composite lead to clear 10% on two consecutive scored readings. */"
 }
