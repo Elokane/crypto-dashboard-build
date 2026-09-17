@@ -1,5 +1,5 @@
-{ /* B = the DERIVED continuous business score (2026-09-09 re-score); H hand-set; net sign drives color */
-  HYPE:{b:79,h:56,mos:"Thin",net:1}, AERO:{b:39,h:44,mos:"Moderate",net:-1}, UNI:{b:89,h:63,mos:"Thin",net:1}, JUP:{b:63,h:36,mos:"Thin",net:1}, PENDLE:{b:50,h:42,mos:"Thin",net:0}, VVV:{b:54,h:60,mos:"None",net:-1},
+{ /* B = the DERIVED continuous business score (2026-09-16 re-score); H hand-set; net sign drives color */
+  HYPE:{b:80,h:56,mos:"Thin",net:1}, AERO:{b:51,h:44,mos:"Moderate",net:-1}, UNI:{b:90,h:63,mos:"Thin",net:1}, JUP:{b:65,h:36,mos:"Thin",net:1}, PENDLE:{b:58,h:42,mos:"Thin",net:1}, VVV:{b:53,h:60,mos:"None",net:-1},
   ETH:{b:75,h:48,mos:"honorary",net:0,hollow:true},
-  AAVE:{b:72,h:52,mos:"None",net:0,small:true}, RENDER:{b:48,h:55,mos:"Thin",net:0,small:true},
+  AAVE:{b:74,h:52,mos:"None",net:0,small:true}, RENDER:{b:48,h:55,mos:"Thin",net:0,small:true},
   TAO:{b:30,h:62,mos:"None",net:0,small:true}, ONDO:{b:35,h:70,mos:"None",net:0,small:true}, LINK:{b:78,h:58,mos:"None",net:-1,small:true} }
