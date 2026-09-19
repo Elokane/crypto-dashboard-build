@@ -1,1 +1,1 @@
-{ asof:"2026-09-18 re-score", bySym:{ HYPE:"B", AERO:"D", UNI:"A", JUP:"C", PENDLE:"C", VVV:"C" } }
+{ asof:"2026-09-19 re-score", bySym:{ HYPE:"B", AERO:"D", UNI:"A", JUP:"C", PENDLE:"C", VVV:"C" } }
