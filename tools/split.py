@@ -24,6 +24,8 @@ DATA_CONSTS = [
     "HISTORY_CSV", "BACKFILL_CSV",
     "UNLOCKS", "NETFLOW", "IN12", "NET_MODEL", "DILNEG",
     "SPARKS30", "BENCH", "BENCH2", "BH", "RANKS", "B2GRADES",
+    # the four rendered note strings (added 2026-09-02): data-bearing prose regenerated each bake
+    "NET_NOTE", "BENCH_NOTE", "NETFLOW_NOTE", "UNLOCK_NOTE",
     # EST_GROSS is declared INSIDE renderGrossBars() but is pure data — per-token basis
     # captions that go stale with the prints. Left in the engine it would be unreachable
     # to a data-only update, which is exactly how the "venicestats implies ~$14M/yr" line
@@ -147,11 +149,19 @@ def main():
     m = re.search(r'<span class="badge" id="buildstamp">[^<]*</span>', text)
     html_specs.append(("buildstamp", m.start(), m.end(), m.group(0)))
 
+    # header prose ("subBasis") was retired 2026-09-02 — the dashboard header carries no prose, so the
+    # slot is optional: present in pre-09-02 builds, absent since. A missing header is not an error.
     m = re.search(r'<div class="sub">\n(.*?)\n  </div>', text, re.S)
-    html_specs.append(("subBasis", m.start(1), m.end(1), m.group(1)))
+    if m:
+        html_specs.append(("subBasis", m.start(1), m.end(1), m.group(1)))
 
     for idx, mm in enumerate(re.finditer(r'<span class="asofchip">[^<]*</span>', text)):
         html_specs.append((f"asofchip{idx}", mm.start(), mm.end(), mm.group(0)))
+
+    # the footer's one sourcing line (since 2026-09-02 the only sourcing prose on the page)
+    m = re.search(r'<span id="asof"></span> · (.*?)<br>', text)
+    if m:
+        html_specs.append(("footBasis", m.start(1), m.end(1), m.group(1)))
 
     # Static prose blocks that carry data claims. Blocks with an id= are filled by the
     # engine at render time and must stay in the shell; the rest are hand-written text

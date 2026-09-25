@@ -69,7 +69,8 @@
   <div class="cards" style="grid-template-columns:1fr">
     <div class="card"><h2>Fees annualized</h2><div class="hint"><!--__HTML:hint6__--></div><div id="histFees"></div></div>
     <div class="card"><h2>Holders revenue annualized</h2><div class="hint"><!--__HTML:hint7__--></div><div id="histRev"></div></div>
-    <div class="card"><h2>MC / holders revenue</h2><div class="hint" id="histMcRevHint">Weekly market cap ÷ holders-revenue run-rate · board seats only, ETH excluded · UNI weeks above 200× clamped</div><div id="histMcRev"></div></div>
+    <div class="card"><h2>MC / holders revenue — last 12 weeks (lower is better)</h2><div class="hint" id="histMcRev12Hint">Market cap ÷ holders-revenue run-rate at each verified run · board seats only, ETH excluded · same lines as the full history below, zoomed to the last 84 days</div><div id="histMcRev12"></div></div>
+    <div class="card"><h2>MC / holders revenue — full history (lower is better)</h2><div class="hint" id="histMcRevHint">Weekly market cap ÷ holders-revenue run-rate · board seats only, ETH excluded · UNI weeks above 200× clamped</div><div id="histMcRev"></div></div>
     <div class="card"><h2>TVL</h2><div class="hint"><!--__HTML:hint8__--></div><div id="histTvl"></div></div>
   </div>
 
@@ -129,19 +130,27 @@ const BACKFILL = parseHist(BACKFILL_CSV);
 /* merged render view: static backfill + live run points (same-date duplicates are harmless) */
 const HIST_ALL = BACKFILL.concat(HISTORY).slice().sort((a,b)=>a.d<b.d?-1:1);
 
-function histChart(elId, metric, fmtVal, useLog){
+function histChart(elId, metric, fmtVal, useLog, opts){
+  opts=opts||{}; /* opts.sinceDays = N: draw only the last N days, frame pinned to exactly that span (owner 2026-09-24: a 12-week MC/holders view beside the full history) */
   const el=document.getElementById(elId); if(!el) return;
   el.replaceChildren();
   const series={};
   HIST_ALL.forEach(h=>{ for(const s in h.v){ const val=h.v[s][metric]; if(val!=null){ (series[s]=series[s]||[]).push({x:Date.parse(h.d), y:val, d:h.d}); } } });
+  let cutoff=null;
+  if(opts.sinceDays){
+    let xmax=-Infinity; for(const s in series) series[s].forEach(p=>{ if(p.x>xmax) xmax=p.x; });
+    cutoff=xmax-opts.sinceDays*86400e3;
+    for(const s in series){ series[s]=series[s].filter(p=>p.x>=cutoff); if(!series[s].length) delete series[s]; }
+  }
   const names=Object.keys(series).filter(s=>metric!=="mcRev"||seated(s)); /* owner 2026-09-03: fees, holders revenue and TVL keep the monitors; MC/Rev draws the board only — a monitor multiple in the thousands flattens every seat onto the axis */
   if(!names.length){ const n=document.createElement("div"); n.className="hint"; n.textContent="No history yet."; el.append(n); return; }
   Object.values(series).forEach(pts=>pts.sort((a,b)=>a.x-b.x));
   names.sort((a,b)=>series[b][series[b].length-1].y - series[a][series[a].length-1].y);
   const W=960,H=300,L=66,R=88,T=14,B=32;
-  /* x-domain from the points THIS metric has — MC/Rev stays run-points-wide while fees/rev/TVL span the backfill */
+  /* x-domain from the points THIS metric has — MC/Rev stays run-points-wide while fees/rev/TVL span the backfill;
+     a windowed chart pins the left edge to the cutoff so the frame is the stated span even when the first point is later */
   const xsAll=[]; names.forEach(s=>series[s].forEach(p=>xsAll.push(p.x)));
-  const x0=Math.min(...xsAll), x1=Math.max(...xsAll);
+  const x0=cutoff!=null?cutoff:Math.min(...xsAll), x1=Math.max(...xsAll);
   const ys=[]; names.forEach(s=>series[s].forEach(p=>ys.push(p.y)));
   const tr=v=>useLog?Math.log10(v):v;
   let y0=Math.min(...ys.map(tr)), y1=Math.max(...ys.map(tr));
@@ -162,7 +171,16 @@ function histChart(elId, metric, fmtVal, useLog){
     tx.setAttribute("font-size","11"); tx.setAttribute("fill","var(--muted)"); tx.textContent=fmtVal(real); svg.append(tx);
   }
   const dSet=[...new Set(xsAll)].sort((a,b)=>a-b);
-  if(dSet.length<=14){
+  if(cutoff!=null){
+    /* windowed span: one tick per week counted back from the newest point, thinned to ≤8, labelled MM/DD */
+    const wk=7*86400e3, marks=[]; for(let t=x1;t>=x0;t-=wk) marks.push(t); marks.reverse();
+    const step=Math.max(1,Math.ceil(marks.length/8));
+    marks.filter((_,i)=>(marks.length-1-i)%step===0).forEach(t=>{ const d=new Date(t).toISOString().slice(0,10);
+      const tx=document.createElementNS(svg.namespaceURI,"text");
+      tx.setAttribute("x",X(t)); tx.setAttribute("y",H-8); tx.setAttribute("text-anchor","middle");
+      tx.setAttribute("font-size","11"); tx.setAttribute("fill","var(--muted)");
+      tx.textContent=d.slice(5).replace("-","/"); svg.append(tx); });
+  } else if(dSet.length<=14){
     dSet.forEach(t=>{ const d=new Date(t).toISOString().slice(0,10);
       const tx=document.createElementNS(svg.namespaceURI,"text");
       tx.setAttribute("x",X(t)); tx.setAttribute("y",H-8); tx.setAttribute("text-anchor","middle");
@@ -234,6 +252,7 @@ function histChart(elId, metric, fmtVal, useLog){
 function renderHistory(){
   histChart("histFees","fees",v=>fm.usd(v),true);
   histChart("histRev","rev",v=>fm.usd(v),true);
+  histChart("histMcRev12","mcRev",v=>fm.x(v),false,{sinceDays:84});
   histChart("histMcRev","mcRev",v=>fm.x(v),false);
   histChart("histTvl","tvl",v=>fm.usd(v),true);
 }
@@ -302,12 +321,12 @@ function renderUnlocks(){
 
 /* runtime state */
 let state = TOKENS.map(t => ({ ...t, price:null, d24:null, d7:null, mc:null, fdv:null, vol:null, spark:null, ...t.baked }));
-/* owner 2026-09-03: the dashboard draws the board only — the seven seats in RANKS. Monitors and trackers stay in the data
-   files (the engine keeps refreshing them) but are never rendered. Every renderer goes through board() / seated().
-   owner 2026-09-06: board() is returned in rank order (RANKS ascending), so the tiles and the notes table follow the
-   board of record on every rebake regardless of the order TOKENS.js happens to be written in. */
+/* owner 2026-09-03: tiles, bars and charts draw the board only — the seven seats in RANKS, in rank order (owner 2026-09-06).
+   owner 2026-09-24: the All-metrics table and the accrual-and-dilution notes list every vetted or tracked name too —
+   the board first by rank, then the rest in TOKENS.js order — through tracked(). Everything else still goes through board(). */
 function seated(sym){ return RANKS[sym]!=null; }
 function board(){ return state.filter(t=>seated(t.sym)).sort((a,b)=>RANKS[a.sym]-RANKS[b.sym]); }
+function tracked(){ return [...board(), ...state.filter(t=>!seated(t.sym))]; }
 let mode = "none";            /* live | stale | none */
 let sourceLabel = "";         /* which tracker supplied prices */
 let lastGood = { asof: LAST_KNOWN.asof, bySym: {...LAST_KNOWN.bySym} };
@@ -618,7 +637,7 @@ function renderTable(){
     hr.append(th);
   });
   thead.append(hr); tbl.append(thead);
-  const rows=[...board()];
+  const rows=[...tracked()];
   if (sortK){
     const col=COLS.find(c=>c.k===sortK);
     rows.sort((a,b)=>{
@@ -652,7 +671,7 @@ function renderNotes(){
   });
   thead.append(hr); tbl.append(thead);
   const tb=document.createElement("tbody");
-  board().forEach(t=>{
+  tracked().forEach(t=>{
     const tr=document.createElement("tr");
     const td1=document.createElement("td"); td1.textContent=t.sym;
     const td2=document.createElement("td");
@@ -822,6 +841,7 @@ async function refresh(){
           }catch(e){ /* per-token failure tolerated */ }
         }
         if(hydrated){
+          histChart("histMcRev12","mcRev",v=>fm.x(v),false,{sinceDays:84});
           histChart("histMcRev","mcRev",v=>fm.x(v),false);
           const hh=document.getElementById("histMcRevHint");
           if(hh) hh.textContent="Weekly market cap ÷ holders-revenue run-rate · board seats only, ETH excluded · UNI weeks above 200× clamped";

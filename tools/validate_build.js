@@ -98,8 +98,10 @@ check(JSON.stringify(ranks) === JSON.stringify(ranks.map((_, i) => i + 1)),
 Object.entries(C.LAST_KNOWN.bySym).forEach(([s, k]) => {
   check(typeof k.price === "number" && isFinite(k.price) && k.price > 0,
     `LAST_KNOWN.${s}.price invalid: ${k.price}`);
-  ["d24", "d7"].forEach(f => check(k[f] == null || (isFinite(k[f]) && Math.abs(k[f]) < 100),
-    `LAST_KNOWN.${s}.${f} implausible: ${k[f]}`));
+  /* owner ruling 2026-09-24: no size bound on a price move, ever — a verified figure is published at its
+     size (NIL's real +178% week tripped the old 100% cap); bad prices are caught upstream by the price harness. */
+  ["d24", "d7"].forEach(f => check(k[f] == null || isFinite(k[f]),
+    `LAST_KNOWN.${s}.${f} not a number: ${k[f]}`));
   warn(k.mc == null || k.fdv == null || k.mc <= k.fdv * 1.02,
     `LAST_KNOWN.${s}: market cap exceeds FDV (${k.mc} > ${k.fdv})`);
 });

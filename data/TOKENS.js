@@ -66,5 +66,21 @@
   { sym:"SOL", tile:false, name:"Solana · monitor", cg:"solana", bin:"SOLUSDT", hl:"SOL", llama:"solana", tvlSlug:null, circ:583.18e6,
     accrual:{label:"Burn", slot:4, note:"**Half the base fee burns** each block \u2014 real mechanism, **immaterial against issuance**. Tokenized-stock leadership is real as business, absent as token capture. An owner-mandate question, not a scored seat."},
     unlock:"**Issuance ~4% of supply a year** against a burn two orders smaller \u2014 net firmly negative. Gates: **SIMD-550, Alpenglow (Oct 2026)**, any fee-to-burn proposal, the ETF flow regime.",
-    baked:{ feesAnn:2.86863e+08, rev:3.23231e+07 } }
+    baked:{ feesAnn:2.86863e+08, rev:3.23231e+07 } },
+  { sym:"RAY", tile:false, name:"Raydium · candidate", cg:"raydium", bin:"RAYUSDT", hl:"RAY", llama:"raydium", tvlSlug:"raydium", volSlugs:["dexs/raydium"], circ:269.739e6,
+    accrual:{label:"Buyback", slot:1, note:"**12% of trading fees buy RAY** on the open market, measured on-chain; bought tokens are held, not burned. The fee base quadrupled from early September on launchpad flow and is **holding, not fading**."},
+    unlock:"**No scheduled supply-in**: genesis vesting ended in 2024; about half the cap sits unissued with the team and DAO on no published schedule. Bear: launchpad-driven fees can mean-revert, so the twelve-month buyback is the floor for any seat.",
+    baked:{ feesAnn:4.60388e+08, rev:4.97839e+07, tvl:1.33001e+09 } },
+  { sym:"ZAMA", tile:false, name:"Zama · monitor", cg:"zama", bin:"ZAMAUSDT", hl:null, llama:null, tvlSlug:"zama", circ:2.456e9,
+    accrual:{label:"Burn", slot:4, note:"**All protocol fees are burned** by design, but the measured burn is a rounding error against inflation-funded staking rewards. Confidential-vault traction is real; usage revenue is not visible."},
+    unlock:"**Five percent of supply is minted yearly** for operators, and the team, investor and angel cliffs open in **February 2027** with most of the supply behind them — deeply net-dilutive. Re-vet when burns reach a tenth of emissions.",
+    baked:{ feesAnn:1.5e+04, rev:1.5e+04, tvl:8.3e+07 } },
+  { sym:"NIL", tile:false, name:"Nillion · monitor", cg:"nillion", bin:"NILUSDT", hl:null, llama:null, tvlSlug:null, circ:504.19e6,
+    accrual:{label:"Burn", slot:4, note:"Developers burn NIL for compute credits, amounts unpublished. The new Covenants product charges a **flat fee to the treasury** — not a burn, not a staker share — and its mainnet has not launched."},
+    unlock:"**About half of supply is still locked**, released monthly at close to half the float a year; staking pays from emissions. The treasury buyback is remediation after a market-maker sale, not revenue. Re-vet on mainnet tokenomics that route fees to holders.",
+    baked:{ feesAnn:null, rev:null, tvl:null } },
+  { sym:"QNT", tile:false, name:"Quant · monitor", cg:"quant-network", bin:"QNTUSDT", hl:null, llama:null, tvlSlug:null, circ:14.544176e6,
+    accrual:{label:"None yet", slot:5, note:"**Customers pay the company in fiat**; holders have no right to revenue, no burn, no buyback, no staking income. Bank and central-bank contracts are real; none touches the token."},
+    unlock:"**Fully unlocked** — the cleanest supply profile tracked, which makes the zero on the other side exact. Re-vet only if Fusion gas in QNT is verified on-chain with a burn or holder route, or fee-funded staking goes live.",
+    baked:{ feesAnn:null, rev:null, tvl:null } }
 ]

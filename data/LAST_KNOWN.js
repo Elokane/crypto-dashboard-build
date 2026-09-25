@@ -15,5 +15,9 @@
   ONDO: { price:0.512438, d24:25.40, d7:37.52, mc:2.51340e+09, fdv:5.92653e+09, vol:null },
   ENA: { price:0.216809, d24:8.01, d7:41.93, mc:1.97101e+09, fdv:2.39980e+09, vol:null },
   LINK: { price:12.780534, d24:5.33, d7:12.43, mc:9.56112e+09, fdv:null, vol:null },
-  SOL: { price:116.249065, d24:2.33, d7:14.89, mc:6.77941e+10, fdv:null, vol:null }
+  SOL: { price:116.249065, d24:2.33, d7:14.89, mc:6.77941e+10, fdv:null, vol:null },
+  RAY: { price:2.062621, d24:4.71, d7:40.16, mc:5.56370e+08, fdv:1.14476e+09, vol:null },
+  ZAMA: { price:0.093996, d24:2.50, d7:85.98, mc:2.30855e+08, fdv:1.06334e+09, vol:null },
+  NIL: { price:0.114894, d24:19.90, d7:178.10, mc:5.79286e+07, fdv:1.16158e+08, vol:null },
+  QNT: { price:82.587549, d24:13.90, d7:34.08, mc:1.20116e+09, fdv:1.20680e+09, vol:null }
 } }
