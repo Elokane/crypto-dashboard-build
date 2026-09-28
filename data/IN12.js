@@ -1,2 +1,2 @@
-{ /* in-legs priced at the 2026-09-27 9:00 AM PT basis — quantities on the store’s measured paces where one exists, otherwise carried and revalued */
-  HYPE:4.76035e+08, UNI:0.00000e+00, PENDLE:1.48465e+06, RENDER:1.52622e+07, VVV:8.30243e+07, AERO:2.13651e+08, ETH:2.40650e+09, PUMP:4.68913e+08, JUP:0.00000e+00, AAVE:0.00000e+00, LIT:7.84200e+08, LINK:1.08300e+09, SOL:2.66712e+09 }
+{ /* in-legs priced at the 2026-09-28 9:00 AM PT basis — quantities on the store’s measured paces where one exists, otherwise carried and revalued */
+  HYPE:4.59984e+08, UNI:0.00000e+00, PENDLE:1.33974e+06, RENDER:1.45035e+07, VVV:7.45093e+07, AERO:2.04363e+08, ETH:2.39474e+09, PUMP:4.89551e+08, JUP:0.00000e+00, AAVE:0.00000e+00, LIT:7.35556e+08, LINK:1.10570e+09, SOL:2.59905e+09 }
