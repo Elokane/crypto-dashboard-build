@@ -53,7 +53,7 @@ if (!m) { console.error("FAIL: no engine <script> block found"); process.exit(1)
 let C = {};
 try {
   eval(m[1] + `; C = { BAKED_ASOF, LAST_KNOWN, TOKENS, RANKS, BENCH, BENCH2, BH, IN12,
-    NET_MODEL, DILNEG, SPARKS30, UNLOCKS, NETFLOW, HISTORY, BACKFILL, HISTORY_CSV, BACKFILL_CSV };`);
+    NET_MODEL, DILNEG, SPARKS30, UNLOCKS, NETFLOW, HISTORY, BACKFILL, HISTORY_CSV, BACKFILL_CSV, WEEKLY_FEES };`);
 } catch (e) {
   console.error("FAIL: engine script threw on evaluation — the build is not loadable");
   console.error("  " + e.message);
@@ -62,7 +62,7 @@ try {
 
 /* ---------- structural invariants ---------- */
 const need = ["BAKED_ASOF", "LAST_KNOWN", "TOKENS", "RANKS", "BENCH", "BENCH2", "BH",
-  "IN12", "NET_MODEL", "DILNEG", "SPARKS30", "UNLOCKS", "NETFLOW"];
+  "IN12", "NET_MODEL", "DILNEG", "SPARKS30", "UNLOCKS", "NETFLOW", "WEEKLY_FEES"];
 need.forEach(k => check(C[k] != null, `constant ${k} is missing or null`));
 
 check(/^\d{4}-\d{2}-\d{2}$/.test(C.BAKED_ASOF), `BAKED_ASOF malformed: ${C.BAKED_ASOF}`);
@@ -162,6 +162,19 @@ check(html.includes("</html>"), "document is truncated — no closing </html>");
 const bytes = Buffer.byteLength(html, "utf8");
 warn(bytes < 200 * 1024, `${bytes} bytes exceeds Notion's 200 KiB inline cap (source_url upload required)`);
 
+
+/* ---------- weekly fees chart ---------- */
+{ const W = C.WEEKLY_FEES, nw = W.weeks.length;
+  check(nw >= 8, `WEEKLY_FEES has ${nw} weeks, needs at least 8 (six-week baseline + two)`);
+  check(strictly(W.weeks.map(w => w[0])), "WEEKLY_FEES weeks are not strictly increasing");
+  const seats = Object.keys(C.RANKS).filter(s => s !== "ETH");
+  check(seats.every(s => W.order.includes(s)) && W.order.length === seats.length,
+    `WEEKLY_FEES seats ${W.order} do not match the ranked seats ${seats}`);
+  W.order.forEach(s => ["fees", "rev"].forEach(k => {
+    check(Array.isArray(W[k][s]) && W[k][s].length === nw, `WEEKLY_FEES.${k}.${s} length != ${nw}`);
+    (W[k][s] || []).forEach(v => check(typeof v === "number" && isFinite(v) && v >= 0, `WEEKLY_FEES.${k}.${s} has a bad value ${v}`));
+  }));
+}
 /* ---------- report ---------- */
 console.log(`validate_build: ${FILE}`);
 console.log(`  ${bytes.toLocaleString()} bytes · stamp: ${stamp || "??"}`);

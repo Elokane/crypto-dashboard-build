@@ -138,5 +138,12 @@
     "pre_value_ws": " ",
     "lead_comment": "",
     "gap": ""
+  },
+  {
+    "name": "WEEKLY_FEES",
+    "decl_prefix": "const WEEKLY_FEES =",
+    "pre_value_ws": " ",
+    "lead_comment": "",
+    "gap": ""
   }
 ]
