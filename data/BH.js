@@ -3,4 +3,4 @@
   ETH:{b:75,h:48,mos:"honorary",net:0,hollow:true},
   AAVE:{b:75,h:52,mos:"None",net:0,small:true}, RENDER:{b:48,h:55,mos:"Thin",net:0,small:true},
   TAO:{b:30,h:62,mos:"None",net:0,small:true}, ONDO:{b:35,h:70,mos:"None",net:0,small:true}, LINK:{b:78,h:58,mos:"None",net:-1,small:true},
-  RAY:{b:62,h:55,mos:"Thin",net:1,small:true}, NEAR:{b:65,h:75,mos:"None",net:-1,small:true}, LMTS:{b:43,h:30,mos:"None",net:-1,small:true}, LQTY:{b:52,h:22,mos:"None",net:0,small:true}, CARDS:{b:55,h:80,mos:"None",net:-1,small:true} }
+  RAY:{b:62,h:55,mos:"Thin",net:1,small:true}, NEAR:{b:65,h:75,mos:"None",net:-1,small:true}, LMTS:{b:43,h:30,mos:"None",net:-1,small:true}, LQTY:{b:52,h:22,mos:"None",net:0,small:true}, CARDS:{b:55,h:80,mos:"None",net:-1,small:true}, TIA:{b:45,h:78,mos:"None",net:-3,small:true} }
