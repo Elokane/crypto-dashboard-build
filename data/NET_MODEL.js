@@ -1,4 +1,4 @@
 {
-  AERO: { inn:5.48314e+07, est:true, basis:"float-adjusted model",
-    calc:"Float-adjusted model: fee share $94.5M/yr minus float-relevant supply-in $54.8M/yr (most of the mint lands locked) \u2192 net $39.7M/yr = +4.76% of MC \u2014 dashed, modeled. Strict ownership basis: gross mint $221.9M/yr \u2192 net \u2212$127.4M/yr = -15.27%. Straddling zero." },
+  AERO: { inn:5.27270e+07, est:true, basis:"float-adjusted model",
+    calc:"Float-adjusted model: fee share $96.0M/yr minus float-relevant supply-in $52.7M/yr (most of the mint lands locked) \u2192 net $43.3M/yr = +5.40% of MC \u2014 dashed, modeled. Strict ownership basis: gross mint $213.4M/yr \u2192 net \u2212$117.4M/yr = -14.63%. Straddling zero." },
 }
