@@ -21,7 +21,7 @@
   <header>
     <h1>Crypto Value-Capture Watchlist</h1>
     <span class="badge" id="badge">CONNECTING</span>
-    <span class="badge">Updated Oct 27, 2026</span>
+    <span class="badge">Updated Oct 28, 2026</span>
     <button class="refresh" id="refreshBtn" type="button">Refresh now</button>
   </header>
   <div class="notice" id="notice" hidden></div>
@@ -104,10 +104,10 @@
   <footer>
     <b>Discipline:</b> separate hype/narrative from business fundamentals; a token qualifies only if its value appreciates in direct relationship to the business (fees, burns, buybacks, staking revenue). No memecoins. ETH in scope; BTC tracked separately.<br>
     <b>Reading MC/FDV:</b> low ratio = a large share of the eventual supply is still to come (deep dilution overhang); ~1.0 = fully diluted.<br>
-    <b>Data:</b> <span id="asof"></span> · Prices 9:00 AM PT, 27 Oct; fees, revenue and TVL on the 30-day window ending 26 October; Aerodrome deposits on the merged Aero protocol.<br>
+    <b>Data:</b> <span id="asof"></span> · Prices 9:00 AM PT, 28 Oct; fees, revenue and TVL on the 30-day window ending 27 October; Aerodrome deposits on the merged Aero protocol.<br>
     <b>Business grade (trial):</b> a measured letter (A–E) from six checks on public revenue data, shown alongside the judged scores during a trial; it does not yet drive rankings.<br>
     <b>Legend:</b> T1 = on-chain / independently verified · T2 = project-official · T3 = named analyst/press · est = estimate · net-dilutive = new supply currently exceeds the value paid to holders.<br>
-    <b>About:</b> a research journal, not investment advice or a solicitation; the author may hold positions in assets discussed; past performance is no guarantee of future results. <span class="badge" id="buildstamp">build v19.83 · board v16.7 · baked 2026-10-27</span>
+    <b>About:</b> a research journal, not investment advice or a solicitation; the author may hold positions in assets discussed; past performance is no guarantee of future results. <span class="badge" id="buildstamp">build v19.84 · board v16.7 · baked 2026-10-28</span>
   </footer>
 </div>
 <div id="tip"></div>
@@ -115,62 +115,62 @@
 <script>
 /* Data constants are spliced in by tools/build.py; rendered prose lives in data/_html.json and data/*.js.
    Rendered text carries findings only — never process, sourcing or run narration (tools/scope_gate.py enforces it). */
-const BAKED_ASOF = "2026-10-27"; /* basis: 2026-09-10 03:51 PM PT (22:51 UTC). Prices/d24/d7 = DefiLlama coins historical; MC = price x circulating (AERO on the 21bp/week tail rate); FDV = MC / stored ratio. Fees / holders rev / TVL = 30-day windows ending 2026-09-08 UTC, carried. AAVE and LMTS holders revenue structural zero; ETH burn carried; B and H carried. */
-const LAST_KNOWN = { asof: "2026-10-27 9:00 AM PT", bySym: {
-  HYPE: { price:79.334976, d24:1.27, d7:-0.57, mc:2.01939e+10, fdv:5.86196e+10, vol:null },
-  AERO: { price:0.707753, d24:3.37, d7:-16.96, mc:6.64269e+08, fdv:1.22448e+09, vol:null },
-  UNI: { price:7.141870, d24:0.53, d7:-1.79, mc:4.42275e+09, fdv:6.28138e+09, vol:null },
-  JUP: { price:0.279223, d24:-1.13, d7:-11.06, mc:9.27663e+08, fdv:1.92365e+09, vol:null },
-  PENDLE: { price:1.987051, d24:0.15, d7:-6.02, mc:3.39547e+08, fdv:4.29057e+08, vol:null },
-  VVV: { price:25.747031, d24:1.90, d7:1.73, mc:1.18256e+09, fdv:1.45907e+09, vol:null },
-  AAVE: { price:132.520768, d24:-3.03, d7:-12.93, mc:2.05725e+09, fdv:null, vol:null },
-  ETH: { price:2344.467585, d24:0.83, d7:-3.88, mc:2.84196e+11, fdv:null, vol:null },
-  RENDER: { price:1.685193, d24:-3.43, d7:-8.84, mc:8.85687e+08, fdv:1.12492e+09, vol:null },
-  HNT: { price:0.383880, d24:-1.89, d7:-6.53, mc:7.01772e+07, fdv:1.03292e+08, vol:null },
-  LIT: { price:3.032941, d24:-3.08, d7:-3.86, mc:7.61663e+08, fdv:2.05998e+09, vol:null },
-  PUMP: { price:0.004282, d24:-1.02, d7:-5.18, mc:1.69135e+09, fdv:2.56915e+09, vol:null },
-  TAO: { price:251.176066, d24:-0.86, d7:-7.01, mc:2.48119e+09, fdv:4.90191e+09, vol:null },
-  ONDO: { price:0.416776, d24:-0.42, d7:-6.21, mc:2.04421e+09, fdv:4.82017e+09, vol:null },
-  ENA: { price:0.212289, d24:0.98, d7:11.72, mc:1.92992e+09, fdv:2.34976e+09, vol:null },
-  LINK: { price:11.435386, d24:-0.74, d7:-6.16, mc:8.55481e+09, fdv:null, vol:null },
-  SOL: { price:100.845673, d24:-0.92, d7:-4.72, mc:5.88112e+10, fdv:null, vol:null },
-  RAY: { price:1.781277, d24:-3.54, d7:-8.64, mc:4.80480e+08, fdv:9.88609e+08, vol:null },
-  NEAR: { price:4.558353, d24:-0.25, d7:-6.04, mc:5.95777e+09, fdv:5.95777e+09, vol:null },
-  LMTS: { price:0.028757, d24:-10.20, d7:-37.89, mc:2.16943e+07, fdv:null, vol:null },
-  LQTY: { price:0.198608, d24:1.62, d7:-0.12, mc:1.76404e+07, fdv:null, vol:null },
-  SYRUP: { price:0.176624, d24:0.08, d7:-10.69, mc:2.06120e+08, fdv:null, vol:null },
-  CARDS: { price:0.295547, d24:-9.23, d7:-9.96, mc:1.40273e+08, fdv:5.83457e+08, vol:null },
-  TIA: { price:0.535625, d24:-0.06, d7:-14.08, mc:5.24051e+08, fdv:6.31597e+08, vol:null }
+const BAKED_ASOF = "2026-10-28"; /* basis: 2026-09-10 03:51 PM PT (22:51 UTC). Prices/d24/d7 = DefiLlama coins historical; MC = price x circulating (AERO on the 21bp/week tail rate); FDV = MC / stored ratio. Fees / holders rev / TVL = 30-day windows ending 2026-09-08 UTC, carried. AAVE and LMTS holders revenue structural zero; ETH burn carried; B and H carried. */
+const LAST_KNOWN = { asof: "2026-10-28 9:00 AM PT", bySym: {
+  HYPE: { price:79.753923, d24:0.49, d7:-1.99, mc:2.03006e+10, fdv:5.89292e+10, vol:null },
+  AERO: { price:0.713126, d24:0.76, d7:-17.22, mc:6.69311e+08, fdv:1.23378e+09, vol:null },
+  UNI: { price:7.075011, d24:-1.09, d7:-7.04, mc:4.38134e+09, fdv:6.22258e+09, vol:null },
+  JUP: { price:0.280166, d24:0.34, d7:-15.32, mc:9.30794e+08, fdv:1.93014e+09, vol:null },
+  PENDLE: { price:1.959277, d24:-1.40, d7:-10.72, mc:3.34801e+08, fdv:4.23060e+08, vol:null },
+  VVV: { price:23.812189, d24:-7.51, d7:-13.48, mc:1.09369e+09, fdv:1.34943e+09, vol:null },
+  AAVE: { price:132.619693, d24:0.02, d7:-16.37, mc:2.05879e+09, fdv:null, vol:null },
+  ETH: { price:2330.861216, d24:-0.57, d7:-7.15, mc:2.82547e+11, fdv:null, vol:null },
+  RENDER: { price:1.668105, d24:-1.01, d7:-12.97, mc:8.76706e+08, fdv:1.11352e+09, vol:null },
+  HNT: { price:0.385774, d24:0.49, d7:-9.92, mc:7.05234e+07, fdv:1.03802e+08, vol:null },
+  LIT: { price:2.942026, d24:-3.00, d7:-15.26, mc:7.38831e+08, fdv:1.99823e+09, vol:null },
+  PUMP: { price:0.004203, d24:-1.89, d7:-15.10, mc:1.65996e+09, fdv:2.52147e+09, vol:null },
+  TAO: { price:252.611951, d24:0.57, d7:-8.97, mc:2.49538e+09, fdv:4.92994e+09, vol:null },
+  ONDO: { price:0.417859, d24:0.26, d7:-10.54, mc:2.04952e+09, fdv:4.83269e+09, vol:null },
+  ENA: { price:0.195979, d24:-7.79, d7:-11.36, mc:1.78165e+09, fdv:2.16923e+09, vol:null },
+  LINK: { price:11.548926, d24:0.89, d7:-9.01, mc:8.63975e+09, fdv:null, vol:null },
+  SOL: { price:100.883242, d24:0.04, d7:-6.97, mc:5.88331e+10, fdv:null, vol:null },
+  RAY: { price:1.737516, d24:-2.46, d7:-12.94, mc:4.68676e+08, fdv:9.64321e+08, vol:null },
+  NEAR: { price:4.619922, d24:1.34, d7:-14.05, mc:6.03824e+09, fdv:6.03824e+09, vol:null },
+  LMTS: { price:0.028221, d24:-1.86, d7:-25.93, mc:2.12900e+07, fdv:null, vol:null },
+  LQTY: { price:0.194585, d24:-2.03, d7:-7.35, mc:1.72830e+07, fdv:null, vol:null },
+  SYRUP: { price:0.167086, d24:-5.40, d7:-18.29, mc:1.94989e+08, fdv:null, vol:null },
+  CARDS: { price:0.295409, d24:-0.05, d7:-16.07, mc:1.40207e+08, fdv:5.83184e+08, vol:null },
+  TIA: { price:0.540688, d24:0.95, d7:-14.59, mc:5.29004e+08, fdv:6.37566e+08, vol:null }
 } };
 const TOKENS = [
   { sym:"HYPE", name:"Hyperliquid · #3", cg:"hyperliquid", bin:"HYPEUSDT", hl:"HYPE", llama:"hyperliquid", tvlSlug:"hyperliquid", volSlugs:["dexs/hyperliquid"], circ:254.54e6,
     accrual:{label:"Buyback", slot:1, note:"**~99% of perp and spot fees buy HYPE** through the Assistance Fund \u2014 the board's largest capture engine."},
     unlock:"**Deepest overhang on the board**: core-contributor vesting runs monthly **into 2027\u201328**; claims so far run far below the authorized ceiling. Bear: the ceiling, not the observed pace, is the risk number.",
-    baked:{ feesAnn:9.82600e+08, rev:7.80634e+08, tvl:8.16672e+09 } },
+    baked:{ feesAnn:9.80591e+08, rev:7.77983e+08, tvl:8.25685e+09 } },
   { sym:"AERO", name:"Aerodrome · #4", cg:"aerodrome-finance", bin:"AEROUSDT", hl:"AERO", llama:"aerodrome", tvlSlug:"aerodrome", volSlugs:["dexs/aerodrome"], circ:938.56e6,
     accrual:{label:"Fee share", slot:2, note:"**100% of exchange fees** route to veAERO voters. The board's **cheapest real cash flow**, partly because the fee base has shrunk."},
     unlock:"Emissions are voted weekly in the tail regime; **about three-quarters of the mint lands locked**, so the float basis nets positive while the ownership basis stays negative. Bear: post-merger emissions policy undisclosed.",
-    baked:{ feesAnn:1.35733e+08, rev:9.30537e+07, tvl:3.61617e+08 } },
+    baked:{ feesAnn:1.35702e+08, rev:9.32393e+07, tvl:3.72044e+08 } },
   { sym:"UNI", name:"Uniswap · #2", cg:"uniswap", bin:"UNIUSDT", hl:"UNI", llama:"uniswap", tvlSlug:"uniswap", volSlugs:["dexs/uniswap"], circ:619.27e6,
     accrual:{label:"Burn", slot:4, note:"Immutable TokenJar-to-Firepit contracts **burn UNI** from switched v2/v3 pools on Ethereum and six L2s, **live since late July 2026**."},
     unlock:"**Fully vested since 2024**, no active emissions; treasury growth roughly matches the burn, so net supply is about flat. Bear: the switch taxes LPs \u2014 liquidity-migration risk \u2014 and UNI shares Base swap flow with AERO.",
-    baked:{ feesAnn:1.08603e+09, rev:8.95399e+07, tvl:3.73398e+09 } },
+    baked:{ feesAnn:1.07842e+09, rev:8.93684e+07, tvl:3.77032e+09 } },
   { sym:"JUP", name:"Jupiter · #1", cg:"jupiter-exchange-solana", bin:"JUPUSDT", hl:"JUP", llama:"jupiter", tvlSlug:"jupiter", volSlugs:["aggregators/jupiter"], circ:3.3223e9,
     accrual:{label:"Buyback", slot:1, note:"Litterbox **buys JUP with half of protocol revenue**; a higher share is proposed. Zero scheduled supply-in makes the whole buyback net flow \u2014 **the board's highest net yield**."},
     unlock:"**Vesting complete; net-zero emissions.** Reserves are governance-gated with no schedule. Bear: Solana-cycle revenue and a governance-mutable buyback share.",
-    baked:{ feesAnn:1.87661e+08, rev:2.44660e+07, tvl:1.73498e+09 } },
+    baked:{ feesAnn:1.84034e+08, rev:2.37558e+07, tvl:1.72086e+09 } },
   { sym:"PENDLE", name:"Pendle · #6", cg:"pendle", bin:"PENDLEUSDT", hl:"PENDLE", llama:"pendle", tvlSlug:"pendle", volSlugs:["dexs/pendle"], circ:170.88e6,
     accrual:{label:"Buyback", slot:1, note:"sPENDLE stakers **receive most protocol revenue as buybacks** (vePENDLE retired). Payments land on a **fortnightly Monday clock**."},
     unlock:"Incentive emissions near the terminal regime; team vesting complete. **Net dial straddles zero** \u2014 a wash. Bear: **the smallest revenue base on the board**.",
-    baked:{ feesAnn:5.58456e+06, rev:4.08304e+06, tvl:1.08004e+09 } },
+    baked:{ feesAnn:5.57912e+06, rev:4.06829e+06, tvl:1.05832e+09 } },
   { sym:"VVV", name:"Venice AI · #5", cg:"venice-token", bin:"VVVUSDT", hl:"VVV", llama:"venice", tvlSlug:null, circ:45.93e6, xMult:true,
     accrual:{label:"Buyback", slot:1, note:"**Revenue-funded buy-and-burn** from subscription tiers plus a share of API credit purchases: one monthly burn event plus daily purchase burns."},
     unlock:"**Staking emissions outweigh burns several-fold today**; they step down yearly toward stated net deflation. Bear: the overhang keeps the net negative until burns close the gap.",
-    baked:{ feesAnn:1.23634e+07, rev:1.23634e+07, tvl:null } },
+    baked:{ feesAnn:1.24449e+07, rev:1.24449e+07, tvl:null } },
   { sym:"AAVE", name:"Aave · monitored", cg:"aave", bin:"AAVEUSDT", hl:"AAVE", llama:"aave", tvlSlug:"aave", circ:15.524e6,
     accrual:{label:"Buyback", slot:1, note:"Buyback engine live in design, but **no revenue has reached holders since 24 June 2026**. Off the board; **re-enters on the first payment to holders**."},
     unlock:"**Nearly fully diluted** \u2014 the cleanest supply profile among the candidates. Flags: buyback budget cut, Kelp bad-debt overhang, discretion risk from the **April 2026 suspension**.",
-    baked:{ feesAnn:4.56829e+08, rev:0.00000e+00, tvl:1.74347e+10 } },
+    baked:{ feesAnn:4.55443e+08, rev:0.00000e+00, tvl:1.76075e+10 } },
   { sym:"ETH", name:"Ethereum · #7 honorary", cg:"ethereum", bin:"ETHUSDT", hl:"ETH", llama:null, tvlSlug:null, circ:121.22e6, xMult:true,
     accrual:{label:"Burn", slot:4, note:"**Honorary seat, unscored.** EIP-1559 burns the base fee of every transaction; the burn is **negligible against market cap** \u2014 structural optionality, not current cash flow."},
     unlock:"No unlocks or vesting; validator issuance is payment for security and excluded from the dilution dial. **Glamsterdam's gas-limit raise** is the re-rate catalyst. Bear: issuance exceeds the burn in low-activity regimes.",
@@ -186,11 +186,11 @@ const TOKENS = [
   { sym:"LIT", name:"Lighter · monitor", cg:"lighter", hl:null, llama:"lighter", tvlSlug:"lighter", circ:251.13e6,
     accrual:{label:"Buyback", slot:1, note:"**Daily TWAP buybacks from trading-fee revenue**; volume runs near Uniswap scale on Robinhood Chain. Cumulative buyback claim unverified."},
     unlock:"**About half of supply vests to team and investors into 2029**, cadence undisclosed \u2014 **deeply net-dilutive**, which is why it stays monitor-only. Bear: the cadence could be cliff-lumpy.",
-    baked:{ feesAnn:7.15713e+07, rev:3.38774e+07, tvl:null } },
+    baked:{ feesAnn:7.20099e+07, rev:3.41958e+07, tvl:null } },
   { sym:"PUMP", name:"Pump.fun · tracked", cg:"pump-fun", bin:"PUMPUSDT", hl:"PUMP", llama:"pump.fun", tvlSlug:null, circ:394.97e9,
     accrual:{label:"Burn", slot:4, note:"Irreversible **burn of half of net revenue** \u2014 mechanically elite. The business is a memecoin launchpad, so the no-memecoins discipline points at the revenue source. **Tracked, never seated.**"},
     unlock:"**Three-year linear vesting through mid-2029** keeps supply-in above the burn; the dollar gap widens as price rises. Bear: the cheapest multiple carries that asterisk.",
-    baked:{ feesAnn:7.66780e+08, rev:3.62488e+08 } },
+    baked:{ feesAnn:7.63601e+08, rev:3.56822e+08 } },
   { sym:"TAO", tile:false, name:"Bittensor · monitor", cg:"bittensor", bin:"TAOUSDT", hl:"TAO", llama:null, tvlSlug:null, circ:9.8783e6,
     accrual:{label:"Staking utility", slot:3, note:"**No root-level burn, buyback or fee share**; root staking yield is redistributed dilution, not captured revenue. Fee linkage lives in subnet alpha tokens, not TAO."},
     unlock:"Fair launch, no VC unlocks, but **ongoing emissions dwarf measured subnet revenue**. Re-vet on any root-level accrual governance (Root Reborn).",
@@ -206,39 +206,39 @@ const TOKENS = [
   { sym:"LINK", tile:false, name:"Chainlink · monitor", cg:"chainlink", bin:"LINKUSDT", hl:null, llama:"chainlink", tvlSlug:null, circ:748.1e6,
     accrual:{label:"Buyback", slot:1, note:"Payment Abstraction **buys LINK into the on-chain Reserve every Thursday** \u2014 live and filed-grade. **Magnitude fails**: the issuer releases supply an order of magnitude faster."},
     unlock:"**Issuer releases ~7% of supply a year against a sub-1% buyback**; staking rewards are treasury-funded; the Reserve line has run flat for a year. Gates: a batch or schedule change, a fee-funded staking transfer, any Reserve withdrawal.",
-    baked:{ feesAnn:5.40910e+07, rev:5.17083e+07 } },
+    baked:{ feesAnn:5.40636e+07, rev:5.17083e+07 } },
   { sym:"SOL", tile:false, name:"Solana · monitor", cg:"solana", bin:"SOLUSDT", hl:"SOL", llama:"solana", tvlSlug:null, circ:583.18e6,
     accrual:{label:"Burn", slot:4, note:"**Half the base fee burns** each block \u2014 real mechanism, **immaterial against issuance**. Tokenized-stock leadership is real as business, absent as token capture. An owner-mandate question, not a scored seat."},
     unlock:"**Issuance ~4% of supply a year** against a burn two orders smaller \u2014 net firmly negative. Gates: **SIMD-550, Alpenglow (Oct 2026)**, any fee-to-burn proposal, the ETF flow regime.",
-    baked:{ feesAnn:3.01354e+08, rev:3.66225e+07 } },
+    baked:{ feesAnn:2.96352e+08, rev:3.57103e+07 } },
   { sym:"RAY", tile:false, name:"Raydium · candidate", cg:"raydium", bin:"RAYUSDT", hl:"RAY", llama:"raydium", tvlSlug:"raydium", volSlugs:["dexs/raydium"], circ:269.739e6,
     accrual:{label:"Buyback", slot:1, note:"**12% of trading fees buy RAY** on the open market, measured on-chain; bought tokens are held, not burned. The fee base quadrupled from early September on launchpad flow and is **holding, not fading**."},
     unlock:"**No scheduled supply-in**: genesis vesting ended in 2024; about half the cap sits unissued with the team and DAO on no published schedule. Bear: launchpad-driven fees can mean-revert, so the twelve-month buyback is the floor for any seat.",
-    baked:{ feesAnn:2.14287e+08, rev:2.14976e+07, tvl:1.13032e+09 } },
+    baked:{ feesAnn:2.10539e+08, rev:2.11298e+07, tvl:1.14598e+09 } },
   { sym:"NEAR", tile:false, name:"NEAR · monitor", cg:"near", bin:"NEARUSDT", hl:"NEAR", llama:"near-intents", tvlSlug:"near", circ:1.307e9,
     accrual:{label:"Buyback", slot:1, note:"**Intents revenue buys NEAR on the open market** since February, at the treasury's discretion and held, not burned; the gas burn is tiny. Intents fees are growing fast but the capture is a rounding error against market cap."},
     unlock:"**Fully unlocked; issuance halved to 2.5% a year** in late 2025, still several times the buyback and burn combined — net negative. Gates: the buyback made rule-based, or Intents capture reaching a third of issuance.",
-    baked:{ feesAnn:8.19410e+07, rev:2.77448e+07, tvl:1.30893e+08 } },
+    baked:{ feesAnn:8.11757e+07, rev:2.80412e+07, tvl:1.31794e+08 } },
   { sym:"CARDS", tile:false, name:"Collector Crypt · monitor", cg:"collector-crypt", bin:null, hl:null, llama:"collector-crypt", tvlSlug:null, circ:474.62e6,
     accrual:{label:"Burn", slot:3, note:"**Pack revenue buys CARDS and the team burns monthly**, but the buyback is about 1% of revenue with no published rule, and most burned tokens came from treasury LP fees and insiders' vested tokens rather than purchases."},
     unlock:"**44.6M CARDS unlock on the 29th of every month until July 2027** (team, advisors, seed): 446M still to come, nearly the whole current float. Each monthly burn offsets under a tenth of one unlock. Another billion unlocked tokens sit with the company.",
-    baked:{ feesAnn:2.33095e+08, rev:2.29556e+06, tvl:null } },
+    baked:{ feesAnn:2.34593e+08, rev:2.40245e+06, tvl:null } },
   { sym:"LMTS", tile:false, name:"Limitless · monitor", cg:"limitless-3", bin:null, hl:null, llama:"limitless-exchange", tvlSlug:null, circ:754.4e6,
     accrual:{label:"None yet", slot:5, note:"**No fee reaches LMTS holders** — trading fees are rebated to makers in USDC and the buyback wallet is discretionary and unquantified. A real prediction-market business with no token claim."},
     unlock:"**About 87% of supply still locked**, releasing monthly into 2028 with the team cliff in late October — more than the market cap a year. Bear: event-driven fees that mean-revert.",
-    baked:{ feesAnn:2.76222e+05, rev:0.00000e+00, tvl:null } },
+    baked:{ feesAnn:2.54091e+05, rev:0.00000e+00, tvl:null } },
   { sym:"LQTY", tile:false, name:"Liquity · monitor", cg:"liquity", bin:"LQTYUSDT", hl:null, llama:"liquity", tvlSlug:"liquity", circ:88.82e6,
     accrual:{label:"Fee share", slot:2, note:"**Only the old v1 pays stakers** — borrow and redemption fees, episodic and small. **v2 routes nothing to holders by immutable design**: interest goes to the stability pool and to incentives."},
     unlock:"**Hard cap of 100M, 96% circulating** — the cleanest supply profile tracked, so the near-zero on the other side is exact. Re-vet only on measured v2 value reaching LQTY.",
-    baked:{ feesAnn:5.85497e+06, rev:5.10300e+03, tvl:null } },
+    baked:{ feesAnn:5.91965e+06, rev:5.10300e+03, tvl:null } },
   { sym:"SYRUP", tile:false, name:"Maple · watch", cg:"syrup", bin:"SYRUPUSDT", hl:null, llama:"maple", tvlSlug:"maple", circ:1.167e9,
     accrual:{label:"Buyback", slot:1, note:"**A tiered share of monthly revenue buys SYRUP** — live and programmatic, but the current tier pays about a tenth of revenue, well below scheduled inflation. Right mechanism, wrong magnitude."},
     unlock:"**Scheduled inflation about 5% a year** against a buyback near half a percent — net negative until revenue roughly triples and reaches the top tier. Re-look when monthly revenue holds above two million.",
-    baked:{ feesAnn:1.01158e+08, rev:1.53450e+06, tvl:2.64382e+09 } },
+    baked:{ feesAnn:1.02932e+08, rev:1.54719e+06, tvl:2.66257e+09 } },
   { sym:"TIA", tile:false, name:"Celestia · monitor", cg:"celestia", bin:null, hl:null, llama:"celestia", tvlSlug:null, circ:978.39e6,
     accrual:{label:"Fee share", slot:3, note:"**Every fee goes to validators and stakers**, but blockspace is priced near zero on purpose, so the fee share is tiny next to new-token issuance. Fibre adds capacity, not revenue; a burn share is only a forum proposal."},
     unlock:"**New tokens are the whole story: about 27M TIA a year, 2.3% of supply**, falling slowly toward 1.5%. Early investors fully unlocked October 2025; core contributors finish 30 October 2026; about 67M ecosystem tokens keep streaming until October 2027.",
-    baked:{ feesAnn:3.48820e+04, rev:3.41840e+04, tvl:null } }
+    baked:{ feesAnn:3.47970e+04, rev:3.41010e+04, tvl:null } }
 ];
 const SLOTCOLORS = { 1:"var(--s1)", 2:"var(--s2)", 3:"var(--s3)", 4:"var(--s4)", 5:"var(--s5)", 6:"var(--s6)" };
 
@@ -308,6 +308,7 @@ const HISTORY_CSV=`
 2026-10-25|HYPE:984.549e6,784.326e6,8201.633e6,25.0;AERO:137.608e6,94.235e6,369.380e6,6.9;UNI:1136.124e6,92.502e6,4107.317e6,45.9;JUP:193.041e6,26.025e6,1759.848e6,36.4;PENDLE:5.556e6,4.091e6,1068.494e6,82.5;VVV:12.207e6,12.207e6,,93.2;AAVE:459.907e6,,17747.933e6;LIT:71.449e6,33.506e6,,23.8;PUMP:779.685e6,373.879e6,,4.5;ETH:,22.4e6;LINK:54.088e6,51.708e6,,165.2
 2026-10-26|HYPE:969.080e6,772.456e6,8193.945e6,25.8;AERO:135.038e6,92.444e6,360.804e6,7.0;UNI:1099.041e6,89.343e6,4065.901e6,49.3;JUP:189.018e6,25.143e6,1733.729e6,37.3;PENDLE:5.494e6,4.026e6,1066.906e6,84.2;VVV:12.265e6,12.265e6,,94.6;AAVE:458.811e6,,17637.506e6;LIT:70.481e6,33.341e6,,23.6;PUMP:775.697e6,370.260e6,,4.6;ETH:,22.4e6;LINK:54.129e6,51.708e6,,166.8
 2026-10-27|HYPE:982.600e6,780.634e6,8166.720e6,25.9;AERO:135.733e6,93.054e6,361.617e6,7.1;UNI:1086.029e6,89.540e6,3733.980e6,49.4;JUP:187.661e6,24.466e6,1734.981e6,37.9;PENDLE:5.585e6,4.083e6,1080.041e6,83.2;VVV:12.363e6,12.363e6,,95.6;AAVE:456.829e6,,17434.653e6;LIT:71.571e6,33.877e6,,22.5;PUMP:766.780e6,362.488e6,,4.7;ETH:,22.4e6;LINK:54.091e6,51.708e6,,165.4
+2026-10-28|HYPE:980.591e6,777.983e6,8256.854e6,26.1;AERO:135.702e6,93.239e6,372.044e6,7.2;UNI:1078.418e6,89.368e6,3770.318e6,49.0;JUP:184.034e6,23.756e6,1720.858e6,39.2;PENDLE:5.579e6,4.068e6,1058.321e6,82.3;VVV:12.445e6,12.445e6,,87.9;AAVE:455.443e6,,17607.517e6;LIT:72.010e6,34.196e6,,21.6;PUMP:763.601e6,356.822e6,,4.7;ETH:,22.4e6;LINK:54.064e6,51.708e6,,167.1
 `;
 const BACKFILL_CSV=`
 2024-07-01|AERO:215.6e6,213.4e6,541.1e6;PENDLE:23.91e6,17.95e6;UNI:907.4e6;JUP:212.2e6;AAVE:485e6,,12460.8e6;PUMP:269.4e6
@@ -561,51 +562,51 @@ function renderHistory(){
    AERO now charted as MEASURED (v13): T1 supply-delta average 4.46M/wk (blockscout totalSupply 6/8 stamp → 7/22); the
    exact single-epoch mint refreshes every Thursday post-flip (00:00 UTC) from the same keyless endpoint — never bake
    the stale Dec-24 Fed print (0.67%/wk ≈ 9.3M) as current. */
-const UNLOCKS = { window:"Sep 2026 → Aug 2027", priced:"2026-10-27 price basis", rows:[
-  { sym:"HYPE", what:"authorized ceiling", usd12:9.44387e+09, rate:"9.92M HYPE/mo", pct:"+46.8% of circ if fully claimed", col:"var(--s1)", hatch:true, offscale:true,
+const UNLOCKS = { window:"Sep 2026 → Aug 2027", priced:"2026-10-28 price basis", rows:[
+  { sym:"HYPE", what:"authorized ceiling", usd12:9.49374e+09, rate:"9.92M HYPE/mo", pct:"+46.8% of circ if fully claimed", col:"var(--s1)", hatch:true, offscale:true,
     tip:"Core-contributor whitepaper schedule through ~Nov-2027 (T2). This is the authorization, not the observed pace: monthly authorization dates pass with claims far below the ceiling; the realized-pace row is what the net-flow chart uses." },
-  { sym:"HYPE", what:"claim pace incl. queued release", usd12:9.55839e+08, rate:"~1.0M HYPE/mo measured", pct:"+4.7%/yr of circ", col:"var(--s1)",
+  { sym:"HYPE", what:"claim pace incl. queued release", usd12:9.89551e+08, rate:"~1.0M HYPE/mo measured", pct:"+4.7%/yr of circ", col:"var(--s1)",
     tip:"Hyperliquid Labs' unstakes read from the on-chain unstaking queue (T1), trailing six months doubled, counting the 3.75M HYPE released on 7 October \u2014 still a fraction of the ceiling, and the figure the net-flow chart nets against the buybacks." },
-  { sym:"AERO", what:"gauge emissions + rebases (measured)", usd12:1.75098e+08, rate:"4,744,644 AERO/wk MEASURED", pct:"+26.4%/yr of circ · most of it lands locked", col:"var(--s2)",
+  { sym:"AERO", what:"gauge emissions + rebases (measured)", usd12:1.76427e+08, rate:"4,744,644 AERO/wk MEASURED", pct:"+26.4%/yr of circ · most of it lands locked", col:"var(--s2)",
     tip:"On-chain total-supply growth (T1), voted weekly in small steps in the tail regime. Recipients: LP gauges and locker rebases; with Foundation buy-and-lock, float grows far slower than ownership supply." },
-  { sym:"VVV", what:"staking emissions", usd12:5.14940e+07, rate:"~167K VVV/mo measured", pct:"+4.4%/yr of circ", col:"var(--s5)",
+  { sym:"VVV", what:"staking emissions", usd12:4.76262e+07, rate:"~167K VVV/mo measured", pct:"+4.4%/yr of circ", col:"var(--s5)",
     tip:"Measured on-chain on a 14-day supply window (T1) after the 1 September step; the schedule steps the rate down to 2.0M VVV a year from 1 October. All emissions go to sVVV stakers while the buy-and-burn pushes the other way." },
-  { sym:"PENDLE", what:"incentive emissions", usd12:5.85604e+05, rate:"~24.6K PENDLE/mo measured", pct:"+0.2%/yr of circ", col:"var(--s3)",
+  { sym:"PENDLE", what:"incentive emissions", usd12:5.77418e+05, rate:"~24.6K PENDLE/mo measured", pct:"+0.2%/yr of circ", col:"var(--s3)",
     tip:"Measured on-chain (T1): the gauge-controller rate across 13 chains, about 5,650 PENDLE a week at the end of September, below Pendle\u2019s stated 0.2% of supply a year. Terminal regime, sPENDLE-directed." },
-  { sym:"LIT", what:"team+investor vesting (est)", usd12:5.12404e+08, rate:"~14.08M LIT/mo est", pct:"+67.3%/yr of circ est", col:"var(--s6)", est:true,
+  { sym:"LIT", what:"team+investor vesting (est)", usd12:4.97045e+08, rate:"~14.08M LIT/mo est", pct:"+67.3%/yr of circ est", col:"var(--s6)", est:true,
     tip:"Team and investor allocations vest into 2029, cadence undisclosed — a mix of cliff and linear: could be zero for months, then lumpy. The widest error bars here and the main reason LIT is monitor-only." },
-  { sym:"PUMP", what:"3-yr vesting (est)", usd12:4.11379e+08, rate:"~8.01B PUMP/mo est", pct:"+24.3%/yr of circ", col:"var(--s4)", est:true,
+  { sym:"PUMP", what:"3-yr vesting (est)", usd12:4.03745e+08, rate:"~8.01B PUMP/mo est", pct:"+24.3%/yr of circ", col:"var(--s4)", est:true,
     tip:"The mid-July cliff started three-year linear vesting of remaining team and investor tokens — continuous supply-in through mid-2029, with later tranches materially smaller than the cliff." },
-  { sym:"LINK", what:"issuer supply release (est)", usd12:8.77527e+08, rate:"~6.39M LINK/mo est", pct:"+10.3%/yr of circ est", col:"var(--s6)", est:true,
+  { sym:"LINK", what:"issuer supply release (est)", usd12:8.86240e+08, rate:"~6.39M LINK/mo est", pct:"+10.3%/yr of circ est", col:"var(--s6)", est:true,
     tip:"Issuer-stated release near 7% of total supply a year (T2), against sub-1% weekly Reserve buys — the magnitude gap that keeps LINK monitor-only." },
 ], zeros:[]};
 /* ===== SUPPLY IN vs VALUE OUT (owner directive 7/21) =====
    Engine duty: refresh both legs each rebuild — in = UNLOCKS realized-pace rows (+ AERO/RENDER emission ests, ETH issuance est);
    out = holders rev ann (same numbers as the tiles). est flags stay until a leg is T1/T2-verified. */
 const NETFLOW = { rows:[
-  { sym:"HYPE", in12:9.55839e+08, inEst:true, out12:7.80634e+08, net:"net IN 175.2M/yr",
-    tip:"Assistance-Fund buybacks $780.6M/yr against team claims $955.8M/yr, including the 3.75M HYPE released on 7 October \u2014 net -0.87% of market value. The claim pace counts queued releases from the unstaking queue, not the authorized ceiling." },
-  { sym:"UNI", in12:0.00000e+00, inNone:"fully vested - no emissions", out12:8.95399e+07, net:"net OUT 89.5M/yr",
-    tip:"Zero scheduled supply against the fee burn, so every dollar of capture is net flow: $89.5M/yr = +2.02% of market value, second on the board to Jupiter." },
-  { sym:"PENDLE", in12:5.85604e+05, out12:4.08304e+06, net:"net OUT 3.5M/yr",
-    tip:"Emissions $0.6M/yr (the gauge rate measured on-chain across 13 chains) vs sPENDLE buybacks $4.1M/yr: net $3.5M/yr = +1.03% of market value. Buybacks run in fortnightly bursts, then one payout: 63,422 PENDLE on 10 October; the next fortnightly payout is due about now." },
-  { sym:"RENDER", in12:1.27790e+07, inEst:true, out12:null, outNone:"burns unpublished", net:"net IN ~12.8M/yr est",
-    tip:"BME emissions $12.8M/yr est; burns are not published as figures, so no out-leg exists." },
-  { sym:"VVV", in12:5.14940e+07, out12:1.23634e+07, net:"net IN 39.1M/yr",
-    tip:"Staking emissions $51.5M/yr (measured on-chain) vs published burns $12.4M/yr: net \u2212$39.1M/yr = -3.31% of market value. The schedule steps emissions down to 2.0M VVV a year from 1 October; the overhang still keeps the net negative." },
-  { sym:"AERO", in12:1.75098e+08, out12:9.30537e+07, net:"net IN 82.0M/yr",
-    tip:"Gross mint $175.1M/yr, re-read on-chain 27 October over eight whole weekly mints, vs veAERO fee share $93.1M/yr \u2192 -12.35% of market value on the ownership basis. Float basis: most of the mint lands locked, so float growth nets $49.8M/yr = +7.50%." },
-  { sym:"JUP", in12:0.00000e+00, inNone:"vesting complete - net-zero emissions", out12:2.44660e+07, net:"net OUT 24.5M/yr",
-    tip:"No scheduled supply counted against $24.5M/yr of Litterbox buybacks: net +2.64% of market value, the highest here. Not yet counted: the quarterly 50M JUP staking reward opened 13 October (about -3.4% if counted, ruling pending)." },
-  { sym:"PUMP", in12:4.11379e+08, inEst:true, out12:3.62488e+08, net:"net IN 48.9M/yr",
-    tip:"Three-year linear vesting $411.4M/yr est vs $362.5M/yr of revenue burns: net \u2212$48.9M/yr = -2.89% of market value; the dollar gap widens as price rises against a token-denominated schedule." },
-  { sym:"LIT", in12:5.12404e+08, inEst:true, out12:3.38774e+07, net:"net IN 478.5M/yr",
-    tip:"Straight-lined team and investor vesting $512.4M/yr est (cadence undisclosed) vs $33.9M/yr of TWAP buybacks: net \u2212$478.5M/yr = -62.8% of market value \u2014 the widest negative tracked." },
-  { sym:"LINK", in12:8.77527e+08, inEst:true, out12:5.17083e+07, net:"net IN 825.8M/yr",
-    tip:"Issuer supply release $877.5M/yr est vs $51.7M/yr of weekly Reserve buys: net \u2212$825.8M/yr = -9.65% of market value. Mechanism live, magnitude failing." },
-  { sym:"SOL", in12:2.20953e+09, inEst:true, out12:3.66225e+07, net:"net IN 2.17B/yr",
-    tip:"Validator issuance $2.21B/yr est vs the 50% base-fee burn $36.6M/yr: net \u2212$2.17B/yr = -3.69% of market value. Mandate-class question, not a scored seat." },
-  { sym:"ETH", in12:2.09775e+09, inEst:true, out12:2.24000e+07,
+  { sym:"HYPE", in12:9.89551e+08, inEst:true, out12:7.77983e+08, net:"net IN 211.6M/yr",
+    tip:"Assistance-Fund buybacks $778.0M/yr against team claims $989.6M/yr, including the 3.75M HYPE released on 7 October and 0.18M queued on 28 October \u2014 net -1.04% of market value. The claim pace counts queued releases from the unstaking queue, not the authorized ceiling." },
+  { sym:"UNI", in12:0.00000e+00, inNone:"fully vested - no emissions", out12:8.93684e+07, net:"net OUT 89.4M/yr",
+    tip:"Zero scheduled supply against the fee burn, so every dollar of capture is net flow: $89.4M/yr = +2.04% of market value, second on the board to Jupiter." },
+  { sym:"PENDLE", in12:5.77418e+05, out12:4.06829e+06, net:"net OUT 3.5M/yr",
+    tip:"Emissions $0.6M/yr (the gauge rate measured on-chain across 13 chains) vs sPENDLE buybacks $4.1M/yr: net $3.5M/yr = +1.04% of market value. Buybacks run in fortnightly bursts, then one payout: 63,422 PENDLE on 10 October; the next fortnightly payout is due about now." },
+  { sym:"RENDER", in12:1.26494e+07, inEst:true, out12:null, outNone:"burns unpublished", net:"net IN ~12.6M/yr est",
+    tip:"BME emissions $12.6M/yr est; burns are not published as figures, so no out-leg exists." },
+  { sym:"VVV", in12:4.76262e+07, out12:1.24449e+07, net:"net IN 35.2M/yr",
+    tip:"Staking emissions $47.6M/yr (measured on-chain) vs published burns $12.4M/yr: net \u2212$35.2M/yr = -3.22% of market value. The schedule steps emissions down to 2.0M VVV a year from 1 October; the overhang still keeps the net negative." },
+  { sym:"AERO", in12:1.76427e+08, out12:9.32393e+07, net:"net IN 83.2M/yr",
+    tip:"Gross mint $176.4M/yr, re-read on-chain 28 October over eight whole weekly mints, vs veAERO fee share $93.2M/yr \u2192 -12.43% of market value on the ownership basis. Float basis: most of the mint lands locked, so float growth nets $49.6M/yr = +7.42%." },
+  { sym:"JUP", in12:0.00000e+00, inNone:"vesting complete - net-zero emissions", out12:2.37558e+07, net:"net OUT 23.8M/yr",
+    tip:"No scheduled supply counted against $23.8M/yr of Litterbox buybacks: net +2.55% of market value, the highest here. Not yet counted: the quarterly 50M JUP staking reward opened 13 October (about -3.5% if counted, ruling pending)." },
+  { sym:"PUMP", in12:4.03745e+08, inEst:true, out12:3.56822e+08, net:"net IN 46.9M/yr",
+    tip:"Three-year linear vesting $403.7M/yr est vs $356.8M/yr of revenue burns: net \u2212$46.9M/yr = -2.83% of market value; the dollar gap widens as price rises against a token-denominated schedule." },
+  { sym:"LIT", in12:4.97045e+08, inEst:true, out12:3.41958e+07, net:"net IN 462.8M/yr",
+    tip:"Straight-lined team and investor vesting $497.0M/yr est (cadence undisclosed) vs $34.2M/yr of TWAP buybacks: net \u2212$462.8M/yr = -62.6% of market value \u2014 the widest negative tracked." },
+  { sym:"LINK", in12:8.86240e+08, inEst:true, out12:5.17083e+07, net:"net IN 834.5M/yr",
+    tip:"Issuer supply release $886.2M/yr est vs $51.7M/yr of weekly Reserve buys: net \u2212$834.5M/yr = -9.66% of market value. Mechanism live, magnitude failing." },
+  { sym:"SOL", in12:2.21035e+09, inEst:true, out12:3.57103e+07, net:"net IN 2.17B/yr",
+    tip:"Validator issuance $2.21B/yr est vs the 50% base-fee burn $35.7M/yr: net \u2212$2.17B/yr = -3.70% of market value. Mandate-class question, not a scored seat." },
+  { sym:"ETH", in12:2.08558e+09, inEst:true, out12:2.24000e+07,
     tip:"Validator issuance est vs the carried EIP-1559 burn $22.4M/yr \u2014 issuance is payment for security; ETH is shown for the dial only, not scored." },
 ]};
 function renderNetflow(){
@@ -693,8 +694,8 @@ function mcRev(t){ return (t.mc && t.rev) ? t.mc/t.rev : null; }
 /* MC / NET holders revenue (owner directive 7/21): denominator = holders rev MINUS next-12-mo supply-in
    (unlocks + emissions, realized-pace basis — same IN legs as the NETFLOW chart; refresh together each rebake).
    Negative denominator = the token is net-dilutive today → "dil-neg", sorted after all real multiples. */
-const IN12 = { /* in-legs priced at the 2026-10-27 9:00 AM PT basis — quantities on the store’s measured paces where one exists, otherwise carried and revalued */
-  HYPE:9.55839e+08, UNI:0.00000e+00, PENDLE:5.85604e+05, RENDER:1.27790e+07, VVV:5.14940e+07, AERO:1.75098e+08, ETH:2.09775e+09, PUMP:4.11379e+08, JUP:0.00000e+00, AAVE:0.00000e+00, LIT:5.12404e+08, LINK:8.77527e+08, SOL:2.20953e+09 };
+const IN12 = { /* in-legs priced at the 2026-10-28 9:00 AM PT basis — quantities on the store’s measured paces where one exists, otherwise carried and revalued */
+  HYPE:9.89551e+08, UNI:0.00000e+00, PENDLE:5.77418e+05, RENDER:1.26494e+07, VVV:4.76262e+07, AERO:1.76427e+08, ETH:2.08558e+09, PUMP:4.03745e+08, JUP:0.00000e+00, AAVE:0.00000e+00, LIT:4.97045e+08, LINK:8.86240e+08, SOL:2.21035e+09 };
 function mcNet(t){
   if(!t.mc || !t.rev || IN12[t.sym]==null) return null;   /* no invented in-legs: blank where the schedule is unknown (e.g. LIT undisclosed vesting) */
   const net=t.rev-IN12[t.sym];
@@ -706,18 +707,18 @@ function mcNet(t){
    Engine duty: refresh NET_MODEL inputs every run alongside IN12 (AERO inn = float-growth $/yr from the AERO
    supply ledger on the Aerodrome row page); every bar's tooltip must show the full calculation. */
 const NET_MODEL = {
-  AERO: { inn:4.32666e+07, est:true, basis:"float-adjusted model",
-    calc:"Float-adjusted model: fee share $93.1M/yr minus float-relevant supply-in $43.3M/yr (most of the mint lands locked) \u2192 net $49.8M/yr = +7.50% of MC \u2014 dashed, modeled. Strict ownership basis: gross mint $175.1M/yr \u2192 net \u2212$82.0M/yr = -12.35%. Straddling zero." },
+  AERO: { inn:4.35951e+07, est:true, basis:"float-adjusted model",
+    calc:"Float-adjusted model: fee share $93.2M/yr minus float-relevant supply-in $43.6M/yr (most of the mint lands locked) \u2192 net $49.6M/yr = +7.42% of MC \u2014 dashed, modeled. Strict ownership basis: gross mint $176.4M/yr \u2192 net \u2212$83.2M/yr = -12.43%. Straddling zero." },
 };
 /* Red dil-neg rows — every tracked name whose supply-in exceeds capture appears ON the chart (owner directive 7/22).
    Engine duty: refresh these legs with IN12 + NET_MODEL every rebuild; est marks hold until each leg verifies. */
 const DILNEG = [
-  { sym:"HYPE", txt:"net-dilutive - net \u2212175.2M/yr", tip:"buybacks $780.6M/yr \u2212 team claims $955.8M/yr, counting the 3.75M HYPE released on 7 October, = net \u2212$175.2M/yr, -0.87% of market value; on completed claims alone the net is +1.82%." },
-  { sym:"PUMP", txt:"net-dilutive - net = \u221248.9M/yr est", tip:"burn $362.5M/yr \u2212 vesting $411.4M/yr est = net \u2212$48.9M/yr, -2.89% of market value; the spigot runs to mid-2029 and the sign is price-dependent." },
-  { sym:"VVV", txt:"net-dilutive - net \u221239.1M/yr (published burn)", tip:"burn $12.4M/yr \u2212 staking emissions $51.5M/yr = net \u2212$39.1M/yr, -3.31% of market value. The schedule steps emissions down to 2.0M VVV a year from 1 October; the overhang still keeps the net negative." },
-  { sym:"LIT", txt:"net-dilutive - net = \u2212478.5M/yr est (undisclosed cadence)", tip:"TWAP buybacks $33.9M/yr \u2212 straight-lined vesting $512.4M/yr est = net \u2212$478.5M/yr, -62.83% of market value \u2014 the main reason LIT is monitor-only." },
-  { sym:"LINK", txt:"net-dilutive - net = \u2212825.8M/yr est - monitor", tip:"Weekly Reserve buys $51.7M/yr \u2212 issuer release $877.5M/yr est = net \u2212$825.8M/yr, -9.65% of market value. Mechanism live and filed-grade; magnitude failing." },
-  { sym:"SOL", txt:"net-dilutive - net = \u22122.17B/yr est - mandate class", tip:"Base-fee burn $36.6M/yr \u2212 validator issuance $2.21B/yr est = net \u2212$2.17B/yr, -3.69% of market value. Mechanism real, magnitude immaterial; an owner-mandate question." },
+  { sym:"HYPE", txt:"net-dilutive - net \u2212211.6M/yr", tip:"buybacks $778.0M/yr \u2212 team claims $989.6M/yr, counting the 3.75M HYPE released on 7 October and 0.18M queued on 28 October, = net \u2212$211.6M/yr, -1.04% of market value; on completed claims alone the net is +1.79%." },
+  { sym:"PUMP", txt:"net-dilutive - net = \u221246.9M/yr est", tip:"burn $356.8M/yr \u2212 vesting $403.7M/yr est = net \u2212$46.9M/yr, -2.83% of market value; the spigot runs to mid-2029 and the sign is price-dependent." },
+  { sym:"VVV", txt:"net-dilutive - net \u221235.2M/yr (published burn)", tip:"burn $12.4M/yr \u2212 staking emissions $47.6M/yr = net \u2212$35.2M/yr, -3.22% of market value. The schedule steps emissions down to 2.0M VVV a year from 1 October; the overhang still keeps the net negative." },
+  { sym:"LIT", txt:"net-dilutive - net = \u2212462.8M/yr est (undisclosed cadence)", tip:"TWAP buybacks $34.2M/yr \u2212 straight-lined vesting $497.0M/yr est = net \u2212$462.8M/yr, -62.65% of market value \u2014 the main reason LIT is monitor-only." },
+  { sym:"LINK", txt:"net-dilutive - net = \u2212834.5M/yr est - monitor", tip:"Weekly Reserve buys $51.7M/yr \u2212 issuer release $886.2M/yr est = net \u2212$834.5M/yr, -9.66% of market value. Mechanism live and filed-grade; magnitude failing." },
+  { sym:"SOL", txt:"net-dilutive - net = \u22122.17B/yr est - mandate class", tip:"Base-fee burn $35.7M/yr \u2212 validator issuance $2.21B/yr est = net \u2212$2.17B/yr, -3.70% of market value. Mechanism real, magnitude immaterial; an owner-mandate question." },
   { sym:"ENA", txt:"net-dilutive - net = −$439.9M/yr est - monitor", tip:"Modeled buyback $26.4M/yr (third-party) − emissions $466.3M/yr = net −$439.9M/yr, -24.11% of market value — failing math, the TAO pattern in milder form." },
   { sym:"ONDO", txt:"net-dilutive - net = −$864.5M/yr est - monitor", tip:"$0 reaches holders − monthly unlock tranches $864.5M/yr est (through Jan-2029) = net −$864.5M/yr, -43.13% of market value. Re-vet trigger: the fee switch or any programmatic capture going live." },
 ];
@@ -791,10 +792,10 @@ function renderNetNote(){
   nt.textContent=NET_NOTE;
 }
 
-const SPARKS30 = {"ETH": [2647.843061, 2705.418279, 2663.879244, 2715.667638, 2728.425579, 2679.404008, 2695.695202, 2722.657227, 2697.3243, 2618.175765, 2567.045527, 2496.169004, 2492.37207, 2504.206357, 2570.060704, 2532.718286, 2504.398734, 2355.736963, 2448.971439, 2430.065194, 2408.576234, 2429.14149, 2396.167842, 2438.969859, 2431.892501, 2406.455925, 2374.940344, 2338.047784, 2315.812679, 2301.062071], "HYPE": [88.984318, 87.980535, 85.41655, 89.768988, 90.019548, 88.058225, 89.801795, 91.70042, 93.233653, 91.162088, 87.148173, 85.723859, 84.120328, 84.947331, 87.703854, 83.147285, 81.89141, 79.609004, 81.323208, 79.875625, 78.543864, 80.283124, 78.976103, 80.89483, 78.744131, 78.312084, 76.732154, 75.851113, 76.358236, 77.334356], "AERO": [0.790213, 0.846555, 0.799595, 0.830055, 0.7905, 0.793898, 0.837208, 0.862809, 0.836679, 0.795689, 0.775038, 0.820512, 0.831356, 0.961751, 0.939956, 0.895486, 0.903098, 0.841842, 0.967305, 0.891455, 0.836923, 0.798624, 0.809911, 0.845241, 0.806681, 0.795072, 0.726602, 0.681713, 0.66835, 0.664497], "PENDLE": [2.470368, 2.369873, 2.312557, 2.481013, 2.461896, 2.342825, 2.487372, 2.472873, 2.427877, 2.239493, 2.239005, 2.130372, 2.145223, 2.168536, 2.210841, 2.129042, 2.152919, 1.909049, 2.124133, 2.116298, 2.039207, 2.077069, 2.09592, 2.16428, 2.107061, 2.084131, 2.011599, 1.950614, 1.927165, 1.922425], "VVV": [28.128844, 27.732356, 26.706929, 28.064968, 28.334102, 27.360501, 27.757763, 29.666764, 27.962111, 26.976799, 24.935899, 22.865049, 22.782404, 22.365892, 24.949787, 22.919727, 23.034769, 22.237282, 24.568167, 23.152126, 22.253758, 23.931773, 24.486575, 25.766986, 27.703717, 26.351636, 24.562695, 24.463461, 24.649469, 24.448271], "UNI": [9.110025, 8.775665, 8.762434, 8.979626, 9.148055, 9.163079, 9.031137, 9.072501, 8.835235, 8.214319, 7.769439, 7.422522, 7.451638, 7.562786, 7.694872, 7.455768, 7.363839, 6.850968, 7.484857, 7.308093, 7.235345, 7.390257, 7.17824, 7.46419, 7.12044, 7.236032, 6.905397, 6.729991, 6.961689, 7.024196], "RENDER": [1.948446, 1.919184, 1.912034, 1.932462, 1.966623, 1.939093, 1.954298, 2.006787, 2.056494, 2.115017, 2.024701, 1.922194, 1.929515, 1.919509, 2.00452, 2.161706, 1.992886, 1.840561, 1.93923, 1.919412, 1.835283, 1.81182, 1.807002, 1.853646, 1.834755, 1.803268, 1.726178, 1.680113, 1.692364, 1.671323]}; /* 30 daily PT closes ending 2026-09-08 from the owned price archive; live mode redraws current 7d */
+const SPARKS30 = {"ETH": [2705.418279, 2663.879244, 2715.667638, 2728.425579, 2679.404008, 2695.695202, 2722.657227, 2697.3243, 2618.175765, 2567.045527, 2496.169004, 2492.37207, 2504.206357, 2570.060704, 2532.718286, 2504.398734, 2355.736963, 2448.971439, 2430.065194, 2408.576234, 2429.14149, 2396.167842, 2438.969859, 2431.892501, 2406.455925, 2374.940344, 2338.047784, 2315.812679, 2301.062071, 2349.172412], "HYPE": [87.980535, 85.41655, 89.768988, 90.019548, 88.058225, 89.801795, 91.70042, 93.233653, 91.162088, 87.148173, 85.723859, 84.120328, 84.947331, 87.703854, 83.147285, 81.89141, 79.609004, 81.323208, 79.875625, 78.543864, 80.283124, 78.976103, 80.89483, 78.744131, 78.312084, 76.732154, 75.851113, 76.358236, 77.334356, 81.053054], "AERO": [0.846555, 0.799595, 0.830055, 0.7905, 0.793898, 0.837208, 0.862809, 0.836679, 0.795689, 0.775038, 0.820512, 0.831356, 0.961751, 0.939956, 0.895486, 0.903098, 0.841842, 0.967305, 0.891455, 0.836923, 0.798624, 0.809911, 0.845241, 0.806681, 0.795072, 0.726602, 0.681713, 0.66835, 0.664497, 0.694333], "PENDLE": [2.369873, 2.312557, 2.481013, 2.461896, 2.342825, 2.487372, 2.472873, 2.427877, 2.239493, 2.239005, 2.130372, 2.145223, 2.168536, 2.210841, 2.129042, 2.152919, 1.909049, 2.124133, 2.116298, 2.039207, 2.077069, 2.09592, 2.16428, 2.107061, 2.084131, 2.011599, 1.950614, 1.927165, 1.922425, 1.984718], "VVV": [27.732356, 26.706929, 28.064968, 28.334102, 27.360501, 27.757763, 29.666764, 27.962111, 26.976799, 24.935899, 22.865049, 22.782404, 22.365892, 24.949787, 22.919727, 23.034769, 22.237282, 24.568167, 23.152126, 22.253758, 23.931773, 24.486575, 25.766986, 27.703717, 26.351636, 24.562695, 24.463461, 24.649469, 24.448271, 24.494575], "UNI": [8.775665, 8.762434, 8.979626, 9.148055, 9.163079, 9.031137, 9.072501, 8.835235, 8.214319, 7.769439, 7.422522, 7.451638, 7.562786, 7.694872, 7.455768, 7.363839, 6.850968, 7.484857, 7.308093, 7.235345, 7.390257, 7.17824, 7.46419, 7.12044, 7.236032, 6.905397, 6.729991, 6.961689, 7.024196, 7.13794], "RENDER": [1.919184, 1.912034, 1.932462, 1.966623, 1.939093, 1.954298, 2.006787, 2.056494, 2.115017, 2.024701, 1.922194, 1.929515, 1.919509, 2.00452, 2.161706, 1.992886, 1.840561, 1.93923, 1.919412, 1.835283, 1.81182, 1.807002, 1.853646, 1.834755, 1.803268, 1.726178, 1.680113, 1.692364, 1.671323, 1.680902]}; /* 30 daily PT closes ending 2026-09-08 from the owned price archive; live mode redraws current 7d */
 const BENCH = {"dates": ["2026-07-10", "2026-07-11", "2026-07-12", "2026-07-13", "2026-07-14", "2026-07-15", "2026-07-16", "2026-07-17", "2026-07-18", "2026-07-19", "2026-07-20", "2026-07-21", "2026-07-22", "2026-07-23", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-31", "2026-09-01", "2026-09-04", "2026-09-05", "2026-09-06", "2026-09-09", "2026-09-16"], "board": [100.0, 99.526, 98.991, 96.425, 95.884, 98.46, 98.034, 94.107, 96.083, 96.707, 95.79, 100.309, 97.913, 96.453, 114.3, 116.0, 119.41, 123.27, 126.53, 127.79, 129.98, 139.48, 135.07, 125.722], "eth": [100.0, 100.949, 101.15, 100.101, 99.907, 104.972, 105.575, 102.298, 103.414, 104.73, 104.484, 109.008, 107.892, 105.765, 137.91, 139.75, 139.24, 137.46, 134.51, 136.37, 136.78, 137.7, 138.41, 132.935], "btc": [100.0, 99.958, 99.583, 98.071, 97.357, 100.479, 99.646, 97.677, 99.539, 100.596, 99.922, 103.14, 102.352, 101.814, 122.84, 122.7, 124.57, 122.71, 120.84, 123.81, 124.33, 124.07, 122.45, 118.027]};; /* seed-six EW (HYPE AERO UNI JUP PENDLE AAVE) vs ETH vs BTC, base 100 @ 7/10 closes, recomputed from the owned price archive */
 const BENCH2 = { inception:"2026-07-23", labels:["board EW","ETH","BTC"],
-  dates:["2026-07-23", "2026-07-24", "2026-07-25", "2026-07-26", "2026-07-27", "2026-07-28", "2026-07-29", "2026-07-30", "2026-07-31", "2026-08-01", "2026-08-02", "2026-08-07", "2026-08-09", "2026-08-19", "2026-08-20", "2026-08-21", "2026-08-22", "2026-08-23", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04", "2026-09-05", "2026-09-06", "2026-09-09", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-19", "2026-09-20", "2026-09-21", "2026-09-22", "2026-09-23", "2026-09-24", "2026-09-25", "2026-09-26", "2026-09-27", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10", "2026-10-11", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-17", "2026-10-18", "2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22", "2026-10-23", "2026-10-24", "2026-10-25", "2026-10-26", "2026-10-27"], board:[100, 97.41, 100.05, 103.68, 99.03, 99.92, 98.35, 100.96, 97.3, 96.9, 95.46, 96.53, 97.48, 107.45, 113.4, 118.61, 116.06, 122.5, 123.74, 125.37, 128, 129.53, 130.4, 128.55, 133.99, 133.74, 135.81, 144.84, 152.0, 141.48, 155.39, 175.96, 182.79, 180.00, 188.56, 188.15, 182.55, 189.77, 195.28, 202.61, 198.49, 185.10, 184.10, 187.78, 184.86, 190.48, 188.12, 190.97, 192.10, 190.44, 177.61, 168.25, 172.70, 178.98, 184.83, 176.05, 169.49, 168.09, 174.45, 168.91, 164.23, 159.24, 164.09, 172.04, 179.88, 168.33, 167.18, 154.70, 158.65, 160.35, 162.06], eth:[100, 98.36, 99.86, 104.38, 99.96, 101.67, 100.64, 100.84, 99.07, 99.46, 97.97, 101.55, 102.15, 119.87, 125.67, 129.22, 126.53, 130.26, 130.4, 132.13, 132.75, 131.06, 128.24, 127.65, 132.69, 130.02, 130.4, 131.29, 131.97, 126.75, 130.88, 136.89, 139.94, 138.51, 146.1, 145.45, 140.39, 142.24, 142.29, 142.75, 142.60, 141.91, 141.71, 142.23, 142.16, 142.98, 142.17, 143.11, 142.99, 143.28, 136.23, 129.00, 131.88, 132.97, 134.28, 134.03, 133.22, 128.74, 129.33, 128.82, 127.68, 126.07, 126.86, 129.22, 133.18, 127.07, 127.48, 122.11, 124.18, 123.39, 124.31], btc:[100, 97.75, 98.43, 99.98, 97.18, 98.38, 97.72, 98.16, 96.35, 96.98, 95.66, 99.34, 99.77, 106.72, 115.5, 118.43, 116.26, 118.45, 120.65, 120.51, 122.22, 120.4, 118.57, 118.93, 123.86, 121.48, 121.99, 121.73, 120.14, 115.8, 117.29, 123.40, 124.78, 123.71, 131.39, 132.12, 128.12, 129.03, 128.03, 128.64, 129.11, 127.42, 126.95, 128.59, 128.57, 130.43, 129.74, 130.40, 130.36, 131.11, 127.52, 123.84, 126.65, 126.80, 128.09, 126.37, 127.42, 124.75, 125.94, 124.29, 124.26, 123.99, 125.18, 126.14, 129.20, 124.74, 124.74, 121.87, 123.18, 122.87, 123.03] };
+  dates:["2026-07-23", "2026-07-24", "2026-07-25", "2026-07-26", "2026-07-27", "2026-07-28", "2026-07-29", "2026-07-30", "2026-07-31", "2026-08-01", "2026-08-02", "2026-08-07", "2026-08-09", "2026-08-19", "2026-08-20", "2026-08-21", "2026-08-22", "2026-08-23", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04", "2026-09-05", "2026-09-06", "2026-09-09", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-19", "2026-09-20", "2026-09-21", "2026-09-22", "2026-09-23", "2026-09-24", "2026-09-25", "2026-09-26", "2026-09-27", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10", "2026-10-11", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-17", "2026-10-18", "2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22", "2026-10-23", "2026-10-24", "2026-10-25", "2026-10-26", "2026-10-27", "2026-10-28"], board:[100, 97.41, 100.05, 103.68, 99.03, 99.92, 98.35, 100.96, 97.3, 96.9, 95.46, 96.53, 97.48, 107.45, 113.4, 118.61, 116.06, 122.5, 123.74, 125.37, 128, 129.53, 130.4, 128.55, 133.99, 133.74, 135.81, 144.84, 152.0, 141.48, 155.39, 175.96, 182.79, 180.00, 188.56, 188.15, 182.55, 189.77, 195.28, 202.61, 198.49, 185.10, 184.10, 187.78, 184.86, 190.48, 188.12, 190.97, 192.10, 190.44, 177.61, 168.25, 172.70, 178.98, 184.83, 176.05, 169.49, 168.09, 174.45, 168.91, 164.23, 159.24, 164.09, 172.04, 179.88, 168.33, 167.18, 154.70, 158.65, 160.35, 162.06, 159.18], eth:[100, 98.36, 99.86, 104.38, 99.96, 101.67, 100.64, 100.84, 99.07, 99.46, 97.97, 101.55, 102.15, 119.87, 125.67, 129.22, 126.53, 130.26, 130.4, 132.13, 132.75, 131.06, 128.24, 127.65, 132.69, 130.02, 130.4, 131.29, 131.97, 126.75, 130.88, 136.89, 139.94, 138.51, 146.1, 145.45, 140.39, 142.24, 142.29, 142.75, 142.60, 141.91, 141.71, 142.23, 142.16, 142.98, 142.17, 143.11, 142.99, 143.28, 136.23, 129.00, 131.88, 132.97, 134.28, 134.03, 133.22, 128.74, 129.33, 128.82, 127.68, 126.07, 126.86, 129.22, 133.18, 127.07, 127.48, 122.11, 124.18, 123.39, 124.31, 123.59], btc:[100, 97.75, 98.43, 99.98, 97.18, 98.38, 97.72, 98.16, 96.35, 96.98, 95.66, 99.34, 99.77, 106.72, 115.5, 118.43, 116.26, 118.45, 120.65, 120.51, 122.22, 120.4, 118.57, 118.93, 123.86, 121.48, 121.99, 121.73, 120.14, 115.8, 117.29, 123.40, 124.78, 123.71, 131.39, 132.12, 128.12, 129.03, 128.03, 128.64, 129.11, 127.42, 126.95, 128.59, 128.57, 130.43, 129.74, 130.40, 130.36, 131.11, 127.52, 123.84, 126.65, 126.80, 128.09, 126.37, 127.42, 124.75, 125.94, 124.29, 124.26, 123.99, 125.18, 126.14, 129.20, 124.74, 124.74, 121.87, 123.18, 122.87, 123.03, 122.99] };
 /* Engine duty (from 7/23): BENCH2 = board-of-record equal weight (the seats of record — eight at inception, seven since 8/6:
    HYPE AERO UNI JUP PENDLE VVV AAVE ETH) vs ETH vs BTC, all base 100 at the 2026-07-23 PT close (captured by the 7/24
    morning run via the previous-day-close rule). Morning runs APPEND one point per day from the price shard and rebase
