@@ -11,11 +11,20 @@ the outlier fact or date. This script is the budget. A write that fails it is no
 build that fails it is not filed. Where the law's prose and this script disagree, the
 script governs until the prose is amended and the script changed in the same session.
 
-Three surfaces, three modes:
+Rev 2026-11-05 (owner, closes #337): live mode first rewrites the form Notion now serves (<toggle>, <toggle heading="h1">, <b>, <i>, embed caption
+block) to the form the checks read. No cap, list or rule moved; the page was brought inside the rest by cutting and rolling.
+
+Rev 2026-09-13 (owner directive, Methodology §C27): the Live page gains the second reader's section
+"# 📡 Signals — business & revenue watch" between the Market update and the Top 7 picks — 250 words outside
+its single closed "Earlier signals" toggle (400 inside) — and the above-Archive byte cap rises 90,000 -> 92,000
+to house it. The only raise since the Scope law was written.
+
+Four files, four modes:
 
   python3 scope_gate.py live  <live_body.md>     # Notion Live page body (fetched dump, <content> extracted)
   python3 scope_gate.py dash  <repo_dir>         # dashboard build repo (data/*.js, data/_html.json)
   python3 scope_gate.py state <state.json>       # claude/state.json
+  python3 scope_gate.py orders <run_orders.json>  # claude/run_orders.json (duty lists; layout ruling 2026-09-24)
 
 Exit 0 = PASS (warnings allowed). Exit 1 = FAIL — do not write / do not file.
 Stdlib only. Identical copies live at claude/tools/scope_gate.py (project, canonical)
@@ -31,21 +40,26 @@ LIVE_CAPS = {
     "# How to read this page":      720,
     "# Live dashboard":               0,   # NOTHING between the heading and the embed
     "### Market update":            400,
+    "# 📡 Signals":                 250,   # second reader's section (§C27): intro line + active signals, outside its one toggle
     "# 🏆 Top 7 picks":            1500,   # header line + ranked-on line + seven cards
     "# Vetted":                     320,
     "# X radar":                    950,   # intro + latest sweep (table included) + standing notes
     "# Crypto-exposed equities":    560,   # text outside toggles; toggle bodies capped separately
     "# What changed":               140,   # text outside toggles (intro + corrections index)
-    "# Verification queue":         280,
-    "# Engine cadence":             140,
-    "# Honesty box":                180,
+    "# Verification queue":         160,   # open questions about the businesses, never about the engine
+    "# Engine cadence":              80,   # when the page updates, nothing more
+    "# Honesty box":                140,   # which figures to treat with care, in plain words
 }
 LIVE_CARD_CAP        = 190   # each pick card (header + one-line + metrics + judgment)
+LIVE_VETTED_OUTSIDE_CAP = 40  # Vetted: at most an intro line outside the per-token toggles
+LIVE_VETTED_SUMMARY_CAP = 32  # Vetted: one summary line per token — the rejection in plain words
+LIVE_VETTED_TOGGLE_CAP  = 150 # Vetted: the detail inside each closed toggle
 LIVE_LOG_DAYS        = 14    # What-changed toggles older than this belong in the Archive
 LIVE_LOG_TOGGLE_CAP  = 230   # words per What-changed toggle body
 LIVE_INDEX_TOGGLE_CAP = 900  # the corrections-index toggle at the top of the log (one line per correction)
 LIVE_EQ_TOGGLE_CAP   = 1800  # words per equities dossier toggle (research notes, mid-page)
-LIVE_MAX_ABOVE_ARCHIVE_BYTES = 90_000
+LIVE_SIGNALS_TOGGLE_CAP = 400  # the Signals section's single closed "Earlier signals" toggle
+LIVE_MAX_ABOVE_ARCHIVE_BYTES = 92_000  # 90_000 until 2026-09-13; raised by owner directive to house the Signals section (§C27)
 
 DASH_CAPS = {   # data/_html.json slots, by name prefix (ratcheted 2026-08-27; caps only go down)
     "updatedChip": 8, "footBasis": 40, "hint": 32, "axisnote": 50, "buildstamp": 12,
@@ -71,7 +85,9 @@ STATE_CAPS = {  # words per string leaf, by top-level key (default applies elsew
     "run_orders": 140, "_write_rule": 160, "_cost_rule": 160, "_closing_assertion": 220,
     "open_queue_top": 70, "corrections_latest": 90, "triggers": 90,
 }
-STATE_MAX_BYTES = 90_000
+STATE_MAX_BYTES = 66_000       # 90_000 until 2026-09-24; owner layout ruling: the duty lists moved to run_orders.json
+ORDERS_MAX_BYTES = 36_000      # claude/run_orders.json (layout ruling 2026-09-24)
+ORDERS_DUTY_CAP = 140          # words per duty, as the state cap for run_orders was
 
 # ----------------------------------------------------------------------------- patterns
 # Process, self-description, verification chatter, internal references. Case-insensitive.
@@ -175,8 +191,40 @@ def split_toggles(text):
     outside = re.sub(r"<details>.*?</details>", " ", text, flags=re.S)
     return outside, toggles
 
+def normalize_served(body):
+    """Rev 2026-11-05 (owner, #337): Notion now serves <toggle> and HTML-style marks, not the <details> and
+    Markdown this gate was written for. Rewrite the served form to the form the checks read. No cap changes.
+    A body with no <toggle> passes through untouched."""
+    if "<toggle" not in body:
+        return body
+    out, stack, lines, i = [], [], body.split("\n"), 0
+    while i < len(lines):
+        l = lines[i]
+        s = l.strip()
+        if s in ("<toggle>", '<toggle heading="h1">'):
+            j = i + 1
+            while j < len(lines) and not lines[j].strip():
+                j += 1
+            title = lines[j].strip() if j < len(lines) else ""
+            if s == "<toggle>":
+                out += ["<details>", f"<summary>{title}</summary>"]
+                stack.append("details")
+            else:
+                out.append(f'# {title} {{toggle="true"}}')
+                stack.append("h1")
+            i = j + 1
+            continue
+        if s == "</toggle>" and stack:
+            if stack.pop() == "details":
+                out.append("</details>")
+            i += 1
+            continue
+        out.append(("\t" + l) if ("h1" in stack and l.strip()) else l)
+        i += 1
+    return "\n".join(out)
+
 def live(path):
-    body = open(path, encoding="utf-8").read()
+    body = normalize_served(open(path, encoding="utf-8").read())
     fails, warns = [], []
     if "\\</details\\>" in body or "\\<details\\>" in body:
         fails.append("escaped literal </details> present — a fake toggle")
@@ -184,8 +232,10 @@ def live(path):
         fails.append(f"toggle open/close mismatch: {body.count('<details>')} vs {body.count('</details>')}")
     if body.count("<embed") != 1:
         fails.append(f"expected exactly one <embed>, found {body.count('<embed')}")
+    if "**About this page**" in body or "not investment advice or a solicitation" in body:
+        fails.append("About/disclaimer callout present — removed by the owner 2026-09-02; the intro line is the whole preamble")
     lines = body.rstrip("\n").split("\n")
-    if not lines[-1].strip().startswith("*By Dor Konforty"):
+    if not lines[-1].strip().startswith(("*By Dor Konforty", "<i>By Dor Konforty")):
         fails.append("byline is not the last line")
 
     # sections: split on top-level '# ' headings; Market update is a '###' inside Live dashboard
@@ -210,7 +260,7 @@ def live(path):
     for name, text in sections[: (arch if arch is not None else len(sections))]:
         if name.startswith("# Live dashboard"):
             head, _, mu = text.partition("### Market update")
-            head_wo_embed = "\n".join(l for l in head.split("\n") if "<embed" not in l)
+            head_wo_embed = "\n".join(l for l in re.sub(r"<embed.*?</embed>", "", head, flags=re.S).split("\n") if "<embed" not in l)
             n = words(head_wo_embed)
             if n > LIVE_CAPS["# Live dashboard"]:
                 fails.append(f"text between the Live dashboard heading and the embed ({n} words) — the embed stands alone")
@@ -236,7 +286,7 @@ def live(path):
                 fails.append(f"What-changed carries {len(toggles)} toggles; older entries belong in the Archive")
             for summ, tb in toggles:
                 n = words(tb)
-                cap = LIVE_INDEX_TOGGLE_CAP if summ.lstrip("*").startswith("Corrections index") else LIVE_LOG_TOGGLE_CAP
+                cap = LIVE_INDEX_TOGGLE_CAP if summ.lstrip("*<b>").startswith("Corrections index") else LIVE_LOG_TOGGLE_CAP
                 if n > cap:
                     fails.append(f"log toggle '{summ[:50]}' body {n} words > {cap}")
                 fails += scan_patterns(summ + "\n" + tb, FORBIDDEN, "log toggle")
@@ -254,10 +304,40 @@ def live(path):
             for summ, tb in toggles:
                 fails += scan_patterns(summ + "\n" + tb, FORBIDDEN, "equities toggle")
             continue
+        if name.startswith("# 📡 Signals"):
+            # owner 2026-09-13 (§C27): the second reader's section — active signals in plain English outside toggles,
+            # at most one closed "Earlier signals" toggle for older or resolved ones. Nobody else writes here.
+            n = words(outside)
+            if n > LIVE_CAPS["# 📡 Signals"]:
+                fails.append(f"Signals text outside toggles {n} words > {LIVE_CAPS['# 📡 Signals']}")
+            if len(toggles) > 1:
+                fails.append(f"Signals carries {len(toggles)} toggles; one closed 'Earlier signals' toggle at most")
+            for summ, tb in toggles:
+                if words(tb) > LIVE_SIGNALS_TOGGLE_CAP:
+                    fails.append(f"Signals toggle '{summ[:40]}' body {words(tb)} words > {LIVE_SIGNALS_TOGGLE_CAP}")
+                fails += scan_patterns(summ + "\n" + tb, FORBIDDEN, "signals toggle")
+            fails += scan_patterns(outside, FORBIDDEN + PLAIN_FORBIDDEN, name)
+            continue
+        if name.startswith("# Vetted"):
+            # owner 2026-09-03: every tracked token that is not seated sits here as a CLOSED toggle — one summary line
+            # giving the rejection in plain words, the detail inside. Nothing but toggles below the heading.
+            n = words(outside)
+            if n > LIVE_VETTED_OUTSIDE_CAP:
+                fails.append(f"Vetted: {n} words outside toggles > {LIVE_VETTED_OUTSIDE_CAP} — each token is a closed toggle, one summary line")
+            if not toggles:
+                fails.append("Vetted: no toggles — each tracked token needs its own closed toggle")
+            for summ, tb in toggles:
+                if words(summ) > LIVE_VETTED_SUMMARY_CAP:
+                    fails.append(f"Vetted toggle summary '{summ[:40]}' {words(summ)} words > {LIVE_VETTED_SUMMARY_CAP} — one line")
+                if words(tb) > LIVE_VETTED_TOGGLE_CAP:
+                    fails.append(f"Vetted toggle '{summ[:40]}' body {words(tb)} words > {LIVE_VETTED_TOGGLE_CAP}")
+                fails += scan_patterns(summ + "\n" + tb, FORBIDDEN + PLAIN_FORBIDDEN, "vetted toggle")
+            fails += scan_patterns(outside, FORBIDDEN + PLAIN_FORBIDDEN, name)
+            continue
         if name.startswith("# Honesty box") and toggles:
             fails.append("Honesty box carries toggles — earlier states belong in the Archive")
         if name.startswith("# 🏆 Top 7"):
-            cards = re.split(r"\n(?=\*\*\d · )", text)
+            cards = re.split(r"(?:\n|<br />)(?=(?:\*\*|<b>)\d · )", text)
             for c in cards[1:]:
                 n = words(c)
                 if n > LIVE_CARD_CAP:
@@ -268,7 +348,7 @@ def live(path):
                 fails.append(f"{name[:40]} {n} words > {LIVE_CAPS[cap_key]}")
         else:
             warns.append(f"section without a budget: {name[:60]}")
-        plain = not (name.startswith("# Honesty box") or name.startswith("# Engine cadence"))
+        plain = not name.startswith("# Engine cadence")   # owner 2026-09-02: the Honesty box is plain English too
         fails += scan_patterns(text, FORBIDDEN + (PLAIN_FORBIDDEN if plain else []), name)
     return fails, warns
 
@@ -392,14 +472,51 @@ def state(path):
                 fails.append(f"{path}: shouting — {sh[:60]}")
     for k, v in s.items():
         walk(v, k, k)
+    ro = s.get("run_orders")
+    if not isinstance(ro, dict) or any(isinstance(v, list) for v in ro.values()):
+        fails.append("run_orders carries duty lists; since 2026-09-24 they live in claude/run_orders.json and state holds the pointer")
+    return fails, warns
+
+# ----------------------------------------------------------------------------- orders
+def orders(path):
+    fails, warns = [], []
+    raw = open(path, "rb").read()
+    try:
+        o = json.loads(raw)
+    except Exception as e:
+        return [f"run_orders.json does not parse: {e}"], []
+    if len(raw) > ORDERS_MAX_BYTES:
+        fails.append(f"run_orders.json is {len(raw):,} bytes; cap {ORDERS_MAX_BYTES:,} — close a duty, never raise the cap")
+    dated_key = re.compile(r"(?:_|^)(?:20\d\d[-_]?\d\d[-_]?\d\d|\d{4})$|_20\d\d_\d\d")
+    slots = [k for k, v in o.items() if isinstance(v, list)]
+    if not slots:
+        fails.append("run_orders.json carries no duty list")
+    for k, v in o.items():
+        if dated_key.search(k):
+            fails.append(f"dated key {k} — replace, never accumulate")
+        if isinstance(v, list):
+            for i, x in enumerate(v):
+                if not isinstance(x, str):
+                    fails.append(f"{k}[{i}]: not a string"); continue
+                n = words(x)
+                if n > ORDERS_DUTY_CAP:
+                    fails.append(f"{k}[{i}] ({x[:24]!r}): {n} words > {ORDERS_DUTY_CAP}")
+                if "**" in x:
+                    fails.append(f"{k}[{i}]: markdown bold in a duty")
+                for sh in shouting(x):
+                    fails.append(f"{k}[{i}]: shouting — {sh[:60]}")
+        elif isinstance(v, str):
+            cap = 160 if k == "_note" else 90
+            if words(v) > cap:
+                fails.append(f"{k}: {words(v)} words > {cap}")
     return fails, warns
 
 # ----------------------------------------------------------------------------- main
 def main():
-    if len(sys.argv) != 3 or sys.argv[1] not in ("live", "dash", "state"):
+    if len(sys.argv) != 3 or sys.argv[1] not in ("live", "dash", "state", "orders"):
         print(__doc__); sys.exit(2)
     mode, target = sys.argv[1], sys.argv[2]
-    fails, warns = {"live": live, "dash": dash, "state": state}[mode](target)
+    fails, warns = {"live": live, "dash": dash, "state": state, "orders": orders}[mode](target)
     for w in warns: print("WARN ", w)
     for f in fails: print("FAIL ", f)
     print(f"\nscope_gate {mode}: {len(fails)} FAIL · {len(warns)} WARN")
