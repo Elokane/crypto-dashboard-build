@@ -1,1 +1,1 @@
-"Red = net-dilutive, no net multiple. Dashed = modeled or estimated. AERO is net-dilutive on the measured mint (about -9%/yr)."
+"Red = net-dilutive, no net multiple. Dashed = modeled or estimated. AERO is net-dilutive on the measured mint (about -8%/yr)."
